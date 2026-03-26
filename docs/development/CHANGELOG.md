@@ -29,11 +29,17 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 - Adicionados testes TDD iniciais para validação de payload e handler:
   - `src/server/api/validation/parse-input.test.ts`
   - `src/server/api/create-order.handler.test.ts`
+- Configurado runner de testes com Vitest para TDD inicial:
+  - `vitest.config.ts`
+  - scripts `test`, `test:unit`, `test:integration`, `test:watch` no `package.json`
+  - suite `tests/unit/**` e `tests/integration/**`
 
 ### Changed
 
 - Definida convenção explícita para atualização contínua de `TASKS`, roadmap e changelog por fase.
 - Atualizada a fase 001 com conclusão da task `ARC-003` e progresso geral de `2/9` para `3/9`.
+- Migrados os testes iniciais de `node:test` para Vitest em `tests/unit/server/api/**`.
+- Atualizada a fase 001 com conclusão da task `TDD-001` e progresso geral de `3/9` para `4/9`.
 
 ### Notes
 

@@ -3,7 +3,7 @@
 **Status:** 🟢 ATIVA
 **Última atualização:** 2026-03-26
 **Sprint Atual:** Sprint 001
-**Status Geral:** 🟡 33% (3/9 tarefas completas) - FASE ATIVA
+**Status Geral:** 🟡 44% (4/9 tarefas completas) - FASE ATIVA
 **ETA:** 1 sprint (5 a 7 dias úteis)
 **Pré-requisito:** Nenhum (fase inicial)
 
@@ -14,14 +14,14 @@
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Arquitetura Base | 3 | 3 | 0 | 0 | 0 |
-| Qualidade e TDD | 3 | 0 | 0 | 3 | 0 |
+| Qualidade e TDD | 3 | 1 | 0 | 2 | 0 |
 | Infra e Dados Base | 3 | 0 | 0 | 3 | 0 |
-| **TOTAL** | **9** | **3** | **0** | **6** | **0** |
+| **TOTAL** | **9** | **4** | **0** | **5** | **0** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Estrutura inicial da documentação já pronta.
 - ✅ Sprint técnica inicial definida com TDD obrigatório.
-- ⚠️ Projeto ainda sem stack de testes automatizados configurada.
+- ✅ Stack de testes automatizados configurada com Vitest.
 
 ---
 
@@ -125,7 +125,7 @@ Implantar disciplina TDD operacional (Red/Green/Refactor) com comandos reproduz�
 
 #### QLT.1 - Setup de testes e primeiros cenários
 
-- [ ] **TDD-001** - Configurar runner de testes e scripts no projeto
+- [x] **TDD-001** - Configurar runner de testes e scripts no projeto
 
   **Descrição curta:**
   - Definir stack de testes unitários/integrados (Vitest recomendado).
@@ -139,13 +139,15 @@ Implantar disciplina TDD operacional (Red/Green/Refactor) com comandos reproduz�
   **Arquivos/áreas afetadas:** `package.json`, `vitest.config.ts`, `tsconfig.json`
 
   **Critérios de aceitação:**
-  - [ ] `npm run test` executa sem erro de configuração.
-  - [ ] Suites unit e integration separadas por padrão claro.
+  - [x] `npm run test` executa sem erro de configuração.
+  - [x] Suites unit e integration separadas por padrão claro.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 4h  
   **Dependências:** ARC-001  
-  **Status:** 🔴 Pendente
+  **Status:** 🟢 Concluída  
+  **Notas adicionais (opcional):**
+  - `AIDEV-TDD-001`
 
 - [ ] **TDD-002** - Escrever primeiros testes falhando para contratos/schemas
 
