@@ -632,6 +632,28 @@ Agents SHOULD:
 
 Do not optimize prematurely at the expense of clarity, but do not ignore obvious inefficiencies.
 
+### 17.1 3D UI and Motion Direction
+
+The project also intends to adopt a more modern visual direction with 3D UI.
+
+Approved and preferred tools for this direction include:
+
+* `three.js`
+* `@react-three/fiber` (React Three Fiber)
+* `@react-three/drei` when useful
+* motion libraries for React (e.g. Framer Motion / React Motion)
+
+Rules for 3D implementation:
+
+* the existing ready 3D model provided by the project owner should be reused as the primary asset
+* agents may add camera movement, lighting animation, and scene transitions to improve perceived quality
+* 3D must remain presentation-layer only (never business logic)
+* provide graceful fallback for low-end/mobile devices
+* keep payload and render cost controlled (lazy-load heavy assets, avoid unnecessary draw calls)
+* preserve accessibility and usability even when 3D is disabled
+* do not break architecture boundaries while implementing visual effects
+* prioritize smooth performance and fast initial load over visual excess
+
 ---
 
 ## 18. Testing Guidance and TDD Rules
