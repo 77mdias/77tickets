@@ -11,9 +11,13 @@
     "test": "npm run test:unit && npm run test:integration",
     "test:unit": "vitest run --config vitest.config.ts --dir tests/unit",
     "test:integration": "vitest run --config vitest.config.ts --dir tests/integration",
-    "test:watch": "vitest --config vitest.config.ts --dir tests/unit"
+    "test:watch": "vitest --config vitest.config.ts --dir tests/unit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "drizzle-orm": "^0.45.1",
     "next": "16.2.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
@@ -27,6 +31,7 @@
     "@vitejs/plugin-react": "^5.2.0",
     "@vitejs/plugin-rsc": "^0.5.21",
     "@vitest/coverage-v8": "^4.1.2",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.2.1",
     "react-server-dom-webpack": "^19.2.4",
