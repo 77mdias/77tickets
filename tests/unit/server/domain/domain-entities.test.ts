@@ -15,6 +15,7 @@ const domainFiles = [
   "src/server/domain/shared.types.ts",
   "src/server/domain/events/event.types.ts",
   "src/server/domain/lots/lot.types.ts",
+  "src/server/domain/lots/lot.rules.ts",
   "src/server/domain/orders/order.types.ts",
   "src/server/domain/tickets/ticket.types.ts",
   "src/server/domain/coupons/coupon.types.ts",
