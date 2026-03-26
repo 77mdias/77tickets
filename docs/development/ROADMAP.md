@@ -17,7 +17,7 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 
 ## Fases
 
-### Fase 0 - Foundation (Status: In Progress)
+### Fase 0 - Foundation (Status: Done)
 
 **Objetivo:** consolidar estrutura, convenções e documentação base.
 
@@ -29,7 +29,7 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 **Saída esperada:**
 - Time operando com padrão único para novas entregas.
 
-### Fase 1 - Core Domain Modeling (Status: Planned)
+### Fase 1 - Core Domain Modeling (Status: In Progress)
 
 **Objetivo:** formalizar entidades e regras centrais de eventos, lotes, pedidos, tickets e cupons.
 

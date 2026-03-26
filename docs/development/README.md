@@ -43,6 +43,20 @@ Essas regras existem para preservar o fluxo `UI -> handler -> use-case -> reposi
 - `npm run lint`: executa o lint completo do repositório.
 - `npm run build`: valida que a aplicação continua compilando após a mudança.
 
+### Comandos essenciais
+
+| Comando | O que faz |
+|---------|-----------|
+| `npm run test` | Roda toda a suite (unit + integration) |
+| `npm run test:unit` | Roda apenas testes unitários |
+| `npm run test:integration` | Roda testes de integração (requer `TEST_DATABASE_URL`) |
+| `npm run test:watch` | Modo watch para TDD local |
+| `npm run lint` | Lint completo do repositório |
+| `npm run lint:architecture` | Valida fronteiras arquiteturais |
+| `npm run build` | Valida que a aplicação compila |
+
+> Para testes de integração, configure `TEST_DATABASE_URL` no `.env` apontando para um banco/branch Neon separado do desenvolvimento. Consulte `docs/development/Logs/INF-002.md` para detalhes do setup.
+
 ## Fluxo Recomendado (Resumo)
 
 1. Definir objetivo de negócio da entrega.

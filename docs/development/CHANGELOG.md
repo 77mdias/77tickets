@@ -36,6 +36,17 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 - Criados guardrails arquiteturais com ESLint para bloquear imports indevidos entre `UI`, `api`, `application` e `domain`.
 - Criado script `lint:architecture` para validar fronteiras arquiteturais nas camadas protegidas.
 - Criado log técnico `docs/development/Logs/TDD-003.md` com evidência local de RED -> GREEN.
+- Criados primeiros testes RED→GREEN para contratos de repositório e schemas de validação (TDD-002):
+  - `tests/unit/server/application/order.repository.contract.test.ts`
+  - `tests/unit/server/api/create-order.schema.test.ts`
+  - Log técnico em `docs/development/Logs/TDD-002.md`.
+- Configurada estratégia de dados para testes de integração (INF-002):
+  - `tests/integration/setup/global-setup.ts` — valida `TEST_DATABASE_URL` e testa conectividade antes de toda a suite.
+  - `tests/integration/setup/index.ts` — `createTestDb()` e `cleanDatabase()` para isolamento entre testes.
+  - `tests/fixtures/index.ts` — barrel de fixtures (documentado, vazio na Phase 1).
+  - `tests/integration/smoke.integration.test.ts` — 3 smoke tests de conectividade real.
+  - `.env.example` — documentação de `TEST_DATABASE_URL`.
+  - Log técnico em `docs/development/Logs/INF-002.md`.
 
 ### Changed
 
@@ -44,6 +55,8 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 - Migrados os testes iniciais de `node:test` para Vitest em `tests/unit/server/api/**`.
 - Atualizada a fase 001 com conclusão da task `TDD-001` e progresso geral de `3/9` para `4/9`.
 - Documentadas em `docs/development/README.md` as fronteiras de importação protegidas pelo lint e os comandos de validação local.
+- Atualizada a fase 001 com conclusão das tasks `TDD-002`, `TDD-003`, `INF-001` e `INF-002` — progresso de `4/9` para `8/9`.
+- Fase 001 encerrada com 9/9 tarefas concluídas (INF-003 — consolidação operacional). Fase 002 liberada.
 
 ### Notes
 
