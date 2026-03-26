@@ -204,7 +204,7 @@ Preparar configuração de persistência e ambiente para testes de integração 
 
 #### INF.1 - Bootstrap de dados e comandos operacionais
 
-- [ ] **INF-001** - Inicializar Drizzle para PostgreSQL
+- [x] **INF-001** - Inicializar Drizzle para PostgreSQL
 
   **Descrição curta:**
   - Configurar Drizzle com foco em Neon/PostgreSQL.
@@ -218,13 +218,13 @@ Preparar configuração de persistência e ambiente para testes de integração 
   **Arquivos/áreas afetadas:** `drizzle.config.ts`, `drizzle/*`, `src/server/infrastructure/db/*`
 
   **Critérios de aceitação:**
-  - [ ] Migration baseline gerada com sucesso.
-  - [ ] Conexão configurável por env sem hardcode.
+  - [x] Migration baseline gerada com sucesso.
+  - [x] Conexão configurável por env sem hardcode.
 
-  **Prioridade:** 🔴 Crítica  
-  **Estimativa:** 4h  
-  **Dependências:** ARC-001  
-  **Status:** 🔴 Pendente
+  **Prioridade:** 🔴 Crítica
+  **Estimativa:** 4h
+  **Dependências:** ARC-001
+  **Status:** 🟢 Concluída
 
 - [ ] **INF-002** - Definir estratégia de dados para testes de integração
 
