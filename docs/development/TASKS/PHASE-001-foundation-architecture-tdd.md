@@ -3,7 +3,7 @@
 **Status:** 🟢 ATIVA
 **Última atualização:** 2026-03-26
 **Sprint Atual:** Sprint 001
-**Status Geral:** 🟡 44% (4/9 tarefas completas) - FASE ATIVA
+**Status Geral:** 🟡 56% (5/9 tarefas completas) - FASE ATIVA
 **ETA:** 1 sprint (5 a 7 dias úteis)
 **Pré-requisito:** Nenhum (fase inicial)
 
@@ -14,9 +14,9 @@
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Arquitetura Base | 3 | 3 | 0 | 0 | 0 |
-| Qualidade e TDD | 3 | 1 | 0 | 2 | 0 |
+| Qualidade e TDD | 3 | 2 | 0 | 1 | 0 |
 | Infra e Dados Base | 3 | 0 | 0 | 3 | 0 |
-| **TOTAL** | **9** | **4** | **0** | **5** | **0** |
+| **TOTAL** | **9** | **5** | **0** | **4** | **0** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Estrutura inicial da documentação já pronta.
@@ -149,7 +149,7 @@ Implantar disciplina TDD operacional (Red/Green/Refactor) com comandos reproduz�
   **Notas adicionais (opcional):**
   - `AIDEV-TDD-001`
 
-- [ ] **TDD-002** - Escrever primeiros testes falhando para contratos/schemas
+- [x] **TDD-002** - Escrever primeiros testes falhando para contratos/schemas
 
   **Descrição curta:**
   - Criar teste RED para validação de schema e isolamento de contratos.
@@ -163,13 +163,15 @@ Implantar disciplina TDD operacional (Red/Green/Refactor) com comandos reproduz�
   **Arquivos/áreas afetadas:** `tests/unit/api/*.test.ts`, `tests/unit/application/*.test.ts`
 
   **Critérios de aceitação:**
-  - [ ] Testes iniciam em RED com justificativa correta.
-  - [ ] Evidência da transição RED -> GREEN documentada no PR.
+  - [x] Testes iniciam em RED com justificativa correta.
+  - [x] Evidência da transição RED -> GREEN documentada no PR.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 3h  
   **Dependências:** ARC-002, ARC-003, TDD-001  
-  **Status:** 🔴 Pendente
+  **Status:** 🟢 Concluída
+  **Notas adicionais (opcional):**
+  - `docs/development/Logs/TDD-002.md`
 
 - [ ] **TDD-003** - Criar guardrails de fronteira arquitetural
 
