@@ -1,6 +1,10 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import { createDb } from "../../../../src/server/infrastructure/db/client";
+
+vi.mock("@neondatabase/serverless", () => ({
+  neon: vi.fn(() => vi.fn()),
+}));
 
 describe("createDb", () => {
   test("returns a Drizzle ORM instance with query methods when given a database URL", () => {
@@ -18,5 +22,14 @@ describe("createDb", () => {
     const db2 = createDb("postgresql://user:pass@localhost/db2");
 
     expect(db1).not.toBe(db2);
+  });
+
+  test("forwards the provided URL to the Neon client constructor", async () => {
+    const { neon } = await import("@neondatabase/serverless");
+    const url = "postgresql://user:pass@neon.tech/testdb";
+
+    createDb(url);
+
+    expect(vi.mocked(neon)).toHaveBeenCalledWith(url);
   });
 });
