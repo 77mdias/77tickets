@@ -1,6 +1,7 @@
 import type { EntityId } from "./common.repository.contracts";
+import type { EventLifecycleStatus } from "../domain/events";
 
-export type EventLifecycleStatus = "draft" | "published" | "cancelled";
+export type { EventLifecycleStatus };
 
 export interface EventRecord {
   id: EntityId;

@@ -1,6 +1,7 @@
 import type { EntityId } from "./common.repository.contracts";
+import type { TicketStatus } from "../domain/tickets";
 
-export type TicketStatus = "active" | "used" | "cancelled";
+export type { TicketStatus };
 
 export interface TicketRecord {
   id: EntityId;

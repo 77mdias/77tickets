@@ -1,4 +1,4 @@
-export type EntityId = string;
+export type { EntityId } from "../domain/shared.types";
 
 export interface PaginationParams {
   page: number;

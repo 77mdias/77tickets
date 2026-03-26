@@ -50,7 +50,7 @@ Consolidar o coração do produto em objetos e regras explícitas para evitar l�
 
 #### DOM.1 - Modelagem de entidades e regras
 
-- [ ] **DOM-001** - Definir entidades e value objects principais
+- [x] **DOM-001** - Definir entidades e value objects principais
 
   **Descrição curta:**
   - Estruturar tipos de domínio para `Event`, `Lot`, `Order`, `Ticket`, `Coupon`.
@@ -64,13 +64,13 @@ Consolidar o coração do produto em objetos e regras explícitas para evitar l�
   **Arquivos/áreas afetadas:** `src/server/domain/events/*`, `src/server/domain/orders/*`, `src/server/domain/tickets/*`, `src/server/domain/coupons/*`
 
   **Critérios de aceitação:**
-  - [ ] Entidades cobrem conceitos principais sem dependência de framework.
-  - [ ] Nomes seguem convenções explícitas definidas no AGENTS.
+  - [x] Entidades cobrem conceitos principais sem dependência de framework.
+  - [x] Nomes seguem convenções explícitas definidas no AGENTS.
 
-  **Prioridade:** 🔴 Crítica  
-  **Estimativa:** 4h  
-  **Dependências:** Fase 001  
-  **Status:** ⛔ Bloqueado
+  **Prioridade:** 🔴 Crítica
+  **Estimativa:** 4h
+  **Dependências:** Fase 001
+  **Status:** ✅ Concluído
 
 - [ ] **DOM-002** - Implementar regras de lotes e janelas de venda
 

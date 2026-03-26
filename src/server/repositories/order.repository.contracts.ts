@@ -1,6 +1,7 @@
 import type { EntityId } from "./common.repository.contracts";
+import type { OrderStatus } from "../domain/orders";
 
-export type OrderStatus = "pending" | "paid" | "expired" | "cancelled";
+export type { OrderStatus };
 
 export interface OrderRecord {
   id: EntityId;
