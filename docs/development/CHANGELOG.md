@@ -33,6 +33,9 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - `vitest.config.ts`
   - scripts `test`, `test:unit`, `test:integration`, `test:watch` no `package.json`
   - suite `tests/unit/**` e `tests/integration/**`
+- Criados guardrails arquiteturais com ESLint para bloquear imports indevidos entre `UI`, `api`, `application` e `domain`.
+- Criado script `lint:architecture` para validar fronteiras arquiteturais nas camadas protegidas.
+- Criado log técnico `docs/development/Logs/TDD-003.md` com evidência local de RED -> GREEN.
 
 ### Changed
 
@@ -40,6 +43,7 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 - Atualizada a fase 001 com conclusão da task `ARC-003` e progresso geral de `2/9` para `3/9`.
 - Migrados os testes iniciais de `node:test` para Vitest em `tests/unit/server/api/**`.
 - Atualizada a fase 001 com conclusão da task `TDD-001` e progresso geral de `3/9` para `4/9`.
+- Documentadas em `docs/development/README.md` as fronteiras de importação protegidas pelo lint e os comandos de validação local.
 
 ### Notes
 

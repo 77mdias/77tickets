@@ -26,6 +26,23 @@ Quando houver conflito, siga `AGENTS.md`.
 - Calcular preço, total e validação de estoque apenas no servidor.
 - Preservar portabilidade para `Next.js + NestJS` (evitar acoplamento forte ao runtime atual).
 
+## Guardrails Arquiteturais
+
+O lint local e de CI agora bloqueia imports que quebram as fronteiras principais do projeto.
+
+- `src/app`, `src/components` e `src/features` não podem importar `src/server`.
+- `src/server/api` não pode importar `src/server/repositories` nem `src/server/infrastructure`.
+- `src/server/application` não pode importar `src/server/api` nem `src/server/infrastructure`.
+- `src/server/domain` não pode importar `api`, `application`, `repositories` nem `infrastructure`.
+
+Essas regras existem para preservar o fluxo `UI -> handler -> use-case -> repository -> database` e reduzir retrabalho na migração futura para `Next.js + NestJS`.
+
+### Como validar
+
+- `npm run lint:architecture`: executa o ESLint nas áreas com guardrails de fronteira.
+- `npm run lint`: executa o lint completo do repositório.
+- `npm run build`: valida que a aplicação continua compilando após a mudança.
+
 ## Fluxo Recomendado (Resumo)
 
 1. Definir objetivo de negócio da entrega.

@@ -173,7 +173,7 @@ Implantar disciplina TDD operacional (Red/Green/Refactor) com comandos reproduz�
   **Notas adicionais (opcional):**
   - `docs/development/Logs/TDD-002.md`
 
-- [ ] **TDD-003** - Criar guardrails de fronteira arquitetural
+- [x] **TDD-003** - Criar guardrails de fronteira arquitetural
 
   **Descrição curta:**
   - Evitar importações indevidas entre camadas por regra automatizada.
@@ -187,13 +187,15 @@ Implantar disciplina TDD operacional (Red/Green/Refactor) com comandos reproduz�
   **Arquivos/áreas afetadas:** `eslint.config.mjs`, `package.json`, `docs/development/README.md`
 
   **Critérios de aceitação:**
-  - [ ] Import indevido falha no lint.
-  - [ ] Regras documentadas para o time.
+  - [x] Import indevido falha no lint.
+  - [x] Regras documentadas para o time.
 
   **Prioridade:** 🟡 Alta  
   **Estimativa:** 2h  
   **Dependências:** ARC-001, TDD-001  
-  **Status:** 🔴 Pendente
+  **Status:** 🟢 Concluída
+  **Notas adicionais (opcional):**
+  - `docs/development/Logs/TDD-003.md`
 
 ### 📦 Infra e Dados Base - Drizzle e ambiente de dados inicial
 
@@ -292,6 +294,6 @@ Preparar configuração de persistência e ambiente para testes de integração 
 
 - [ ] Todas as tarefas da fase marcadas como concluídas.
 - [ ] Base de testes instalada e validada em CI/local.
-- [ ] Estrutura de camadas criada e guardrails ativos.
+- [x] Estrutura de camadas criada e guardrails ativos.
 - [ ] Documentação atualizada (`TASKS.md`, `CHANGELOG.md`, roadmap).
 - [ ] Aprovação técnica para iniciar fase 002.
