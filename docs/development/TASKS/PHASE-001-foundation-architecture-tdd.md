@@ -3,7 +3,7 @@
 **Status:** 🟢 ATIVA
 **Última atualização:** 2026-03-26
 **Sprint Atual:** Sprint 001
-**Status Geral:** 🟡 56% (5/9 tarefas completas) - FASE ATIVA
+**Status Geral:** 🟡 67% (6/9 tarefas completas) - FASE ATIVA
 **ETA:** 1 sprint (5 a 7 dias úteis)
 **Pré-requisito:** Nenhum (fase inicial)
 
@@ -15,8 +15,8 @@
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Arquitetura Base | 3 | 3 | 0 | 0 | 0 |
 | Qualidade e TDD | 3 | 2 | 0 | 1 | 0 |
-| Infra e Dados Base | 3 | 0 | 0 | 3 | 0 |
-| **TOTAL** | **9** | **5** | **0** | **4** | **0** |
+| Infra e Dados Base | 3 | 1 | 0 | 2 | 0 |
+| **TOTAL** | **9** | **6** | **0** | **3** | **0** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Estrutura inicial da documentação já pronta.
@@ -226,7 +226,7 @@ Preparar configuração de persistência e ambiente para testes de integração 
   **Dependências:** ARC-001
   **Status:** 🟢 Concluída
 
-- [ ] **INF-002** - Definir estratégia de dados para testes de integração
+- [x] **INF-002** - Definir estratégia de dados para testes de integração
 
   **Descrição curta:**
   - Garantir isolamento e repetibilidade em testes integrados.
@@ -240,13 +240,15 @@ Preparar configuração de persistência e ambiente para testes de integração 
   **Arquivos/áreas afetadas:** `tests/integration/setup/*`, `tests/fixtures/*`, `.env.example`
 
   **Critérios de aceitação:**
-  - [ ] Testes de integração rodam de forma determinística.
-  - [ ] Ambiente de teste não polui dados de desenvolvimento.
+  - [x] Testes de integração rodam de forma determinística.
+  - [x] Ambiente de teste não polui dados de desenvolvimento.
 
-  **Prioridade:** 🟡 Alta  
-  **Estimativa:** 3h  
-  **Dependências:** INF-001, TDD-001  
-  **Status:** 🔴 Pendente
+  **Prioridade:** 🟡 Alta
+  **Estimativa:** 3h
+  **Dependências:** INF-001, TDD-001
+  **Status:** 🟢 Concluída
+  **Notas adicionais:**
+  - `docs/development/Logs/INF-002.md`
 
 - [ ] **INF-003** - Consolidar checklist operacional de fase 001
 
