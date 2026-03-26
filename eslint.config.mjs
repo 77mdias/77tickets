@@ -11,6 +11,8 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
+    // Build artifacts for Vinext/Vite output.
+    "dist/**",
     "next-env.d.ts",
   ]),
 ]);
