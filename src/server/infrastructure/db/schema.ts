@@ -1,2 +1,2 @@
-// Drizzle schema placeholder — tables will be added in Task 3 (INF-001 Phase 2).
-// This file exists so client.ts can import a stable schema reference for typed query access.
+// Baseline schema — domain tables will be added in Phase 2 as features are implemented.
+// Each feature module will add its table definitions here following the established patterns.
