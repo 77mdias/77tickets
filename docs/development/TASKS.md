@@ -7,7 +7,7 @@
 
 | Fase | Sprint | Arquivo de Tasks | Status | Progresso |
 | ---- | ------ | ---------------- | ------ | --------- |
-| 001 | Sprint 001 | `docs/development/TASKS/PHASE-001-foundation-architecture-tdd.md` | 🟢 Ativa | 4/9 |
+| 001 | Sprint 001 | `docs/development/TASKS/PHASE-001-foundation-architecture-tdd.md` | 🟢 Ativa | 6/9 |
 | 002 | Sprint 002 | `docs/development/TASKS/PHASE-002-domain-schema-repositories.md` | 🔴 Bloqueada | 0/10 |
 | 003 | Sprint 003 | `docs/development/TASKS/PHASE-003-create-order-flow.md` | 🔴 Bloqueada | 0/11 |
 | 004 | Sprint 004 | `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` | 🔴 Bloqueada | 0/9 |
