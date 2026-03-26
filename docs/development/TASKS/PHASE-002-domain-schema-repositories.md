@@ -72,7 +72,7 @@ Consolidar o coração do produto em objetos e regras explícitas para evitar l�
   **Dependências:** Fase 001
   **Status:** ✅ Concluído
 
-- [ ] **DOM-002** - Implementar regras de lotes e janelas de venda
+- [x] **DOM-002** - Implementar regras de lotes e janelas de venda
 
   **Descrição curta:**
   - Garantir que lote respeite janela de venda e limite de quantidade.
@@ -86,13 +86,13 @@ Consolidar o coração do produto em objetos e regras explícitas para evitar l�
   **Arquivos/áreas afetadas:** `src/server/domain/lots/*`, `tests/unit/domain/lots/*.test.ts`
 
   **Critérios de aceitação:**
-  - [ ] Lote fora de janela retorna indisponível.
-  - [ ] Limite por pedido é enforce no domínio.
+  - [x] Lote fora de janela retorna indisponível.
+  - [x] Limite por pedido é enforce no domínio.
 
-  **Prioridade:** 🔴 Crítica  
-  **Estimativa:** 3h  
-  **Dependências:** DOM-001  
-  **Status:** ⛔ Bloqueado
+  **Prioridade:** 🔴 Crítica
+  **Estimativa:** 3h
+  **Dependências:** DOM-001
+  **Status:** ✅ Concluído
 
 - [ ] **DOM-003** - Implementar regras de status de pedido e validade de ticket
 
