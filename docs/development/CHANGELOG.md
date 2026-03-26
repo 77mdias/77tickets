@@ -22,10 +22,18 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - `PHASE-004-ticket-checkin-rbac.md`
   - `PHASE-005-organizer-admin-event-operations.md`
 - Criado índice de execução em [`docs/development/TASKS.md`](./TASKS.md).
+- Criada convenção de validação de entrada com Zod na camada `src/server/api`:
+  - `src/server/api/schemas/create-order.schema.ts`
+  - `src/server/api/validation/parse-input.ts`
+  - `src/server/api/create-order.handler.ts`
+- Adicionados testes TDD iniciais para validação de payload e handler:
+  - `src/server/api/validation/parse-input.test.ts`
+  - `src/server/api/create-order.handler.test.ts`
 
 ### Changed
 
 - Definida convenção explícita para atualização contínua de `TASKS`, roadmap e changelog por fase.
+- Atualizada a fase 001 com conclusão da task `ARC-003` e progresso geral de `2/9` para `3/9`.
 
 ### Notes
 

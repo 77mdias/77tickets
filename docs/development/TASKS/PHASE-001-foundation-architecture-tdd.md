@@ -3,7 +3,7 @@
 **Status:** 🟢 ATIVA
 **Última atualização:** 2026-03-26
 **Sprint Atual:** Sprint 001
-**Status Geral:** 🟡 22% (2/9 tarefas completas) - FASE ATIVA
+**Status Geral:** 🟡 33% (3/9 tarefas completas) - FASE ATIVA
 **ETA:** 1 sprint (5 a 7 dias úteis)
 **Pré-requisito:** Nenhum (fase inicial)
 
@@ -13,10 +13,10 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Arquitetura Base | 3 | 2 | 0 | 1 | 0 |
+| Arquitetura Base | 3 | 3 | 0 | 0 | 0 |
 | Qualidade e TDD | 3 | 0 | 0 | 3 | 0 |
 | Infra e Dados Base | 3 | 0 | 0 | 3 | 0 |
-| **TOTAL** | **9** | **2** | **0** | **7** | **0** |
+| **TOTAL** | **9** | **3** | **0** | **6** | **0** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Estrutura inicial da documentação já pronta.
@@ -94,7 +94,7 @@ Estabelecer os diretórios, contratos e convenções mínimas para garantir sepa
   **Notas adicionais (opcional):**
   - `AIDEV-ARCH-002`
 
-- [ ] **ARC-003** - Criar convenção de schemas de entrada com Zod
+- [x] **ARC-003** - Criar convenção de schemas de entrada com Zod
 
   **Descrição curta:**
   - Padronizar criação e parse de payload na camada de handler.
@@ -108,13 +108,15 @@ Estabelecer os diretórios, contratos e convenções mínimas para garantir sepa
   **Arquivos/áreas afetadas:** `src/server/api/schemas/*`, `src/server/api/validation/*`
 
   **Critérios de aceitação:**
-  - [ ] Payload inválido retorna erro de validação estruturado.
-  - [ ] Use-cases recebem input já tipado/validado.
+  - [x] Payload inválido retorna erro de validação estruturado.
+  - [x] Use-cases recebem input já tipado/validado.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 3h  
   **Dependências:** ARC-001, ARC-002  
-  **Status:** 🔴 Pendente
+  **Status:** 🟢 Concluída
+  **Notas adicionais (opcional):**
+  - `AIDEV-ARCH-003`
 
 ### 📦 Qualidade e TDD - Testes antes de implementação
 
