@@ -3,7 +3,7 @@
 **Status:** 🟢 ATIVA
 **Última atualização:** 2026-03-26
 **Sprint Atual:** Sprint 001
-**Status Geral:** 🟡 11% (1/9 tarefas completas) - FASE ATIVA
+**Status Geral:** 🟡 22% (2/9 tarefas completas) - FASE ATIVA
 **ETA:** 1 sprint (5 a 7 dias úteis)
 **Pré-requisito:** Nenhum (fase inicial)
 
@@ -13,10 +13,10 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Arquitetura Base | 3 | 1 | 0 | 2 | 0 |
+| Arquitetura Base | 3 | 2 | 0 | 1 | 0 |
 | Qualidade e TDD | 3 | 0 | 0 | 3 | 0 |
 | Infra e Dados Base | 3 | 0 | 0 | 3 | 0 |
-| **TOTAL** | **9** | **1** | **0** | **8** | **0** |
+| **TOTAL** | **9** | **2** | **0** | **7** | **0** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Estrutura inicial da documentação já pronta.
@@ -70,7 +70,7 @@ Estabelecer os diretórios, contratos e convenções mínimas para garantir sepa
   **Notas adicionais (opcional):**
   - `AIDEV-ARCH-001`
 
-- [ ] **ARC-002** - Definir contratos e tipos base da aplicação
+- [x] **ARC-002** - Definir contratos e tipos base da aplicação
 
   **Descrição curta:**
   - Criar contratos para repositórios e tipos de erro de aplicação.
@@ -84,13 +84,15 @@ Estabelecer os diretórios, contratos e convenções mínimas para garantir sepa
   **Arquivos/áreas afetadas:** `src/server/repositories/*.contracts.ts`, `src/server/application/errors/*`, `src/server/api/error-mapper.ts`
 
   **Critérios de aceitação:**
-  - [ ] Contratos não dependem de Drizzle/Vinext.
-  - [ ] Erros tipados podem ser serializados em resposta estável.
+  - [x] Contratos não dependem de Drizzle/Vinext.
+  - [x] Erros tipados podem ser serializados em resposta estável.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 4h  
   **Dependências:** ARC-001  
-  **Status:** 🔴 Pendente
+  **Status:** 🟢 Concluída  
+  **Notas adicionais (opcional):**
+  - `AIDEV-ARCH-002`
 
 - [ ] **ARC-003** - Criar convenção de schemas de entrada com Zod
 
