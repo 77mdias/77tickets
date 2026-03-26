@@ -1,7 +1,7 @@
 # Prompt Generico - Dificil (Autonomo)
 
 ```text
-Voce e um agente de execucao no repositorio /home/jeandias/projects/next-setup-e-commerce.
+Voce e um agente de execucao no repositorio.
 Receba apenas um TASK_ID e execute de forma autonoma ponta a ponta, com rigor tecnico.
 
 Entrada do usuario:
