@@ -3,7 +3,7 @@
 **Status:** 🟢 ATIVA
 **Última atualização:** 2026-03-26
 **Sprint Atual:** Sprint 001
-**Status Geral:** 🟡 0% (0/9 tarefas completas) - FASE ATIVA
+**Status Geral:** 🟡 11% (1/9 tarefas completas) - FASE ATIVA
 **ETA:** 1 sprint (5 a 7 dias úteis)
 **Pré-requisito:** Nenhum (fase inicial)
 
@@ -13,10 +13,10 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Arquitetura Base | 3 | 0 | 0 | 3 | 0 |
+| Arquitetura Base | 3 | 1 | 0 | 2 | 0 |
 | Qualidade e TDD | 3 | 0 | 0 | 3 | 0 |
 | Infra e Dados Base | 3 | 0 | 0 | 3 | 0 |
-| **TOTAL** | **9** | **0** | **0** | **9** | **0** |
+| **TOTAL** | **9** | **1** | **0** | **8** | **0** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Estrutura inicial da documentação já pronta.
@@ -46,7 +46,7 @@ Estabelecer os diretórios, contratos e convenções mínimas para garantir sepa
 
 #### ARC.1 - Estrutura de código e contratos iniciais
 
-- [ ] **ARC-001** - Criar estrutura base de camadas do backend
+- [x] **ARC-001** - Criar estrutura base de camadas do backend
 
   **Descrição curta:**
   - Estruturar `src/server` com módulos por responsabilidade.
@@ -60,13 +60,13 @@ Estabelecer os diretórios, contratos e convenções mínimas para garantir sepa
   **Arquivos/áreas afetadas:** `src/server/*`, `src/server/README.md`
 
   **Critérios de aceitação:**
-  - [ ] Estrutura criada e refletindo o fluxo `UI -> handler -> use-case -> repository -> database`.
-  - [ ] Nenhum arquivo de UI contendo regra de negócio.
+  - [x] Estrutura criada e refletindo o fluxo `UI -> handler -> use-case -> repository -> database`.
+  - [x] Nenhum arquivo de UI contendo regra de negócio.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 3h  
   **Dependências:** nenhuma  
-  **Status:** 🔴 Pendente  
+  **Status:** 🟢 Concluída  
   **Notas adicionais (opcional):**
   - `AIDEV-ARCH-001`
 
