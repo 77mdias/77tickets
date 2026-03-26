@@ -94,7 +94,7 @@ Consolidar o coração do produto em objetos e regras explícitas para evitar l�
   **Dependências:** DOM-001
   **Status:** ✅ Concluído
 
-- [ ] **DOM-003** - Implementar regras de status de pedido e validade de ticket
+- [x] **DOM-003** - Implementar regras de status de pedido e validade de ticket
 
   **Descrição curta:**
   - Definir transições permitidas de pedido.
@@ -108,13 +108,13 @@ Consolidar o coração do produto em objetos e regras explícitas para evitar l�
   **Arquivos/áreas afetadas:** `src/server/domain/orders/*`, `src/server/domain/tickets/*`, `tests/unit/domain/orders/*.test.ts`
 
   **Critérios de aceitação:**
-  - [ ] Transições inválidas são rejeitadas.
-  - [ ] Ticket de pedido expirado não pode ser considerado ativo.
+  - [x] Transições inválidas são rejeitadas.
+  - [x] Ticket de pedido expirado não pode ser considerado ativo.
 
-  **Prioridade:** 🔴 Crítica  
-  **Estimativa:** 4h  
-  **Dependências:** DOM-001  
-  **Status:** ⛔ Bloqueado
+  **Prioridade:** 🔴 Crítica
+  **Estimativa:** 4h
+  **Dependências:** DOM-001
+  **Status:** ✅ Concluído
 
 - [ ] **DOM-004** - Implementar regras de cupom (janela, limite e aplicabilidade)
 
