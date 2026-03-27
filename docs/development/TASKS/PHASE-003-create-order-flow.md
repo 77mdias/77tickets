@@ -170,20 +170,23 @@ Expor o fluxo de compra com handler fino, validação na fronteira e persistênc
   - Garantir atomicidade do fluxo de compra.
   - Evitar gravação parcial em caso de falha.
 
+  **⚠️ Constraint herdada de DBR-003:** O driver atual (`drizzle-orm/neon-http`) não suporta `db.transaction()`. `DrizzleOrderRepository.create` usa inserts sequenciais sem atomicidade DB-level. Esta task deve resolver isso antes de ir para produção. Ver decisão completa em `docs/development/Logs/DBR-003.md`.
+
   **Implementação sugerida:**
-  - Criar método transacional em repositório.
-  - Persistir ordem lógica `order -> items -> tickets`.
+  - Avaliar migração do client para `drizzle-orm/neon-serverless` (driver WebSocket, suporta `db.transaction()`). A mudança é cirúrgica: apenas `src/server/infrastructure/db/client.ts` e o tipo `Db`.
+  - Alternativamente: implementar compensação explícita no use-case (cleanup de órfão em falha parcial).
+  - Persistir na ordem lógica `order → items → tickets` dentro de uma transação.
   - Tratar rollback automático em erro.
 
-  **Arquivos/áreas afetadas:** `src/server/repositories/drizzle/order.repository.ts`, `src/server/repositories/drizzle/ticket.repository.ts`
+  **Arquivos/áreas afetadas:** `src/server/infrastructure/db/client.ts`, `src/server/repositories/drizzle/drizzle-order.repository.ts`, `src/server/repositories/drizzle/drizzle-ticket.repository.ts`
 
   **Critérios de aceitação:**
   - [ ] Sem dados órfãos em falha parcial.
   - [ ] Fluxo de compra é idempotente quando aplicável.
 
-  **Prioridade:** 🔴 Crítica  
-  **Estimativa:** 5h  
-  **Dependências:** ORD-003, Fase 002 DBR-003  
+  **Prioridade:** 🔴 Crítica
+  **Estimativa:** 5h
+  **Dependências:** ORD-003, Fase 002 DBR-003
   **Status:** ⛔ Bloqueado
 
 - [ ] **API-003** - Testes de integração do endpoint de compra
