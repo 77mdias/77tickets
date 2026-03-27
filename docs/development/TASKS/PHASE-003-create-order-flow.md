@@ -14,7 +14,7 @@
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Use-case e Regras de Compra | 4 | 3 | 0 | 0 | 1 |
-| API e Persistência Transacional | 4 | 0 | 0 | 2 | 2 |
+| API e Persistência Transacional | 4 | 0 | 0 | 1 | 3 |
 | Checkout UI, QA e Observabilidade | 3 | 0 | 0 | 0 | 3 |
 | **TOTAL** | **11** | **3** | **0** | **2** | **6** |
 
