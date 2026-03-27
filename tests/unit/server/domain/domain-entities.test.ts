@@ -19,6 +19,7 @@ const domainFiles = [
   "src/server/domain/orders/order.types.ts",
   "src/server/domain/tickets/ticket.types.ts",
   "src/server/domain/coupons/coupon.types.ts",
+  "src/server/domain/coupons/coupon.rules.ts",
 ] as const;
 
 const forbiddenDependencies = [

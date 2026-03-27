@@ -116,7 +116,7 @@ Consolidar o coração do produto em objetos e regras explícitas para evitar l�
   **Dependências:** DOM-001
   **Status:** ✅ Concluído
 
-- [ ] **DOM-004** - Implementar regras de cupom (janela, limite e aplicabilidade)
+- [x] **DOM-004** - Implementar regras de cupom (janela, limite e aplicabilidade)
 
   **Descrição curta:**
   - Garantir elegibilidade de cupom com regras centralizadas.
@@ -130,13 +130,13 @@ Consolidar o coração do produto em objetos e regras explícitas para evitar l�
   **Arquivos/áreas afetadas:** `src/server/domain/coupons/*`, `tests/unit/domain/coupons/*.test.ts`
 
   **Critérios de aceitação:**
-  - [ ] Cupom inválido não altera total.
-  - [ ] Cupom válido respeita limites configurados.
+  - [x] Cupom inválido não altera total.
+  - [x] Cupom válido respeita limites configurados.
 
-  **Prioridade:** 🟡 Alta  
-  **Estimativa:** 3h  
-  **Dependências:** DOM-001  
-  **Status:** ⛔ Bloqueado
+  **Prioridade:** 🟡 Alta
+  **Estimativa:** 3h
+  **Dependências:** DOM-001
+  **Status:** ✅ Concluído
 
 ### 📦 Schema e Repositórios - Persistência orientada ao domínio
 
