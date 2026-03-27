@@ -18,9 +18,9 @@
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Domínio de Negócio | 4 | 0 | 0 | 0 | 4 |
-| Schema e Repositórios | 4 | 1 | 0 | 3 | 0 |
+| Schema e Repositórios | 4 | 2 | 0 | 2 | 0 |
 | Segurança e Qualidade | 2 | 0 | 0 | 0 | 2 |
-| **TOTAL** | **10** | **1** | **0** | **3** | **6** |
+| **TOTAL** | **10** | **2** | **0** | **2** | **6** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de negócio centrais já mapeadas no AGENTS.md.
@@ -167,7 +167,7 @@ Traduzir domínio para schema explícito em Postgres/Drizzle e criar repositóri
   **Dependências:** DOM-001
   **Status:** ✅ Concluído
 
-- [ ] **DBR-002** - Definir contratos de repositório por agregado
+- [x] **DBR-002** - Definir contratos de repositório por agregado
 
   **Descrição curta:**
   - Separar interfaces de persistência por contexto de negócio.
@@ -181,13 +181,13 @@ Traduzir domínio para schema explícito em Postgres/Drizzle e criar repositóri
   **Arquivos/áreas afetadas:** `src/server/repositories/*.contracts.ts`
 
   **Critérios de aceitação:**
-  - [ ] Contratos sem leak de SQL/Drizzle.
-  - [ ] Métodos cobrindo necessidades da fase 003.
+  - [x] Contratos sem leak de SQL/Drizzle.
+  - [x] Métodos cobrindo necessidades da fase 003.
 
-  **Prioridade:** 🔴 Crítica  
-  **Estimativa:** 3h  
-  **Dependências:** DOM-001  
-  **Status:** ⛔ Bloqueado
+  **Prioridade:** 🔴 Crítica
+  **Estimativa:** 3h
+  **Dependências:** DOM-001
+  **Status:** ✅ Concluído
 
 - [ ] **DBR-003** - Implementar repositórios Drizzle iniciais
 
