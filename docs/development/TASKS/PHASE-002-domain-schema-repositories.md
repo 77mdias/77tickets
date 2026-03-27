@@ -3,7 +3,7 @@
 **Status:** 🔴 BLOQUEADA
 **Última atualização:** 2026-03-27
 **Sprint Atual:** Sprint 002
-**Status Geral:** 🟡 80% (8/10 tarefas completas) - FASE PARCIALMENTE CONCLUÍDA
+**Status Geral:** 🟡 90% (9/10 tarefas completas) - FASE PARCIALMENTE CONCLUÍDA
 **ETA:** 1 sprint (6 a 8 dias úteis)
 **Pré-requisito:** Fase 001 (concluída)
 
@@ -19,8 +19,8 @@
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Domínio de Negócio | 4 | 4 | 0 | 0 | 0 |
 | Schema e Repositórios | 4 | 4 | 0 | 0 | 0 |
-| Segurança e Qualidade | 2 | 0 | 0 | 0 | 2 |
-| **TOTAL** | **10** | **8** | **0** | **0** | **2** |
+| Segurança e Qualidade | 2 | 1 | 0 | 0 | 1 |
+| **TOTAL** | **10** | **9** | **0** | **0** | **1** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de negócio centrais já mapeadas no AGENTS.md.
@@ -240,7 +240,7 @@ Introduzir verificação básica de ownership e papéis no backend e estabelecer
 
 #### SEC.1 - Segurança mínima para próxima fase
 
-- [ ] **SEC-001** - Implementar política inicial de ownership e papéis
+- [x] **SEC-001** - Implementar política inicial de ownership e papéis
 
   **Descrição curta:**
   - Definir checks para `organizer` operar somente próprios eventos.
@@ -254,13 +254,13 @@ Introduzir verificação básica de ownership e papéis no backend e estabelecer
   **Arquivos/áreas afetadas:** `src/server/application/security/*`, `tests/unit/application/security/*.test.ts`
 
   **Critérios de aceitação:**
-  - [ ] `organizer` sem ownership recebe erro de autorização.
-  - [ ] `admin` tem acesso global conforme regra.
+  - [x] `organizer` sem ownership recebe erro de autorização.
+  - [x] `admin` tem acesso global conforme regra.
 
   **Prioridade:** 🟡 Alta  
   **Estimativa:** 3h  
   **Dependências:** DOM-001, DBR-002  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 - [ ] **SEC-002** - Cobrir regressões iniciais de estoque/estado
 

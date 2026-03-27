@@ -42,6 +42,11 @@ export const createNotFoundError = (
   options: Omit<AppErrorOptions, "cause"> = {},
 ): AppError => new AppError("not-found", message, options);
 
+export const createAuthorizationError = (
+  message: string,
+  options: Omit<AppErrorOptions, "cause"> = {},
+): AppError => new AppError("authorization", message, options);
+
 export const createConflictError = (
   message: string,
   options: Omit<AppErrorOptions, "cause"> = {},

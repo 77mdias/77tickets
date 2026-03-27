@@ -1,4 +1,9 @@
-export type AppErrorCode = "validation" | "not-found" | "conflict" | "internal";
+export type AppErrorCode =
+  | "validation"
+  | "authorization"
+  | "not-found"
+  | "conflict"
+  | "internal";
 
 export interface AppErrorPayload {
   code: AppErrorCode;
