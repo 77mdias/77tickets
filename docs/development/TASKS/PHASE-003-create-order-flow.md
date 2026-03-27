@@ -1,11 +1,11 @@
 # 🚀 Tasks - Fase 003: Create Order Flow (Server-First)
 
-**Status:** 🔴 BLOQUEADA
-**Última atualização:** 2026-03-26
+**Status:** 🟡 EM ANDAMENTO
+**Última atualização:** 2026-03-27
 **Sprint Atual:** Sprint 003
-**Status Geral:** ⚪ 0% (0/11 tarefas completas) - FASE PLANEJADA
+**Status Geral:** 🟡 9% (1/11 tarefas completas) - EM ANDAMENTO
 **ETA:** 1 sprint (7 a 10 dias úteis)
-**Pré-requisito:** Fase 002 (pendente)
+**Pré-requisito:** Fase 002 (concluída)
 
 ---
 
@@ -13,10 +13,10 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Use-case e Regras de Compra | 4 | 0 | 0 | 0 | 4 |
+| Use-case e Regras de Compra | 4 | 1 | 0 | 0 | 3 |
 | API e Persistência Transacional | 4 | 0 | 0 | 0 | 4 |
 | Checkout UI, QA e Observabilidade | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **11** | **0** | **0** | **0** | **11** |
+| **TOTAL** | **11** | **1** | **0** | **0** | **10** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Fluxo-alvo definido no AGENTS (`createOrder` server-side).
@@ -47,7 +47,7 @@ Concentrar toda regra crítica de compra na camada de aplicação/domínio, com 
 
 #### ORD.1 - Comportamento e implementação de `createOrder`
 
-- [ ] **ORD-001** - Definir contrato de entrada/saída do use-case
+- [x] **ORD-001** - Definir contrato de entrada/saída do use-case
 
   **Descrição curta:**
   - Definir DTOs/schemas para criação de pedido.
@@ -61,13 +61,13 @@ Concentrar toda regra crítica de compra na camada de aplicação/domínio, com 
   **Arquivos/áreas afetadas:** `src/server/api/schemas/create-order.schema.ts`, `src/server/application/orders/order.types.ts`
 
   **Critérios de aceitação:**
-  - [ ] Payload inválido é rejeitado antes do use-case.
-  - [ ] Contrato inclui campos mínimos para geração de tickets.
+  - [x] Payload inválido é rejeitado antes do use-case.
+  - [x] Contrato inclui campos mínimos para geração de tickets.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 2h  
   **Dependências:** Fase 002  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 - [ ] **ORD-002** - Escrever testes RED do fluxo principal de compra
 

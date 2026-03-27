@@ -58,6 +58,11 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 
 ### Changed
 
+- Atualizada a task `ORD-001` na fase 003 com contrato de entrada/saída do `createOrder` concluído:
+  - `src/server/application/orders/order.types.ts` com tipos explícitos de comando/resultado.
+  - `src/server/api/schemas/create-order.schema.ts` com payload de itens e validação estrita.
+  - testes unitários de schema/handler ajustados para o novo contrato.
+- Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com progresso real da fase 003 (`1/11`, em andamento).
 - Definida convenção explícita para atualização contínua de `TASKS`, roadmap e changelog por fase.
 - Atualizada a fase 001 com conclusão da task `ARC-003` e progresso geral de `2/9` para `3/9`.
 - Migrados os testes iniciais de `node:test` para Vitest em `tests/unit/server/api/**`.

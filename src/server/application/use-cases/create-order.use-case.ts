@@ -1,13 +1,5 @@
-export interface CreateOrderInput {
-  eventId: string;
-  quantity: number;
-}
+import type { CreateOrderInput, CreateOrderResult } from "../orders";
 
-export interface CreateOrderResult {
-  orderId: string;
-  eventId: string;
-  quantity: number;
-  status: "pending";
-}
+export type { CreateOrderInput, CreateOrderResult };
 
 export type CreateOrderUseCase = (input: CreateOrderInput) => CreateOrderResult;

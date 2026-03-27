@@ -14,8 +14,18 @@ test("createCreateOrderHandler returns validation error response for invalid pay
       return {
         orderId: "order_123",
         eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
-        quantity: 1,
+        customerId: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",
         status: "pending",
+        subtotalInCents: 10000,
+        discountInCents: 0,
+        totalInCents: 10000,
+        items: [
+          {
+            lotId: "4b021be4-4cb2-4f5f-bcf4-f8237bcb4e7e",
+            quantity: 1,
+            unitPriceInCents: 10000,
+          },
+        ],
       };
     },
   });
@@ -23,7 +33,8 @@ test("createCreateOrderHandler returns validation error response for invalid pay
   const response = handler({
     body: {
       eventId: "not-uuid",
-      quantity: 0,
+      customerId: "not-uuid",
+      items: [],
     },
   });
 
@@ -43,15 +54,32 @@ test("createCreateOrderHandler passes validated typed input to use-case", () => 
       return {
         orderId: "order_123",
         eventId: input.eventId,
-        quantity: input.quantity,
+        customerId: input.customerId,
         status: "pending",
+        subtotalInCents: 20000,
+        discountInCents: 2000,
+        totalInCents: 18000,
+        items: [
+          {
+            lotId: input.items[0].lotId,
+            quantity: input.items[0].quantity,
+            unitPriceInCents: 10000,
+          },
+        ],
       };
     },
   });
 
   const payload = {
     eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
-    quantity: 2,
+    customerId: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",
+    items: [
+      {
+        lotId: "4b021be4-4cb2-4f5f-bcf4-f8237bcb4e7e",
+        quantity: 2,
+      },
+    ],
+    couponCode: "EARLYBIRD10",
   };
 
   const response = handler({ body: payload });
@@ -66,8 +94,18 @@ test("createCreateOrderHandler passes validated typed input to use-case", () => 
   expect(response.body.data).toEqual({
     orderId: "order_123",
     eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
-    quantity: 2,
+    customerId: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",
     status: "pending",
+    subtotalInCents: 20000,
+    discountInCents: 2000,
+    totalInCents: 18000,
+    items: [
+      {
+        lotId: "4b021be4-4cb2-4f5f-bcf4-f8237bcb4e7e",
+        quantity: 2,
+        unitPriceInCents: 10000,
+      },
+    ],
   });
 });
 
@@ -85,7 +123,13 @@ test("createCreateOrderHandler maps repository persistence conflicts to 409", ()
   const response = handler({
     body: {
       eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
-      quantity: 1,
+      customerId: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",
+      items: [
+        {
+          lotId: "4b021be4-4cb2-4f5f-bcf4-f8237bcb4e7e",
+          quantity: 1,
+        },
+      ],
     },
   });
 
@@ -111,7 +155,13 @@ test("createCreateOrderHandler maps unknown persistence failures to 500", () => 
   const response = handler({
     body: {
       eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
-      quantity: 1,
+      customerId: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",
+      items: [
+        {
+          lotId: "4b021be4-4cb2-4f5f-bcf4-f8237bcb4e7e",
+          quantity: 1,
+        },
+      ],
     },
   });
 
