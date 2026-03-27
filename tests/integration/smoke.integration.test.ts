@@ -16,7 +16,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
       expect(result).toBeDefined();
     });
 
-    test("cleanDatabase() is a no-op when schema has no tables", async () => {
+    test("cleanDatabase() truncates all schema tables without error", async () => {
       const db = createTestDb();
       await expect(cleanDatabase(db)).resolves.toBeUndefined();
     });

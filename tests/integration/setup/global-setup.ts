@@ -60,4 +60,7 @@ export async function setup(): Promise<void> {
       `TEST_DATABASE_URL is set but the database is unreachable.\nCause: ${String(error)}`,
     );
   }
+
+  const { migrate } = await import("drizzle-orm/neon-http/migrator");
+  await migrate(db, { migrationsFolder: resolve(process.cwd(), "drizzle") });
 }

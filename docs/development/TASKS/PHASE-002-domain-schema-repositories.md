@@ -1,7 +1,7 @@
 # 🚀 Tasks - Fase 002: Core Domain + Schema + Repositories
 
 **Status:** 🔴 BLOQUEADA
-**Última atualização:** 2026-03-26
+**Última atualização:** 2026-03-27
 **Sprint Atual:** Sprint 002
 **Status Geral:** ⚪ 0% (0/10 tarefas completas) - FASE PLANEJADA
 **ETA:** 1 sprint (6 a 8 dias úteis)
@@ -18,9 +18,9 @@
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Domínio de Negócio | 4 | 0 | 0 | 0 | 4 |
-| Schema e Repositórios | 4 | 0 | 0 | 0 | 4 |
+| Schema e Repositórios | 4 | 1 | 0 | 3 | 0 |
 | Segurança e Qualidade | 2 | 0 | 0 | 0 | 2 |
-| **TOTAL** | **10** | **0** | **0** | **0** | **10** |
+| **TOTAL** | **10** | **1** | **0** | **3** | **6** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de negócio centrais já mapeadas no AGENTS.md.
@@ -145,7 +145,7 @@ Traduzir domínio para schema explícito em Postgres/Drizzle e criar repositóri
 
 #### DBR.1 - Modelagem de dados e camada de persistência
 
-- [ ] **DBR-001** - Criar schema Drizzle para agregados centrais
+- [x] **DBR-001** - Criar schema Drizzle para agregados centrais
 
   **Descrição curta:**
   - Modelar tabelas e relacionamentos de eventos/lotes/pedidos/tickets/cupons.
@@ -159,13 +159,13 @@ Traduzir domínio para schema explícito em Postgres/Drizzle e criar repositóri
   **Arquivos/áreas afetadas:** `src/server/infrastructure/db/schema/*`, `drizzle/*`
 
   **Critérios de aceitação:**
-  - [ ] Migration aplica sem erro em ambiente de teste.
-  - [ ] Constraints cobrem integridade mínima.
+  - [x] Migration aplica sem erro em ambiente de teste.
+  - [x] Constraints cobrem integridade mínima.
 
-  **Prioridade:** 🔴 Crítica  
-  **Estimativa:** 5h  
-  **Dependências:** DOM-001  
-  **Status:** ⛔ Bloqueado
+  **Prioridade:** 🔴 Crítica
+  **Estimativa:** 5h
+  **Dependências:** DOM-001
+  **Status:** ✅ Concluído
 
 - [ ] **DBR-002** - Definir contratos de repositório por agregado
 
