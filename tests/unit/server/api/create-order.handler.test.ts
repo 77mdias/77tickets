@@ -2,6 +2,7 @@ import { expect, test } from "vitest";
 
 import { createCreateOrderHandler } from "../../../../src/server/api/create-order.handler";
 import type { CreateOrderInput } from "../../../../src/server/application/use-cases/create-order.use-case";
+import { PersistenceError } from "../../../../src/server/repositories";
 
 test("createCreateOrderHandler returns validation error response for invalid payload", () => {
   let createOrderCalls = 0;
@@ -67,5 +68,57 @@ test("createCreateOrderHandler passes validated typed input to use-case", () => 
     eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
     quantity: 2,
     status: "pending",
+  });
+});
+
+test("createCreateOrderHandler maps repository persistence conflicts to 409", () => {
+  const handler = createCreateOrderHandler({
+    createOrder: () => {
+      throw new PersistenceError(
+        "unique-constraint",
+        "Persistence operation failed: create order.",
+        { constraint: "orders_event_id_customer_id_unique" },
+      );
+    },
+  });
+
+  const response = handler({
+    body: {
+      eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
+      quantity: 1,
+    },
+  });
+
+  expect(response.status).toBe(409);
+  expect(response.body.error.code).toBe("conflict");
+  expect(response.body.error.message).toBe("Persistence conflict");
+  expect(response.body.error.details).toEqual({
+    kind: "unique-constraint",
+    constraint: "orders_event_id_customer_id_unique",
+  });
+});
+
+test("createCreateOrderHandler maps unknown persistence failures to 500", () => {
+  const handler = createCreateOrderHandler({
+    createOrder: () => {
+      throw new PersistenceError(
+        "unknown",
+        "Persistence operation failed: create order.",
+      );
+    },
+  });
+
+  const response = handler({
+    body: {
+      eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
+      quantity: 1,
+    },
+  });
+
+  expect(response.status).toBe(500);
+  expect(response.body.error.code).toBe("internal");
+  expect(response.body.error.message).toBe("Persistence failure");
+  expect(response.body.error.details).toEqual({
+    kind: "unknown",
   });
 });

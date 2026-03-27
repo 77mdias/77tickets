@@ -1,6 +1,5 @@
 import {
-  createInternalError,
-  isAppError,
+  mapUnknownErrorToAppError,
   serializeAppError,
   type AppErrorCode,
   type AppErrorPayload,
@@ -21,11 +20,7 @@ export interface ErrorResponse {
 }
 
 export const mapAppErrorToResponse = (error: unknown): ErrorResponse => {
-  const appError = isAppError(error)
-    ? error
-    : createInternalError("Internal server error", {
-        cause: error,
-      });
+  const appError = mapUnknownErrorToAppError(error);
 
   return {
     status: HTTP_STATUS_BY_ERROR_CODE[appError.code],
