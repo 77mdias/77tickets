@@ -51,6 +51,10 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - `src/server/repositories/persistence-error.ts`
   - `src/server/repositories/drizzle/map-persistence-error.ts`
 - Registrado log técnico `docs/development/Logs/DBR-004.md` com evidência RED -> GREEN da cobertura de integração dos repositórios.
+- Criada suíte de regressão inicial de estoque/estado para a task `SEC-002`:
+  - `tests/regression/stock-and-state.regression.test.ts`
+  - script `test:regression` no `package.json`
+  - log técnico em `docs/development/Logs/SEC-002.md`
 
 ### Changed
 
@@ -67,6 +71,8 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - código duplicado em `DrizzleTicketRepository.createMany`
 - Corrigida a descrição do teste de `DrizzleOrderRepository` para refletir persistência sequencial, sem alegar atomicidade DB-level inexistente no driver `neon-http`.
 - Atualizados `docs/development/TASKS/PHASE-002-domain-schema-repositories.md` e `docs/development/TASKS.md` com a conclusão de `DBR-004` e progresso real da fase 002 (`8/10`).
+- Atualizado `npm run test` para incluir a suíte de regressão (`test:regression`) entre unit e integration.
+- Atualizados `docs/development/TASKS/PHASE-002-domain-schema-repositories.md` e `docs/development/TASKS.md` com conclusão de `SEC-002` e encerramento da fase 002 (`10/10`).
 
 ### Notes
 

@@ -1,9 +1,9 @@
 # 🚀 Tasks - Fase 002: Core Domain + Schema + Repositories
 
-**Status:** 🔴 BLOQUEADA
+**Status:** 🟢 CONCLUÍDA
 **Última atualização:** 2026-03-27
 **Sprint Atual:** Sprint 002
-**Status Geral:** 🟡 90% (9/10 tarefas completas) - FASE PARCIALMENTE CONCLUÍDA
+**Status Geral:** 🟢 100% (10/10 tarefas completas) - FASE CONCLUÍDA
 **ETA:** 1 sprint (6 a 8 dias úteis)
 **Pré-requisito:** Fase 001 (concluída)
 
@@ -19,13 +19,13 @@
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Domínio de Negócio | 4 | 4 | 0 | 0 | 0 |
 | Schema e Repositórios | 4 | 4 | 0 | 0 | 0 |
-| Segurança e Qualidade | 2 | 1 | 0 | 0 | 1 |
-| **TOTAL** | **10** | **9** | **0** | **0** | **1** |
+| Segurança e Qualidade | 2 | 2 | 0 | 0 | 0 |
+| **TOTAL** | **10** | **10** | **0** | **0** | **0** |
 
 ### 🎯 Principais Indicadores (opcional)
-- ✅ Regras de negócio centrais já mapeadas no AGENTS.md.
-- ⚠️ Sem entidades de domínio implementadas.
-- ⚠️ Fase depende diretamente de setup de testes e banco da fase 001.
+- ✅ Regras de negócio centrais mapeadas no AGENTS.md.
+- ✅ Entidades e regras de domínio implementadas.
+- ✅ Regressões iniciais de estoque/estado cobertas com suíte dedicada.
 
 ---
 
@@ -262,7 +262,7 @@ Introduzir verificação básica de ownership e papéis no backend e estabelecer
   **Dependências:** DOM-001, DBR-002  
   **Status:** ✅ Concluído
 
-- [ ] **SEC-002** - Cobrir regressões iniciais de estoque/estado
+- [x] **SEC-002** - Cobrir regressões iniciais de estoque/estado
 
   **Descrição curta:**
   - Evitar regressões antes da implementação do fluxo de compra.
@@ -276,13 +276,13 @@ Introduzir verificação básica de ownership e papéis no backend e estabelecer
   **Arquivos/áreas afetadas:** `tests/regression/*.test.ts`, `package.json`
 
   **Critérios de aceitação:**
-  - [ ] Regressões críticas cobertas e executando em pipeline.
-  - [ ] Falhas reproduzíveis antes do fix.
+  - [x] Regressões críticas cobertas e executando em pipeline.
+  - [x] Falhas reproduzíveis antes do fix.
 
   **Prioridade:** 🟡 Alta  
   **Estimativa:** 2h30  
   **Dependências:** DOM-002, DOM-003, TDD base (fase 001)  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 ---
 
@@ -290,8 +290,8 @@ Introduzir verificação básica de ownership e papéis no backend e estabelecer
 
 - **Suites necessárias:** Unit (domínio/policy), Integration (repositórios/DB), Regression.
 - **Cobertura alvo:** >85% do domínio e >75% de repositórios críticos.
-- **Comandos de verificação:** `npm run test:unit`, `npm run test:integration`, `npm run test`.
-- **Estado atual:** ⚠️ Em falha (dependente de fase 001).
+- **Comandos de verificação:** `npm run test:unit`, `npm run test:regression`, `npm run test:integration`, `npm run test`.
+- **Estado atual:** ✅ Bases de unit/integration/regression disponíveis.
 
 ---
 
@@ -306,8 +306,8 @@ Introduzir verificação básica de ownership e papéis no backend e estabelecer
 
 ## ✅ Checklist de Encerramento da Fase
 
-- [ ] Entidades e regras de domínio implementadas e testadas.
-- [ ] Schema e migrations aplicados com sucesso.
-- [ ] Repositórios funcionando com testes de integração.
-- [ ] Regras básicas de RBAC e ownership em vigor.
-- [ ] Documentação atualizada e fase pronta para `createOrder`.
+- [x] Entidades e regras de domínio implementadas e testadas.
+- [x] Schema e migrations aplicados com sucesso.
+- [x] Repositórios funcionando com testes de integração.
+- [x] Regras básicas de RBAC e ownership em vigor.
+- [x] Documentação atualizada e fase pronta para `createOrder`.
