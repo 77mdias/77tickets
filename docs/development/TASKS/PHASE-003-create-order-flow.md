@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-27
 **Sprint Atual:** Sprint 003
-**Status Geral:** 🟡 9% (1/11 tarefas completas) - EM ANDAMENTO
+**Status Geral:** 🟡 18% (2/11 tarefas completas) - EM ANDAMENTO
 **ETA:** 1 sprint (7 a 10 dias úteis)
 **Pré-requisito:** Fase 002 (concluída)
 
@@ -13,10 +13,10 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Use-case e Regras de Compra | 4 | 1 | 0 | 0 | 3 |
+| Use-case e Regras de Compra | 4 | 2 | 0 | 0 | 2 |
 | API e Persistência Transacional | 4 | 0 | 0 | 0 | 4 |
 | Checkout UI, QA e Observabilidade | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **11** | **1** | **0** | **0** | **10** |
+| **TOTAL** | **11** | **2** | **0** | **0** | **9** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Fluxo-alvo definido no AGENTS (`createOrder` server-side).
@@ -69,7 +69,7 @@ Concentrar toda regra crítica de compra na camada de aplicação/domínio, com 
   **Dependências:** Fase 002  
   **Status:** ✅ Concluído
 
-- [ ] **ORD-002** - Escrever testes RED do fluxo principal de compra
+- [x] **ORD-002** - Escrever testes RED do fluxo principal de compra
 
   **Descrição curta:**
   - Cobrir cenários de sucesso e falha antes da implementação.
@@ -83,13 +83,13 @@ Concentrar toda regra crítica de compra na camada de aplicação/domínio, com 
   **Arquivos/áreas afetadas:** `tests/unit/application/create-order.use-case.test.ts`
 
   **Critérios de aceitação:**
-  - [ ] Testes iniciam em RED pelos motivos corretos.
-  - [ ] Cenários críticos mapeados no AGENTS estão cobertos.
+  - [x] Testes iniciam em RED pelos motivos corretos.
+  - [x] Cenários críticos mapeados no AGENTS estão cobertos.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 4h  
   **Dependências:** ORD-001  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 - [ ] **ORD-003** - Implementar `createOrder` mínimo para GREEN
 
@@ -111,7 +111,7 @@ Concentrar toda regra crítica de compra na camada de aplicação/domínio, com 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 6h  
   **Dependências:** ORD-002  
-  **Status:** ⛔ Bloqueado
+  **Status:** 🟡 Pendente
 
 - [ ] **ORD-004** - Cobrir regressões de pedido expirado e estado inválido
 

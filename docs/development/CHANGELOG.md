@@ -55,6 +55,10 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - `tests/regression/stock-and-state.regression.test.ts`
   - script `test:regression` no `package.json`
   - log técnico em `docs/development/Logs/SEC-002.md`
+- Criada suíte `RED` da task `ORD-002` para o fluxo principal de compra:
+  - `tests/unit/application/create-order.use-case.test.ts`
+  - cenários de cálculo server-side, estoque/janela de lote e cupom válido/inválido
+- Criado log técnico de execução TDD da task `ORD-002` em `docs/development/Logs/ORD-002.md`.
 
 ### Changed
 
@@ -78,6 +82,7 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 - Atualizados `docs/development/TASKS/PHASE-002-domain-schema-repositories.md` e `docs/development/TASKS.md` com a conclusão de `DBR-004` e progresso real da fase 002 (`8/10`).
 - Atualizado `npm run test` para incluir a suíte de regressão (`test:regression`) entre unit e integration.
 - Atualizados `docs/development/TASKS/PHASE-002-domain-schema-repositories.md` e `docs/development/TASKS.md` com conclusão de `SEC-002` e encerramento da fase 002 (`10/10`).
+- Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com conclusão de `ORD-002` e progresso real da fase 003 (`2/11`).
 
 ### Notes
 
