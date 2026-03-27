@@ -17,10 +17,10 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Domínio de Negócio | 4 | 0 | 0 | 0 | 4 |
-| Schema e Repositórios | 4 | 2 | 0 | 2 | 0 |
+| Domínio de Negócio | 4 | 4 | 0 | 0 | 0 |
+| Schema e Repositórios | 4 | 3 | 0 | 1 | 0 |
 | Segurança e Qualidade | 2 | 0 | 0 | 0 | 2 |
-| **TOTAL** | **10** | **2** | **0** | **2** | **6** |
+| **TOTAL** | **10** | **7** | **0** | **1** | **2** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de negócio centrais já mapeadas no AGENTS.md.
@@ -189,7 +189,7 @@ Traduzir domínio para schema explícito em Postgres/Drizzle e criar repositóri
   **Dependências:** DOM-001
   **Status:** ✅ Concluído
 
-- [ ] **DBR-003** - Implementar repositórios Drizzle iniciais
+- [x] **DBR-003** - Implementar repositórios Drizzle iniciais
 
   **Descrição curta:**
   - Criar implementações concretas para contratos definidos.
@@ -203,13 +203,13 @@ Traduzir domínio para schema explícito em Postgres/Drizzle e criar repositóri
   **Arquivos/áreas afetadas:** `src/server/repositories/drizzle/*`, `src/server/infrastructure/db/*`
 
   **Critérios de aceitação:**
-  - [ ] Implementações respeitam interfaces e responsabilidades.
-  - [ ] Sem regra de negócio dentro do repositório.
+  - [x] Implementações respeitam interfaces e responsabilidades.
+  - [x] Sem regra de negócio dentro do repositório.
 
-  **Prioridade:** 🔴 Crítica  
-  **Estimativa:** 5h  
-  **Dependências:** DBR-001, DBR-002  
-  **Status:** ⛔ Bloqueado
+  **Prioridade:** 🔴 Crítica
+  **Estimativa:** 5h
+  **Dependências:** DBR-001, DBR-002
+  **Status:** ✅ Concluído
 
 - [ ] **DBR-004** - Criar testes de integração de persistência
 

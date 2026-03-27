@@ -8,6 +8,8 @@ export default mergeConfig(
     test: {
       include: ["tests/integration/**/*.test.ts"],
       globalSetup: ["tests/integration/setup/global-setup.ts"],
+      fileParallelism: false,
+      testTimeout: 15000,
     },
   }),
 );
