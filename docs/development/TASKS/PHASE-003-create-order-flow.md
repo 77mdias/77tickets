@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-27
 **Sprint Atual:** Sprint 003
-**Status Geral:** 🟡 18% (2/11 tarefas completas) - EM ANDAMENTO
+**Status Geral:** 🟡 27% (3/11 tarefas completas) - EM ANDAMENTO
 **ETA:** 1 sprint (7 a 10 dias úteis)
 **Pré-requisito:** Fase 002 (concluída)
 
@@ -13,10 +13,10 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Use-case e Regras de Compra | 4 | 2 | 0 | 0 | 2 |
-| API e Persistência Transacional | 4 | 0 | 0 | 0 | 4 |
+| Use-case e Regras de Compra | 4 | 3 | 0 | 0 | 1 |
+| API e Persistência Transacional | 4 | 0 | 0 | 2 | 2 |
 | Checkout UI, QA e Observabilidade | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **11** | **2** | **0** | **0** | **9** |
+| **TOTAL** | **11** | **3** | **0** | **2** | **6** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Fluxo-alvo definido no AGENTS (`createOrder` server-side).
@@ -91,7 +91,7 @@ Concentrar toda regra crítica de compra na camada de aplicação/domínio, com 
   **Dependências:** ORD-001  
   **Status:** ✅ Concluído
 
-- [ ] **ORD-003** - Implementar `createOrder` mínimo para GREEN
+- [x] **ORD-003** - Implementar `createOrder` mínimo para GREEN
 
   **Descrição curta:**
   - Implementar orquestração do pedido com regras server-side.
@@ -105,13 +105,13 @@ Concentrar toda regra crítica de compra na camada de aplicação/domínio, com 
   **Arquivos/áreas afetadas:** `src/server/application/create-order.use-case.ts`, `src/server/application/orders/*`
 
   **Critérios de aceitação:**
-  - [ ] Testes unitários de `createOrder` passam.
-  - [ ] Nenhuma regra crítica no handler ou UI.
+  - [x] Testes unitários de `createOrder` passam.
+  - [x] Nenhuma regra crítica no handler ou UI.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 6h  
   **Dependências:** ORD-002  
-  **Status:** 🟡 Pendente
+  **Status:** ✅ Concluído
 
 - [ ] **ORD-004** - Cobrir regressões de pedido expirado e estado inválido
 
@@ -133,7 +133,7 @@ Concentrar toda regra crítica de compra na camada de aplicação/domínio, com 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 3h  
   **Dependências:** ORD-003  
-  **Status:** ⛔ Bloqueado
+  **Status:** 🟡 Pendente
 
 ### 📦 API e Persistência Transacional - Handler fino e consistência de dados
 
@@ -162,7 +162,7 @@ Expor o fluxo de compra com handler fino, validação na fronteira e persistênc
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 3h  
   **Dependências:** ORD-003  
-  **Status:** ⛔ Bloqueado
+  **Status:** 🟡 Pendente
 
 - [ ] **API-002** - Implementar persistência transacional de pedido/itens/tickets
 

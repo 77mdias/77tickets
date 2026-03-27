@@ -59,6 +59,7 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - `tests/unit/application/create-order.use-case.test.ts`
   - cenários de cálculo server-side, estoque/janela de lote e cupom válido/inválido
 - Criado log técnico de execução TDD da task `ORD-002` em `docs/development/Logs/ORD-002.md`.
+- Criado log técnico de execução TDD da task `ORD-003` em `docs/development/Logs/ORD-003.md`.
 
 ### Changed
 
@@ -83,6 +84,11 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 - Atualizado `npm run test` para incluir a suíte de regressão (`test:regression`) entre unit e integration.
 - Atualizados `docs/development/TASKS/PHASE-002-domain-schema-repositories.md` e `docs/development/TASKS.md` com conclusão de `SEC-002` e encerramento da fase 002 (`10/10`).
 - Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com conclusão de `ORD-002` e progresso real da fase 003 (`2/11`).
+- Implementado `createOrder` mínimo para GREEN (`ORD-003`) na camada de aplicação:
+  - `src/server/application/use-cases/create-order.use-case.ts` com orquestração server-side de lotes/cupom/totais.
+  - validação de lotes (`validateLotForPurchase`) e cupom (`validateCouponEligibility`) antes da persistência.
+  - cálculo de subtotal/desconto/total exclusivamente no servidor.
+- Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com conclusão de `ORD-003` e progresso real da fase 003 (`3/11`).
 
 ### Notes
 
