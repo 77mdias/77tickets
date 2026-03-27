@@ -9,7 +9,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
   () => {
     const db = createTestDb();
 
-    test("create persists order and items atomically, returning OrderWithItemsRecord", async () => {
+    test("create persists order and items sequentially, returning OrderWithItemsRecord", async () => {
       await cleanDatabase(db);
 
       const event = await createEventFixture(db, { status: "published" });
@@ -141,6 +141,37 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
 
       const updated = await repo.findById(orderRecord.id);
       expect(updated!.order.status).toBe("paid");
+    });
+
+    test("create maps order item FK violations to PersistenceError", async () => {
+      await cleanDatabase(db);
+
+      const event = await createEventFixture(db, { status: "published" });
+      const repo = new DrizzleOrderRepository(db);
+
+      const orderRecord = {
+        id: "00000000-0000-0000-0000-000000000204",
+        customerId: "00000000-0000-0000-0000-000000000002",
+        eventId: event.id,
+        status: "pending" as const,
+        subtotalInCents: 10000,
+        discountInCents: 0,
+        totalInCents: 10000,
+        createdAt: new Date(),
+      };
+
+      await expect(
+        repo.create(orderRecord, [
+          {
+            lotId: "00000000-0000-0000-0000-000000000999",
+            quantity: 1,
+            unitPriceInCents: 10000,
+          },
+        ]),
+      ).rejects.toMatchObject({
+        name: "PersistenceError",
+        kind: "foreign-key-constraint",
+      });
     });
   },
 );

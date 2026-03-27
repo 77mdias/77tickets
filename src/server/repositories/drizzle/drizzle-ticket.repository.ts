@@ -8,6 +8,7 @@ import type {
   TicketRecord,
   TicketRepository,
 } from "../ticket.repository.contracts";
+import { mapPersistenceError } from "./map-persistence-error";
 
 export class DrizzleTicketRepository implements TicketRepository {
   constructor(private readonly db: Db) {}
@@ -15,12 +16,16 @@ export class DrizzleTicketRepository implements TicketRepository {
   async createMany(newTickets: NewTicketData[]): Promise<TicketRecord[]> {
     if (newTickets.length === 0) return [];
 
-    const inserted = await this.db
-      .insert(tickets)
-      .values(newTickets)
-      .returning();
+    try {
+      const inserted = await this.db
+        .insert(tickets)
+        .values(newTickets)
+        .returning();
 
-    return inserted.map(toTicketRecord);
+      return inserted.map(toTicketRecord);
+    } catch (error) {
+      throw mapPersistenceError(error, "create tickets");
+    }
   }
 
   async findByCode(code: string): Promise<TicketRecord | null> {
@@ -43,10 +48,14 @@ export class DrizzleTicketRepository implements TicketRepository {
   }
 
   async markAsUsed(ticketId: EntityId, checkedInAt: Date): Promise<void> {
-    await this.db
-      .update(tickets)
-      .set({ status: "used", checkedInAt })
-      .where(eq(tickets.id, ticketId));
+    try {
+      await this.db
+        .update(tickets)
+        .set({ status: "used", checkedInAt })
+        .where(eq(tickets.id, ticketId));
+    } catch (error) {
+      throw mapPersistenceError(error, "mark ticket as used");
+    }
   }
 }
 

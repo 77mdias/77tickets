@@ -4,6 +4,7 @@ import type { Db } from "../../infrastructure/db/client";
 import { lots } from "../../infrastructure/db/schema";
 import type { EntityId } from "../common.repository.contracts";
 import type { LotRecord, LotRepository } from "../lot.repository.contracts";
+import { mapPersistenceError } from "./map-persistence-error";
 
 export class DrizzleLotRepository implements LotRepository {
   constructor(private readonly db: Db) {}
@@ -31,12 +32,16 @@ export class DrizzleLotRepository implements LotRepository {
     lotId: EntityId,
     quantity: number,
   ): Promise<void> {
-    await this.db
-      .update(lots)
-      .set({
-        availableQuantity: sql`${lots.availableQuantity} - ${quantity}`,
-      })
-      .where(eq(lots.id, lotId));
+    try {
+      await this.db
+        .update(lots)
+        .set({
+          availableQuantity: sql`${lots.availableQuantity} - ${quantity}`,
+        })
+        .where(eq(lots.id, lotId));
+    } catch (error) {
+      throw mapPersistenceError(error, "decrement lot available quantity");
+    }
   }
 }
 

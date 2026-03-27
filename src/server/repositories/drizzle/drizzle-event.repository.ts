@@ -4,6 +4,7 @@ import type { Db } from "../../infrastructure/db/client";
 import { events } from "../../infrastructure/db/schema";
 import type { EntityId } from "../common.repository.contracts";
 import type { EventRecord, EventRepository } from "../event.repository.contracts";
+import { mapPersistenceError } from "./map-persistence-error";
 
 export class DrizzleEventRepository implements EventRepository {
   constructor(private readonly db: Db) {}
@@ -38,27 +39,31 @@ export class DrizzleEventRepository implements EventRepository {
   }
 
   async save(event: EventRecord): Promise<void> {
-    await this.db
-      .insert(events)
-      .values({
-        id: event.id,
-        organizerId: event.organizerId,
-        slug: event.slug,
-        title: event.title,
-        status: event.status,
-        startsAt: event.startsAt,
-        endsAt: event.endsAt ?? new Date("9999-12-31T00:00:00Z"),
-      })
-      .onConflictDoUpdate({
-        target: events.id,
-        set: {
+    try {
+      await this.db
+        .insert(events)
+        .values({
+          id: event.id,
+          organizerId: event.organizerId,
           slug: event.slug,
           title: event.title,
           status: event.status,
           startsAt: event.startsAt,
           endsAt: event.endsAt ?? new Date("9999-12-31T00:00:00Z"),
-        },
-      });
+        })
+        .onConflictDoUpdate({
+          target: events.id,
+          set: {
+            slug: event.slug,
+            title: event.title,
+            status: event.status,
+            startsAt: event.startsAt,
+            endsAt: event.endsAt ?? new Date("9999-12-31T00:00:00Z"),
+          },
+        });
+    } catch (error) {
+      throw mapPersistenceError(error, "save event");
+    }
   }
 }
 

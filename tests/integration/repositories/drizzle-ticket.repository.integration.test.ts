@@ -107,5 +107,36 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
       expect(updated!.checkedInAt).not.toBeNull();
       expect(updated!.checkedInAt!.toISOString()).toBe(checkedInAt.toISOString());
     });
+
+    test("createMany maps duplicate code constraint to PersistenceError", async () => {
+      await cleanDatabase(db);
+
+      const event = await createEventFixture(db, { status: "published" });
+      const lot = await createLotFixture(db, event.id);
+      const order = await createOrderFixture(db, event.id, { status: "paid" });
+
+      const repo = new DrizzleTicketRepository(db);
+
+      await createTicketFixture(
+        db,
+        { eventId: event.id, orderId: order.id, lotId: lot.id },
+        { code: "TKT-DUPLICATE-001" },
+      );
+
+      await expect(
+        repo.createMany([
+          {
+            eventId: event.id,
+            orderId: order.id,
+            lotId: lot.id,
+            code: "TKT-DUPLICATE-001",
+          },
+        ]),
+      ).rejects.toMatchObject({
+        name: "PersistenceError",
+        kind: "unique-constraint",
+        constraint: "tickets_code_unique",
+      });
+    });
   },
 );

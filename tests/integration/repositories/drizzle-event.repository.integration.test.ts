@@ -122,5 +122,32 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
       expect(found!.title).toBe("Updated Title");
       expect(found!.status).toBe("published");
     });
+
+    test("save maps duplicate slug constraint to PersistenceError", async () => {
+      await cleanDatabase(db);
+
+      await createEventFixture(db, {
+        slug: "duplicate-event-slug",
+        title: "Existing Event",
+      });
+
+      const repo = new DrizzleEventRepository(db);
+
+      const duplicateRecord = {
+        id: "00000000-0000-0000-0000-000000000102",
+        organizerId: "00000000-0000-0000-0000-000000000001",
+        slug: "duplicate-event-slug",
+        title: "Conflicting Event",
+        status: "draft" as const,
+        startsAt: new Date("2027-07-02T10:00:00Z"),
+        endsAt: null,
+      };
+
+      await expect(repo.save(duplicateRecord)).rejects.toMatchObject({
+        name: "PersistenceError",
+        kind: "unique-constraint",
+        constraint: "events_slug_unique",
+      });
+    });
   },
 );

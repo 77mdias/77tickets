@@ -3,9 +3,9 @@
 **Status:** 🔴 BLOQUEADA
 **Última atualização:** 2026-03-27
 **Sprint Atual:** Sprint 002
-**Status Geral:** ⚪ 0% (0/10 tarefas completas) - FASE PLANEJADA
+**Status Geral:** 🟡 80% (8/10 tarefas completas) - FASE PARCIALMENTE CONCLUÍDA
 **ETA:** 1 sprint (6 a 8 dias úteis)
-**Pré-requisito:** Fase 001 (pendente)
+**Pré-requisito:** Fase 001 (concluída)
 
 ---
 
@@ -18,9 +18,9 @@
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Domínio de Negócio | 4 | 4 | 0 | 0 | 0 |
-| Schema e Repositórios | 4 | 3 | 0 | 1 | 0 |
+| Schema e Repositórios | 4 | 4 | 0 | 0 | 0 |
 | Segurança e Qualidade | 2 | 0 | 0 | 0 | 2 |
-| **TOTAL** | **10** | **7** | **0** | **1** | **2** |
+| **TOTAL** | **10** | **8** | **0** | **0** | **2** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de negócio centrais já mapeadas no AGENTS.md.
@@ -211,7 +211,7 @@ Traduzir domínio para schema explícito em Postgres/Drizzle e criar repositóri
   **Dependências:** DBR-001, DBR-002
   **Status:** ✅ Concluído
 
-- [ ] **DBR-004** - Criar testes de integração de persistência
+- [x] **DBR-004** - Criar testes de integração de persistência
 
   **Descrição curta:**
   - Validar operações CRUD críticas dos agregados.
@@ -225,13 +225,13 @@ Traduzir domínio para schema explícito em Postgres/Drizzle e criar repositóri
   **Arquivos/áreas afetadas:** `tests/integration/repositories/*.test.ts`, `tests/fixtures/*`
 
   **Critérios de aceitação:**
-  - [ ] Testes iniciam RED e passam após implementação.
-  - [ ] Erros de constraint mapeados adequadamente.
+  - [x] Testes iniciam RED e passam após implementação.
+  - [x] Erros de constraint mapeados adequadamente.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 4h  
   **Dependências:** DBR-003  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 ### 📦 Segurança e Qualidade - RBAC base e regressão inicial
 

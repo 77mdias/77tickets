@@ -5,4 +5,5 @@ export * from "./lot.repository.contracts";
 export * from "./order.repository.contracts";
 export * from "./ticket.repository.contracts";
 export * from "./coupon.repository.contracts";
+export * from "./persistence-error";
 export * from "./drizzle";

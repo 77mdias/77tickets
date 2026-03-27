@@ -10,6 +10,7 @@ import type {
   OrderStatus,
   OrderWithItemsRecord,
 } from "../order.repository.contracts";
+import { mapPersistenceError } from "./map-persistence-error";
 
 export class DrizzleOrderRepository implements OrderRepository {
   constructor(private readonly db: Db) {}
@@ -21,39 +22,43 @@ export class DrizzleOrderRepository implements OrderRepository {
     order: OrderRecord,
     items: OrderItemRecord[],
   ): Promise<OrderWithItemsRecord> {
-    const [insertedOrder] = await this.db
-      .insert(orders)
-      .values({
-        id: order.id,
-        customerId: order.customerId,
-        eventId: order.eventId,
-        status: order.status,
-        subtotalInCents: order.subtotalInCents,
-        discountInCents: order.discountInCents,
-        totalInCents: order.totalInCents,
-        createdAt: order.createdAt,
-      })
-      .returning();
-
-    let createdItems: OrderItemRecord[] = [];
-
-    if (items.length > 0) {
-      const insertedItems = await this.db
-        .insert(orderItems)
-        .values(
-          items.map((item) => ({
-            orderId: insertedOrder.id,
-            lotId: item.lotId,
-            quantity: item.quantity,
-            unitPriceInCents: item.unitPriceInCents,
-          })),
-        )
+    try {
+      const [insertedOrder] = await this.db
+        .insert(orders)
+        .values({
+          id: order.id,
+          customerId: order.customerId,
+          eventId: order.eventId,
+          status: order.status,
+          subtotalInCents: order.subtotalInCents,
+          discountInCents: order.discountInCents,
+          totalInCents: order.totalInCents,
+          createdAt: order.createdAt,
+        })
         .returning();
 
-      createdItems = insertedItems.map(toOrderItemRecord);
-    }
+      let createdItems: OrderItemRecord[] = [];
 
-    return { order: toOrderRecord(insertedOrder), items: createdItems };
+      if (items.length > 0) {
+        const insertedItems = await this.db
+          .insert(orderItems)
+          .values(
+            items.map((item) => ({
+              orderId: insertedOrder.id,
+              lotId: item.lotId,
+              quantity: item.quantity,
+              unitPriceInCents: item.unitPriceInCents,
+            })),
+          )
+          .returning();
+
+        createdItems = insertedItems.map(toOrderItemRecord);
+      }
+
+      return { order: toOrderRecord(insertedOrder), items: createdItems };
+    } catch (error) {
+      throw mapPersistenceError(error, "create order");
+    }
   }
 
   async findById(orderId: EntityId): Promise<OrderWithItemsRecord | null> {
@@ -77,10 +82,14 @@ export class DrizzleOrderRepository implements OrderRepository {
   }
 
   async updateStatus(orderId: EntityId, status: OrderStatus): Promise<void> {
-    await this.db
-      .update(orders)
-      .set({ status })
-      .where(eq(orders.id, orderId));
+    try {
+      await this.db
+        .update(orders)
+        .set({ status })
+        .where(eq(orders.id, orderId));
+    } catch (error) {
+      throw mapPersistenceError(error, "update order status");
+    }
   }
 }
 

@@ -47,6 +47,10 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - `tests/integration/smoke.integration.test.ts` — 3 smoke tests de conectividade real.
   - `.env.example` — documentação de `TEST_DATABASE_URL`.
   - Log técnico em `docs/development/Logs/INF-002.md`.
+- Criado erro tipado de persistência para a camada de repositórios:
+  - `src/server/repositories/persistence-error.ts`
+  - `src/server/repositories/drizzle/map-persistence-error.ts`
+- Registrado log técnico `docs/development/Logs/DBR-004.md` com evidência RED -> GREEN da cobertura de integração dos repositórios.
 
 ### Changed
 
@@ -57,6 +61,12 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 - Documentadas em `docs/development/README.md` as fronteiras de importação protegidas pelo lint e os comandos de validação local.
 - Atualizada a fase 001 com conclusão das tasks `TDD-002`, `TDD-003`, `INF-001` e `INF-002` — progresso de `4/9` para `8/9`.
 - Fase 001 encerrada com 9/9 tarefas concluídas (INF-003 — consolidação operacional). Fase 002 liberada.
+- Expandida a cobertura de integração de persistência dos repositórios Drizzle com cenários de constraint:
+  - slug duplicado em `DrizzleEventRepository.save`
+  - FK inválida em `DrizzleOrderRepository.create`
+  - código duplicado em `DrizzleTicketRepository.createMany`
+- Corrigida a descrição do teste de `DrizzleOrderRepository` para refletir persistência sequencial, sem alegar atomicidade DB-level inexistente no driver `neon-http`.
+- Atualizados `docs/development/TASKS/PHASE-002-domain-schema-repositories.md` e `docs/development/TASKS.md` com a conclusão de `DBR-004` e progresso real da fase 002 (`8/10`).
 
 ### Notes
 

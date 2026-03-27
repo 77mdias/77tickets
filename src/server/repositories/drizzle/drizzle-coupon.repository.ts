@@ -7,6 +7,7 @@ import type {
   CouponRecord,
   CouponRepository,
 } from "../coupon.repository.contracts";
+import { mapPersistenceError } from "./map-persistence-error";
 
 export class DrizzleCouponRepository implements CouponRepository {
   constructor(private readonly db: Db) {}
@@ -25,10 +26,14 @@ export class DrizzleCouponRepository implements CouponRepository {
   }
 
   async incrementRedemptionCount(couponId: EntityId): Promise<void> {
-    await this.db
-      .update(coupons)
-      .set({ redemptionCount: sql`${coupons.redemptionCount} + 1` })
-      .where(eq(coupons.id, couponId));
+    try {
+      await this.db
+        .update(coupons)
+        .set({ redemptionCount: sql`${coupons.redemptionCount} + 1` })
+        .where(eq(coupons.id, couponId));
+    } catch (error) {
+      throw mapPersistenceError(error, "increment coupon redemption count");
+    }
   }
 }
 
