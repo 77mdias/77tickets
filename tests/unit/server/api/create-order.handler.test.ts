@@ -1,8 +1,14 @@
 import { expect, test } from "vitest";
 
 import { createCreateOrderHandler } from "../../../../src/server/api/create-order.handler";
+import type { SecurityActor } from "../../../../src/server/application/security";
 import type { CreateOrderInput } from "../../../../src/server/application/use-cases/create-order.use-case";
 import { PersistenceError } from "../../../../src/server/repositories";
+
+const AUTHENTICATED_CUSTOMER: SecurityActor = {
+  role: "customer",
+  userId: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",
+};
 
 test("createCreateOrderHandler returns validation error response for invalid payload", async () => {
   let createOrderCalls = 0;
@@ -31,6 +37,7 @@ test("createCreateOrderHandler returns validation error response for invalid pay
   });
 
   const response = await handler({
+    actor: AUTHENTICATED_CUSTOMER,
     body: {
       eventId: "not-uuid",
       customerId: "not-uuid",
@@ -82,7 +89,10 @@ test("createCreateOrderHandler passes validated typed input to use-case", async 
     couponCode: "EARLYBIRD10",
   };
 
-  const response = await handler({ body: payload });
+  const response = await handler({
+    actor: AUTHENTICATED_CUSTOMER,
+    body: payload,
+  });
 
   expect(response.status).toBe(200);
 
@@ -121,6 +131,7 @@ test("createCreateOrderHandler maps repository persistence conflicts to 409", as
   });
 
   const response = await handler({
+    actor: AUTHENTICATED_CUSTOMER,
     body: {
       eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
       customerId: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",
@@ -153,6 +164,7 @@ test("createCreateOrderHandler maps unknown persistence failures to 500", async 
   });
 
   const response = await handler({
+    actor: AUTHENTICATED_CUSTOMER,
     body: {
       eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
       customerId: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",
@@ -171,4 +183,53 @@ test("createCreateOrderHandler maps unknown persistence failures to 500", async 
   expect(response.body.error.details).toEqual({
     kind: "unknown",
   });
+});
+
+test("createCreateOrderHandler logs unauthorized create-order attempts for audit", async () => {
+  const actor: SecurityActor = {
+    role: "customer",
+    userId: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",
+  };
+  const auditCalls: Array<{
+    actorId: string;
+    actorRole: SecurityActor["role"];
+    targetCustomerId: string;
+    eventId: string;
+  }> = [];
+
+  const handler = createCreateOrderHandler({
+    createOrder: async () => {
+      throw new Error("createOrder should not be called for unauthorized actor");
+    },
+    auditLogger: {
+      logUnauthorizedCreateOrderAttempt: async (entry) => {
+        auditCalls.push(entry);
+      },
+    },
+  });
+
+  const response = await handler({
+    actor,
+    body: {
+      eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
+      customerId: "5c95fe31-36f0-4a53-bbf3-5ca3cfe36df9",
+      items: [
+        {
+          lotId: "4b021be4-4cb2-4f5f-bcf4-f8237bcb4e7e",
+          quantity: 1,
+        },
+      ],
+    },
+  });
+
+  expect(response.status).toBe(403);
+  expect(response.body.error.code).toBe("authorization");
+  expect(auditCalls).toEqual([
+    {
+      actorId: actor.userId,
+      actorRole: actor.role,
+      targetCustomerId: "5c95fe31-36f0-4a53-bbf3-5ca3cfe36df9",
+      eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
+    },
+  ]);
 });

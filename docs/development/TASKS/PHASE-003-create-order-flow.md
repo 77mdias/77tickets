@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-28
 **Sprint Atual:** Sprint 003
-**Status Geral:** 🟡 64% (7/11 tarefas completas) - EM ANDAMENTO
+**Status Geral:** 🟡 73% (8/11 tarefas completas) - EM ANDAMENTO
 **ETA:** 1 sprint (7 a 10 dias úteis)
 **Pré-requisito:** Fase 002 (concluída)
 
@@ -14,9 +14,9 @@
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Use-case e Regras de Compra | 4 | 4 | 0 | 0 | 0 |
-| API e Persistência Transacional | 4 | 3 | 0 | 0 | 1 |
+| API e Persistência Transacional | 4 | 4 | 0 | 0 | 0 |
 | Checkout UI, QA e Observabilidade | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **11** | **7** | **0** | **0** | **4** |
+| **TOTAL** | **11** | **8** | **0** | **0** | **3** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Fluxo-alvo definido no AGENTS (`createOrder` server-side).
@@ -211,7 +211,7 @@ Expor o fluxo de compra com handler fino, validação na fronteira e persistênc
   **Dependências:** API-001, API-002  
   **Status:** ✅ Concluído
 
-- [ ] **API-004** - Teste de autorização para criação de pedido
+- [x] **API-004** - Teste de autorização para criação de pedido
 
   **Descrição curta:**
   - Garantir que `customer` só cria pedido para si.
@@ -225,13 +225,13 @@ Expor o fluxo de compra com handler fino, validação na fronteira e persistênc
   **Arquivos/áreas afetadas:** `tests/integration/api/orders/auth.test.ts`, `src/server/application/security/*`
 
   **Critérios de aceitação:**
-  - [ ] Pedido em nome de terceiro é bloqueado.
-  - [ ] Logs de tentativa indevida disponíveis para auditoria.
+  - [x] Pedido em nome de terceiro é bloqueado.
+  - [x] Logs de tentativa indevida disponíveis para auditoria.
 
   **Prioridade:** 🟡 Alta  
   **Estimativa:** 2h30  
   **Dependências:** API-001  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 ### 📦 Checkout UI, QA e Observabilidade - Conexão mínima e validação final
 
@@ -313,7 +313,7 @@ Conectar o fluxo backend ao frontend de forma enxuta, sem mover regra de negóci
 - **Suites necessárias:** Unit (use-case/domínio), Integration (API + repositories), Regression (expiração/oversell), smoke manual.
 - **Cobertura alvo:** >85% no módulo de ordem e >80% de handlers de checkout.
 - **Comandos de verificação:** `npm run test:unit`, `npm run test:integration`, `npm run test`, `npm run lint`.
-- **Estado atual:** ⚠️ Em falha (fase bloqueada por dependências anteriores).
+- **Estado atual:** 🟡 Em andamento (bloqueios concentrados nas tasks UX-001..UX-003).
 
 ---
 
@@ -331,6 +331,6 @@ Conectar o fluxo backend ao frontend de forma enxuta, sem mover regra de negóci
 - [ ] Fluxo `createOrder` funcional com TDD comprovado.
 - [ ] Cálculo de total e estoque 100% server-side.
 - [ ] Persistência transacional validada por testes.
-- [ ] Autorização e regressões críticas cobertas.
+- [x] Autorização e regressões críticas cobertas.
 - [ ] UI conectada sem conter regra de negócio.
 - [ ] Documentação e evidências atualizadas.

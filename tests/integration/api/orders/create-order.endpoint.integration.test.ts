@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import { createCreateOrderHandler } from "../../../../src/server/api/create-order.handler";
+import type { SecurityActor } from "../../../../src/server/application/security";
 import { createCreateOrderUseCase } from "../../../../src/server/application/use-cases/create-order.use-case";
 import {
   DrizzleCouponRepository,
@@ -14,6 +15,10 @@ const FIXED_NOW = new Date("2026-03-28T12:00:00.000Z");
 const EVENT_ID = "2f180791-a8f5-4cf8-b703-0f220a44f7c8";
 const CUSTOMER_ID = "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5";
 const ORDER_ID = "4b021be4-4cb2-4f5f-bcf4-f8237bcb4e7e";
+const CUSTOMER_ACTOR: SecurityActor = {
+  role: "customer",
+  userId: CUSTOMER_ID,
+};
 
 describe.skipIf(!process.env.TEST_DATABASE_URL)(
   "create order endpoint integration",
@@ -64,6 +69,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
 
       const handler = createHandler();
       const response = await handler({
+        actor: CUSTOMER_ACTOR,
         body: {
           eventId: event.id,
           customerId: CUSTOMER_ID,
@@ -103,6 +109,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
 
       const handler = createHandler();
       const response = await handler({
+        actor: CUSTOMER_ACTOR,
         body: {
           eventId: event.id,
           customerId: CUSTOMER_ID,
@@ -132,6 +139,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
 
       const handler = createHandler();
       const response = await handler({
+        actor: CUSTOMER_ACTOR,
         body: {
           eventId: event.id,
           customerId: CUSTOMER_ID,
@@ -155,6 +163,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
 
       const handler = createHandler();
       const response = await handler({
+        actor: CUSTOMER_ACTOR,
         body: {
           eventId: "invalid-uuid",
           customerId: "invalid-uuid",

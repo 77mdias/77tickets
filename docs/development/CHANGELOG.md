@@ -63,9 +63,13 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 - Criado log técnico de execução TDD da task `ORD-004` em `docs/development/Logs/ORD-004.md`.
 - Criado log técnico de execução da task `API-002` em `docs/development/Logs/API-002.md`.
 - Criado log técnico de execução da task `API-003` em `docs/development/Logs/API-003.md`.
+- Criado log técnico de execução da task `API-004` em `docs/development/Logs/API-004.md`.
 - Criada suíte de integração do endpoint de compra:
   - `tests/integration/api/orders/create-order.endpoint.integration.test.ts`
   - cobertura de sucesso ponta a ponta e erros estruturados (estoque insuficiente, cupom inválido, payload inválido)
+- Criada suíte de integração de autorização da compra:
+  - `tests/integration/api/orders/auth.test.ts`
+  - cobertura de bloqueio para `customer` com identidade divergente e roles não autorizados
 
 ### Changed
 
@@ -112,6 +116,12 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - `src/server/application/use-cases/create-order.use-case.ts` tipado explicitamente como `Promise<CreateOrderResult>`.
   - `tests/unit/server/api/create-order.handler.test.ts` atualizado para validação assíncrona.
 - Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com conclusão de `API-003` e progresso real da fase 003 (`7/11`).
+- Implementada autorização server-side para criação de pedido (`API-004`):
+  - `src/server/application/security/create-order.policy.ts` com regras por role (`customer` self-only, `admin` permitido, demais negados).
+  - `src/server/api/create-order.handler.ts` atualizado para exigir `actor` autenticado e auditar tentativas indevidas.
+  - `tests/unit/server/application/security/create-order.policy.test.ts` e `tests/unit/server/api/create-order.handler.test.ts` cobrem policy + auditoria.
+  - `tests/integration/api/orders/create-order.endpoint.integration.test.ts` atualizado para boundary autenticado.
+- Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com conclusão de `API-004` e progresso real da fase 003 (`8/11`).
 
 ### Notes
 
