@@ -1,4 +1,5 @@
 import type { OrderStatus } from "../orders/order.types";
+import { isOrderStatusEligibleForActiveTicket } from "../orders/order.rules";
 import type { Ticket } from "./ticket.types";
 
 export type TicketInvalidReason = "ticket_not_active" | "order_not_paid";
@@ -12,7 +13,7 @@ export function isTicketActive(ticket: Ticket): boolean {
 }
 
 export function isOrderValidForTicket(orderStatus: OrderStatus): boolean {
-  return orderStatus === "paid";
+  return isOrderStatusEligibleForActiveTicket(orderStatus);
 }
 
 export function isTicketValidForCheckin(

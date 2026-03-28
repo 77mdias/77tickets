@@ -19,6 +19,10 @@ export function canTransitionOrder(from: OrderStatus, to: OrderStatus): boolean 
   return ALLOWED_TRANSITIONS[from].includes(to);
 }
 
+export function isOrderStatusEligibleForActiveTicket(orderStatus: OrderStatus): boolean {
+  return orderStatus === "paid";
+}
+
 export function validateOrderTransition(
   from: OrderStatus,
   to: OrderStatus,

@@ -1,9 +1,9 @@
 # 🚀 Tasks - Fase 003: Create Order Flow (Server-First)
 
 **Status:** 🟡 EM ANDAMENTO
-**Última atualização:** 2026-03-27
+**Última atualização:** 2026-03-28
 **Sprint Atual:** Sprint 003
-**Status Geral:** 🟡 27% (3/11 tarefas completas) - EM ANDAMENTO
+**Status Geral:** 🟡 36% (4/11 tarefas completas) - EM ANDAMENTO
 **ETA:** 1 sprint (7 a 10 dias úteis)
 **Pré-requisito:** Fase 002 (concluída)
 
@@ -13,10 +13,10 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Use-case e Regras de Compra | 4 | 3 | 0 | 0 | 1 |
+| Use-case e Regras de Compra | 4 | 4 | 0 | 0 | 0 |
 | API e Persistência Transacional | 4 | 0 | 0 | 1 | 3 |
 | Checkout UI, QA e Observabilidade | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **11** | **3** | **0** | **2** | **6** |
+| **TOTAL** | **11** | **4** | **0** | **1** | **6** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Fluxo-alvo definido no AGENTS (`createOrder` server-side).
@@ -113,7 +113,7 @@ Concentrar toda regra crítica de compra na camada de aplicação/domínio, com 
   **Dependências:** ORD-002  
   **Status:** ✅ Concluído
 
-- [ ] **ORD-004** - Cobrir regressões de pedido expirado e estado inválido
+- [x] **ORD-004** - Cobrir regressões de pedido expirado e estado inválido
 
   **Descrição curta:**
   - Garantir que estado do pedido/ticket respeite políticas.
@@ -127,13 +127,13 @@ Concentrar toda regra crítica de compra na camada de aplicação/domínio, com 
   **Arquivos/áreas afetadas:** `tests/regression/orders/*.test.ts`, `src/server/domain/orders/*`
 
   **Critérios de aceitação:**
-  - [ ] Pedido expirado não mantém ticket ativo.
-  - [ ] Regressões ficam no gate padrão de testes.
+  - [x] Pedido expirado não mantém ticket ativo.
+  - [x] Regressões ficam no gate padrão de testes.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 3h  
   **Dependências:** ORD-003  
-  **Status:** 🟡 Pendente
+  **Status:** ✅ Concluído
 
 ### 📦 API e Persistência Transacional - Handler fino e consistência de dados
 

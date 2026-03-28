@@ -60,6 +60,7 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - cenários de cálculo server-side, estoque/janela de lote e cupom válido/inválido
 - Criado log técnico de execução TDD da task `ORD-002` em `docs/development/Logs/ORD-002.md`.
 - Criado log técnico de execução TDD da task `ORD-003` em `docs/development/Logs/ORD-003.md`.
+- Criado log técnico de execução TDD da task `ORD-004` em `docs/development/Logs/ORD-004.md`.
 
 ### Changed
 
@@ -89,6 +90,11 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - validação de lotes (`validateLotForPurchase`) e cupom (`validateCouponEligibility`) antes da persistência.
   - cálculo de subtotal/desconto/total exclusivamente no servidor.
 - Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com conclusão de `ORD-003` e progresso real da fase 003 (`3/11`).
+- Coberta a regressão de estado de pedido/ticket (`ORD-004`) com nova suíte dedicada:
+  - `tests/regression/orders/order-state.regression.test.ts`
+  - regra explícita `isOrderStatusEligibleForActiveTicket` em `src/server/domain/orders/order.rules.ts`
+  - reaproveitamento da regra em `src/server/domain/tickets/ticket.rules.ts`
+- Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com conclusão de `ORD-004` e progresso real da fase 003 (`4/11`).
 
 ### Notes
 
