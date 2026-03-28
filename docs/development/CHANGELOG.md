@@ -129,6 +129,14 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - `eslint.config.mjs` ajustado para permitir imports de server apenas em `src/app/api/**`, mantendo o bloqueio para UI.
   - Novos testes unitários: `tests/unit/server/api/create-order.route-adapter.test.ts` e `tests/unit/features/checkout/checkout-client.test.ts`.
 - Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com conclusão de `UX-001` e progresso real da fase 003 (`9/11`).
+- Implementada observabilidade mínima de checkout (`UX-002`):
+  - `src/server/api/create-order.handler.ts` com telemetria estruturada de tentativa (`status`, `latencyMs`, `errorCode`, `outcome`) sem dados sensíveis.
+  - `src/server/application/use-cases/create-order.use-case.ts` com hook opcional de observabilidade para sucesso/falha do fluxo de aplicação.
+  - `src/server/infrastructure/observability/checkout-observability.ts` com adapter de logging estruturado para API/use-case.
+  - `src/app/api/orders/route.ts` atualizado para injeção explícita do adapter de observabilidade.
+  - Novos testes unitários em `tests/unit/server/api/create-order.handler.test.ts` e `tests/unit/application/create-order.use-case.test.ts`.
+  - Runbook operacional em `docs/infrastructure/checkout-observability.md`.
+- Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com conclusão de `UX-002` e progresso real da fase 003 (`10/11`).
 
 ### Notes
 

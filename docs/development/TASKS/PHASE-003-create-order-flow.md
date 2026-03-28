@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-28
 **Sprint Atual:** Sprint 003
-**Status Geral:** 🟡 82% (9/11 tarefas completas) - EM ANDAMENTO
+**Status Geral:** 🟡 91% (10/11 tarefas completas) - EM ANDAMENTO
 **ETA:** 1 sprint (7 a 10 dias úteis)
 **Pré-requisito:** Fase 002 (concluída)
 
@@ -15,8 +15,8 @@
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Use-case e Regras de Compra | 4 | 4 | 0 | 0 | 0 |
 | API e Persistência Transacional | 4 | 4 | 0 | 0 | 0 |
-| Checkout UI, QA e Observabilidade | 3 | 1 | 0 | 0 | 2 |
-| **TOTAL** | **11** | **9** | **0** | **0** | **2** |
+| Checkout UI, QA e Observabilidade | 3 | 2 | 0 | 0 | 1 |
+| **TOTAL** | **11** | **10** | **0** | **0** | **1** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Fluxo-alvo definido no AGENTS (`createOrder` server-side).
@@ -262,7 +262,7 @@ Conectar o fluxo backend ao frontend de forma enxuta, sem mover regra de negóci
   **Dependências:** API-001  
   **Status:** ✅ Concluído
 
-- [ ] **UX-002** - Instrumentar logs e métricas básicas de checkout
+- [x] **UX-002** - Instrumentar logs e métricas básicas de checkout
 
   **Descrição curta:**
   - Acompanhar taxa de sucesso/falha do fluxo.
@@ -276,13 +276,13 @@ Conectar o fluxo backend ao frontend de forma enxuta, sem mover regra de negóci
   **Arquivos/áreas afetadas:** `src/server/api/orders/*`, `src/server/application/create-order.use-case.ts`, `docs/infrastructure/*`
 
   **Critérios de aceitação:**
-  - [ ] Métricas mínimas disponíveis para operação.
-  - [ ] Logs não vazam dados sensíveis.
+  - [x] Métricas mínimas disponíveis para operação.
+  - [x] Logs não vazam dados sensíveis.
 
   **Prioridade:** 🟢 Média  
   **Estimativa:** 2h  
   **Dependências:** API-001..API-003  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 - [ ] **UX-003** - Fechamento de fase com QA e documentação
 
@@ -313,7 +313,7 @@ Conectar o fluxo backend ao frontend de forma enxuta, sem mover regra de negóci
 - **Suites necessárias:** Unit (use-case/domínio), Integration (API + repositories), Regression (expiração/oversell), smoke manual.
 - **Cobertura alvo:** >85% no módulo de ordem e >80% de handlers de checkout.
 - **Comandos de verificação:** `npm run test:unit`, `npm run test:integration`, `npm run test`, `npm run lint`.
-- **Estado atual:** 🟡 Em andamento (bloqueios concentrados nas tasks UX-002..UX-003).
+- **Estado atual:** 🟡 Em andamento (bloqueios concentrados na task UX-003).
 
 ---
 

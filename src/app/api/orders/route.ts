@@ -6,6 +6,7 @@ import {
 } from "@/src/server/api/orders/create-order.route-adapter";
 import { createCreateOrderUseCase } from "@/src/server/application/use-cases/create-order.use-case";
 import { createDb } from "@/src/server/infrastructure/db/client";
+import { createConsoleCheckoutObservability } from "@/src/server/infrastructure/observability";
 import {
   DrizzleCouponRepository,
   DrizzleLotRepository,
@@ -26,6 +27,7 @@ const generateUuid = (): string => {
 
 const buildPostOrdersRouteHandler = (): PostOrdersRouteHandler => {
   const db = createDb(getDatabaseUrlOrThrow());
+  const observability = createConsoleCheckoutObservability();
 
   const createOrder = createCreateOrderUseCase({
     now: () => new Date(),
@@ -33,9 +35,10 @@ const buildPostOrdersRouteHandler = (): PostOrdersRouteHandler => {
     orderRepository: new DrizzleOrderRepository(db),
     lotRepository: new DrizzleLotRepository(db),
     couponRepository: new DrizzleCouponRepository(db),
+    observability,
   });
 
-  const handleCreateOrder = createCreateOrderHandler({ createOrder });
+  const handleCreateOrder = createCreateOrderHandler({ createOrder, observability });
   const customerId = resolveDemoCustomerId(process.env.DEMO_CUSTOMER_ID);
 
   return createCreateOrderRouteAdapter({

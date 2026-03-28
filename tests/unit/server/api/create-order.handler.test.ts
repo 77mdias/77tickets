@@ -233,3 +233,106 @@ test("createCreateOrderHandler logs unauthorized create-order attempts for audit
     },
   ]);
 });
+
+test("createCreateOrderHandler tracks checkout telemetry for successful requests", async () => {
+  const telemetryCalls: Array<Record<string, unknown>> = [];
+  const nowMsValues = [10, 65];
+
+  const handler = createCreateOrderHandler({
+    createOrder: async () => ({
+      orderId: "order_telemetry_success",
+      eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
+      customerId: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",
+      status: "pending",
+      subtotalInCents: 10000,
+      discountInCents: 0,
+      totalInCents: 10000,
+      items: [
+        {
+          lotId: "4b021be4-4cb2-4f5f-bcf4-f8237bcb4e7e",
+          quantity: 1,
+          unitPriceInCents: 10000,
+        },
+      ],
+    }),
+    observability: {
+      trackCheckoutAttempt: async (entry) => {
+        telemetryCalls.push(entry as Record<string, unknown>);
+      },
+    },
+    now: () => new Date("2026-03-28T16:00:00.000Z"),
+    nowMs: () => nowMsValues.shift() ?? 65,
+  });
+
+  await handler({
+    actor: AUTHENTICATED_CUSTOMER,
+    body: {
+      eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
+      customerId: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",
+      items: [
+        {
+          lotId: "4b021be4-4cb2-4f5f-bcf4-f8237bcb4e7e",
+          quantity: 1,
+        },
+      ],
+    },
+  });
+
+  expect(telemetryCalls).toHaveLength(1);
+  expect(telemetryCalls[0]).toMatchObject({
+    event: "checkout.create_order",
+    outcome: "success",
+    status: 200,
+    errorCode: null,
+    latencyMs: 55,
+    actorRole: "customer",
+    eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
+    itemsCount: 1,
+    couponApplied: false,
+    timestamp: "2026-03-28T16:00:00.000Z",
+  });
+});
+
+test("createCreateOrderHandler tracks validation failures without sensitive payload fields", async () => {
+  const telemetryCalls: Array<Record<string, unknown>> = [];
+  const nowMsValues = [100, 112];
+
+  const handler = createCreateOrderHandler({
+    createOrder: async () => {
+      throw new Error("createOrder should not be called for invalid payload");
+    },
+    observability: {
+      trackCheckoutAttempt: async (entry) => {
+        telemetryCalls.push(entry as Record<string, unknown>);
+      },
+    },
+    now: () => new Date("2026-03-28T16:10:00.000Z"),
+    nowMs: () => nowMsValues.shift() ?? 112,
+  });
+
+  const response = await handler({
+    actor: AUTHENTICATED_CUSTOMER,
+    body: {
+      eventId: "invalid-uuid",
+      customerId: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",
+      items: [],
+    },
+  });
+
+  expect(response.status).toBe(400);
+  expect(telemetryCalls).toHaveLength(1);
+  expect(telemetryCalls[0]).toMatchObject({
+    event: "checkout.create_order",
+    outcome: "failure",
+    status: 400,
+    errorCode: "validation",
+    latencyMs: 12,
+    actorRole: "customer",
+    eventId: null,
+    itemsCount: null,
+    couponApplied: null,
+    timestamp: "2026-03-28T16:10:00.000Z",
+  });
+  expect(telemetryCalls[0]).not.toHaveProperty("customerId");
+  expect(telemetryCalls[0]).not.toHaveProperty("requestBody");
+});

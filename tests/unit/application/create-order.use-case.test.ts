@@ -35,6 +35,9 @@ type CreateOrderUseCaseFactory = (dependencies: {
     } | null>;
     incrementRedemptionCount: (couponId: string) => Promise<void>;
   };
+  observability?: {
+    trackCreateOrderExecution: (entry: Record<string, unknown>) => void | Promise<void>;
+  };
 }) => (input: {
   eventId: string;
   customerId: string;
@@ -333,5 +336,120 @@ test("ORD-002 RED: rejects coupon when coupon is invalid for event/time window",
     details: {
       reason: "invalid_coupon",
     },
+  });
+});
+
+test("UX-002 RED: tracks use-case success metrics without sensitive data", async () => {
+  const createCreateOrderUseCase = await loadCreateOrderFactory();
+
+  const telemetryCalls: Array<Record<string, unknown>> = [];
+
+  const useCase = createCreateOrderUseCase({
+    now: () => FIXED_NOW,
+    generateOrderId: () => "order-ux-002-success",
+    orderRepository: {
+      create: async () => ({ id: "order-ux-002-success" }),
+    },
+    lotRepository: {
+      findById: async () => ({
+        id: LOT_ID,
+        eventId: EVENT_ID,
+        title: "General",
+        priceInCents: 5000,
+        totalQuantity: 100,
+        availableQuantity: 100,
+        maxPerOrder: 5,
+        saleStartsAt: new Date("2026-01-01T00:00:00.000Z"),
+        saleEndsAt: new Date("2026-12-31T23:59:59.000Z"),
+        status: "active",
+      }),
+    },
+    couponRepository: {
+      findByCodeForEvent: async () => null,
+      incrementRedemptionCount: async () => undefined,
+    },
+    observability: {
+      trackCreateOrderExecution: async (entry) => {
+        telemetryCalls.push(entry);
+      },
+    },
+  });
+
+  await useCase({
+    eventId: EVENT_ID,
+    customerId: CUSTOMER_ID,
+    items: [{ lotId: LOT_ID, quantity: 1 }],
+  });
+
+  expect(telemetryCalls).toHaveLength(1);
+  expect(telemetryCalls[0]).toMatchObject({
+    event: "checkout.create_order.use_case",
+    outcome: "success",
+    errorCode: null,
+    eventId: EVENT_ID,
+    itemsCount: 1,
+    couponApplied: false,
+  });
+  expect(telemetryCalls[0]).not.toHaveProperty("customerId");
+});
+
+test("UX-002 RED: tracks use-case failures with categorized error", async () => {
+  const createCreateOrderUseCase = await loadCreateOrderFactory();
+
+  const telemetryCalls: Array<Record<string, unknown>> = [];
+
+  const useCase = createCreateOrderUseCase({
+    now: () => FIXED_NOW,
+    generateOrderId: () => "order-ux-002-failure",
+    orderRepository: {
+      create: async () => ({ id: "order-ux-002-failure" }),
+    },
+    lotRepository: {
+      findById: async () => ({
+        id: LOT_ID,
+        eventId: EVENT_ID,
+        title: "General",
+        priceInCents: 5000,
+        totalQuantity: 100,
+        availableQuantity: 1,
+        maxPerOrder: 5,
+        saleStartsAt: new Date("2026-01-01T00:00:00.000Z"),
+        saleEndsAt: new Date("2026-12-31T23:59:59.000Z"),
+        status: "active",
+      }),
+    },
+    couponRepository: {
+      findByCodeForEvent: async () => null,
+      incrementRedemptionCount: async () => undefined,
+    },
+    observability: {
+      trackCreateOrderExecution: async (entry) => {
+        telemetryCalls.push(entry);
+      },
+    },
+  });
+
+  await expect(
+    useCase({
+      eventId: EVENT_ID,
+      customerId: CUSTOMER_ID,
+      items: [{ lotId: LOT_ID, quantity: 2 }],
+    }),
+  ).rejects.toMatchObject({
+    code: "conflict",
+    details: {
+      reason: "insufficient_stock",
+    },
+  });
+
+  expect(telemetryCalls).toHaveLength(1);
+  expect(telemetryCalls[0]).toMatchObject({
+    event: "checkout.create_order.use_case",
+    outcome: "failure",
+    errorCode: "conflict",
+    errorReason: "insufficient_stock",
+    eventId: EVENT_ID,
+    itemsCount: 1,
+    couponApplied: false,
   });
 });
