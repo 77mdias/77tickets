@@ -1,9 +1,9 @@
 # 🚀 Tasks - Fase 003: Create Order Flow (Server-First)
 
-**Status:** 🟡 EM ANDAMENTO
+**Status:** 🟢 CONCLUÍDA
 **Última atualização:** 2026-03-28
 **Sprint Atual:** Sprint 003
-**Status Geral:** 🟡 91% (10/11 tarefas completas) - EM ANDAMENTO
+**Status Geral:** 🟢 100% (11/11 tarefas completas) - CONCLUÍDA
 **ETA:** 1 sprint (7 a 10 dias úteis)
 **Pré-requisito:** Fase 002 (concluída)
 
@@ -15,8 +15,8 @@
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Use-case e Regras de Compra | 4 | 4 | 0 | 0 | 0 |
 | API e Persistência Transacional | 4 | 4 | 0 | 0 | 0 |
-| Checkout UI, QA e Observabilidade | 3 | 2 | 0 | 0 | 1 |
-| **TOTAL** | **11** | **10** | **0** | **0** | **1** |
+| Checkout UI, QA e Observabilidade | 3 | 3 | 0 | 0 | 0 |
+| **TOTAL** | **11** | **11** | **0** | **0** | **0** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Fluxo-alvo definido no AGENTS (`createOrder` server-side).
@@ -284,7 +284,7 @@ Conectar o fluxo backend ao frontend de forma enxuta, sem mover regra de negóci
   **Dependências:** API-001..API-003  
   **Status:** ✅ Concluído
 
-- [ ] **UX-003** - Fechamento de fase com QA e documentação
+- [x] **UX-003** - Fechamento de fase com QA e documentação
 
   **Descrição curta:**
   - Validar checklist funcional e técnico completo.
@@ -298,13 +298,13 @@ Conectar o fluxo backend ao frontend de forma enxuta, sem mover regra de negóci
   **Arquivos/áreas afetadas:** `docs/development/TASKS.md`, `docs/development/CHANGELOG.md`, `docs/development/ROADMAP.md`
 
   **Critérios de aceitação:**
-  - [ ] Evidências de testes e checklist anexadas.
-  - [ ] Fase pronta para check-in/RBAC da fase 004.
+  - [x] Evidências de testes e checklist anexadas.
+  - [x] Fase pronta para check-in/RBAC da fase 004.
 
   **Prioridade:** 🟢 Média  
   **Estimativa:** 1h30  
   **Dependências:** ORD-001..ORD-004, API-001..API-004, UX-001..UX-002  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 ---
 
@@ -312,8 +312,8 @@ Conectar o fluxo backend ao frontend de forma enxuta, sem mover regra de negóci
 
 - **Suites necessárias:** Unit (use-case/domínio), Integration (API + repositories), Regression (expiração/oversell), smoke manual.
 - **Cobertura alvo:** >85% no módulo de ordem e >80% de handlers de checkout.
-- **Comandos de verificação:** `npm run test:unit`, `npm run test:integration`, `npm run test`, `npm run lint`.
-- **Estado atual:** 🟡 Em andamento (bloqueios concentrados na task UX-003).
+- **Comandos de verificação:** `npm run test:unit`, `npm run test:integration`, `npm run test`, `npm run lint`, `npm run build`.
+- **Estado atual:** 🟢 Concluído (checklist funcional/técnico e documentação finalizados para liberação da fase 004).
 
 ---
 
@@ -328,9 +328,9 @@ Conectar o fluxo backend ao frontend de forma enxuta, sem mover regra de negóci
 
 ## ✅ Checklist de Encerramento da Fase
 
-- [ ] Fluxo `createOrder` funcional com TDD comprovado.
-- [ ] Cálculo de total e estoque 100% server-side.
-- [ ] Persistência transacional validada por testes.
+- [x] Fluxo `createOrder` funcional com TDD comprovado.
+- [x] Cálculo de total e estoque 100% server-side.
+- [x] Persistência transacional validada por testes.
 - [x] Autorização e regressões críticas cobertas.
 - [x] UI conectada sem conter regra de negócio.
-- [ ] Documentação e evidências atualizadas.
+- [x] Documentação e evidências atualizadas.

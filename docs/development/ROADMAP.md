@@ -1,6 +1,6 @@
 # TicketFlow Roadmap
 
-> Última atualização: 2026-03-26
+> Última atualização: 2026-03-28
 > Baseado em: [`AGENTS.md`](../../AGENTS.md)
 
 ## Objetivo
@@ -14,6 +14,11 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 - Persistência isolada em repositórios.
 - TDD obrigatório para mudanças de comportamento.
 - Segurança e autorização server-side como padrão.
+
+## Atualização Operacional (2026-03-28)
+
+- Fase 003 (`Create Order Flow`) concluída com QA final e documentação consolidada.
+- Fase 004 (`Ticket Validation + Check-in + RBAC`) liberada para execução operacional.
 
 ## Fases
 
