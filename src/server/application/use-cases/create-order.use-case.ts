@@ -8,6 +8,7 @@ import type {
   LotRecord,
   LotRepository,
   OrderItemRecord,
+  OrderTicketRecord,
   OrderRepository,
 } from "../../repositories";
 
@@ -18,6 +19,7 @@ export type CreateOrderUseCase = (input: CreateOrderInput) => CreateOrderResult;
 export interface CreateOrderUseCaseDependencies {
   now: () => Date;
   generateOrderId: () => string;
+  generateTicketCode?: () => string;
   orderRepository: Pick<OrderRepository, "create">;
   lotRepository: Pick<LotRepository, "findById">;
   couponRepository: Pick<CouponRepository, "findByCodeForEvent" | "incrementRedemptionCount">;
@@ -39,7 +41,38 @@ const normalizeSaleStartsAt = (lot: LotRecord): Date => lot.saleStartsAt ?? new 
 
 const calculateSubtotal = (items: ResolvedOrderItem): number => items.quantity * items.unitPriceInCents;
 
+const fallbackGenerateTicketCode = (): string => {
+  const randomToken =
+    typeof globalThis.crypto?.randomUUID === "function"
+      ? globalThis.crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
+
+  return `TKT-${randomToken}`;
+};
+
+const createTicketsForItems = (
+  items: ResolvedOrderItem[],
+  eventId: string,
+  generateTicketCode: () => string,
+): OrderTicketRecord[] => {
+  const tickets: OrderTicketRecord[] = [];
+
+  for (const item of items) {
+    for (let index = 0; index < item.quantity; index += 1) {
+      tickets.push({
+        eventId,
+        lotId: item.lotId,
+        code: generateTicketCode(),
+      });
+    }
+  }
+
+  return tickets;
+};
+
 export const createCreateOrderUseCase = (dependencies: CreateOrderUseCaseDependencies) => {
+  const generateTicketCode = dependencies.generateTicketCode ?? fallbackGenerateTicketCode;
+
   const resolveItem = async (
     input: CreateOrderInput,
     item: CreateOrderInput["items"][number],
@@ -138,6 +171,7 @@ export const createCreateOrderUseCase = (dependencies: CreateOrderUseCaseDepende
         quantity: item.quantity,
         unitPriceInCents: item.unitPriceInCents,
       })),
+      createTicketsForItems(items, input.eventId, generateTicketCode),
     );
 
     if (couponIdToRedeem !== null) {

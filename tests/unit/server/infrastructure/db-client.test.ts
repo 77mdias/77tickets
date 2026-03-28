@@ -3,7 +3,9 @@ import { describe, expect, test, vi } from "vitest";
 import { createDb } from "../../../../src/server/infrastructure/db/client";
 
 vi.mock("@neondatabase/serverless", () => ({
-  neon: vi.fn(() => vi.fn()),
+  Pool: vi.fn(function MockPool() {
+    return {};
+  }),
 }));
 
 describe("createDb", () => {
@@ -24,12 +26,12 @@ describe("createDb", () => {
     expect(db1).not.toBe(db2);
   });
 
-  test("forwards the provided URL to the Neon client constructor", async () => {
-    const { neon } = await import("@neondatabase/serverless");
+  test("forwards the provided URL to the Neon Pool constructor", async () => {
+    const { Pool } = await import("@neondatabase/serverless");
     const url = "postgresql://user:pass@neon.tech/testdb";
 
     createDb(url);
 
-    expect(vi.mocked(neon)).toHaveBeenCalledWith(url);
+    expect(vi.mocked(Pool)).toHaveBeenCalledWith({ connectionString: url });
   });
 });

@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-28
 **Sprint Atual:** Sprint 003
-**Status Geral:** 🟡 45% (5/11 tarefas completas) - EM ANDAMENTO
+**Status Geral:** 🟡 55% (6/11 tarefas completas) - EM ANDAMENTO
 **ETA:** 1 sprint (7 a 10 dias úteis)
 **Pré-requisito:** Fase 002 (concluída)
 
@@ -14,9 +14,9 @@
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Use-case e Regras de Compra | 4 | 4 | 0 | 0 | 0 |
-| API e Persistência Transacional | 4 | 1 | 0 | 0 | 3 |
+| API e Persistência Transacional | 4 | 2 | 0 | 0 | 2 |
 | Checkout UI, QA e Observabilidade | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **11** | **5** | **0** | **0** | **6** |
+| **TOTAL** | **11** | **6** | **0** | **0** | **5** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Fluxo-alvo definido no AGENTS (`createOrder` server-side).
@@ -164,7 +164,7 @@ Expor o fluxo de compra com handler fino, validação na fronteira e persistênc
   **Dependências:** ORD-003  
   **Status:** ✅ Concluído
 
-- [ ] **API-002** - Implementar persistência transacional de pedido/itens/tickets
+- [x] **API-002** - Implementar persistência transacional de pedido/itens/tickets
 
   **Descrição curta:**
   - Garantir atomicidade do fluxo de compra.
@@ -181,13 +181,13 @@ Expor o fluxo de compra com handler fino, validação na fronteira e persistênc
   **Arquivos/áreas afetadas:** `src/server/infrastructure/db/client.ts`, `src/server/repositories/drizzle/drizzle-order.repository.ts`, `src/server/repositories/drizzle/drizzle-ticket.repository.ts`
 
   **Critérios de aceitação:**
-  - [ ] Sem dados órfãos em falha parcial.
-  - [ ] Fluxo de compra é idempotente quando aplicável.
+  - [x] Sem dados órfãos em falha parcial.
+  - [x] Fluxo de compra é idempotente quando aplicável (N/A na fase 003 sem chave de idempotência dedicada; limitação documentada em `docs/development/Logs/API-002.md`).
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 5h
   **Dependências:** ORD-003, Fase 002 DBR-003
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 - [ ] **API-003** - Testes de integração do endpoint de compra
 

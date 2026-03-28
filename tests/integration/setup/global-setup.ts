@@ -61,6 +61,6 @@ export async function setup(): Promise<void> {
     );
   }
 
-  const { migrate } = await import("drizzle-orm/neon-http/migrator");
+  const { migrate } = await import("drizzle-orm/neon-serverless/migrator");
   await migrate(db, { migrationsFolder: resolve(process.cwd(), "drizzle") });
 }

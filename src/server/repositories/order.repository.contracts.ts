@@ -20,6 +20,12 @@ export interface OrderItemRecord {
   unitPriceInCents: number;
 }
 
+export interface OrderTicketRecord {
+  eventId: EntityId;
+  lotId: EntityId;
+  code: string;
+}
+
 export interface OrderWithItemsRecord {
   order: OrderRecord;
   items: OrderItemRecord[];
@@ -27,6 +33,10 @@ export interface OrderWithItemsRecord {
 
 export interface OrderRepository {
   findById(orderId: EntityId): Promise<OrderWithItemsRecord | null>;
-  create(order: OrderRecord, items: OrderItemRecord[]): Promise<OrderWithItemsRecord>;
+  create(
+    order: OrderRecord,
+    items: OrderItemRecord[],
+    tickets?: OrderTicketRecord[],
+  ): Promise<OrderWithItemsRecord>;
   updateStatus(orderId: EntityId, status: OrderStatus): Promise<void>;
 }

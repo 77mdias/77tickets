@@ -1,21 +1,23 @@
 import { describe, expect, test } from "vitest";
 
 import { DrizzleOrderRepository } from "../../../src/server/repositories/drizzle/drizzle-order.repository";
+import { DrizzleTicketRepository } from "../../../src/server/repositories/drizzle/drizzle-ticket.repository";
 import { cleanDatabase, createTestDb } from "../setup";
-import { createEventFixture, createLotFixture } from "../../fixtures";
+import { createEventFixture, createLotFixture, createOrderFixture, createTicketFixture } from "../../fixtures";
 
 describe.skipIf(!process.env.TEST_DATABASE_URL)(
   "DrizzleOrderRepository",
   () => {
     const db = createTestDb();
 
-    test("create persists order and items sequentially, returning OrderWithItemsRecord", async () => {
+    test("create persists order/items/tickets in a single transaction", async () => {
       await cleanDatabase(db);
 
       const event = await createEventFixture(db, { status: "published" });
       const lot = await createLotFixture(db, event.id);
 
       const repo = new DrizzleOrderRepository(db);
+      const ticketRepo = new DrizzleTicketRepository(db);
 
       const orderRecord = {
         id: "00000000-0000-0000-0000-000000000200",
@@ -31,8 +33,13 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
       const items = [
         { lotId: lot.id, quantity: 2, unitPriceInCents: 10000 },
       ];
+      const tickets = [
+        { eventId: event.id, lotId: lot.id, code: "TKT-ORDER-200-001" },
+        { eventId: event.id, lotId: lot.id, code: "TKT-ORDER-200-002" },
+      ];
 
-      const result = await repo.create(orderRecord, items);
+      const result = await repo.create(orderRecord, items, tickets);
+      const persistedTickets = await ticketRepo.listByOrderId(orderRecord.id);
 
       expect(result.order.id).toBe(orderRecord.id);
       expect(result.order.customerId).toBe(orderRecord.customerId);
@@ -42,6 +49,11 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
       expect(result.items[0].lotId).toBe(lot.id);
       expect(result.items[0].quantity).toBe(2);
       expect(result.items[0].unitPriceInCents).toBe(10000);
+      expect(persistedTickets).toHaveLength(2);
+      expect(persistedTickets.map((ticket) => ticket.code)).toEqual([
+        "TKT-ORDER-200-001",
+        "TKT-ORDER-200-002",
+      ]);
     });
 
     test("create supports multiple order items", async () => {
@@ -172,6 +184,49 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
         name: "PersistenceError",
         kind: "foreign-key-constraint",
       });
+    });
+
+    test("create rolls back order and items when ticket insert fails", async () => {
+      await cleanDatabase(db);
+
+      const event = await createEventFixture(db, { status: "published" });
+      const lot = await createLotFixture(db, event.id);
+      const existingOrder = await createOrderFixture(db, event.id, {
+        status: "paid",
+      });
+
+      await createTicketFixture(
+        db,
+        { eventId: event.id, orderId: existingOrder.id, lotId: lot.id },
+        { code: "TKT-DUPLICATE-ROLLBACK" },
+      );
+
+      const repo = new DrizzleOrderRepository(db);
+
+      const orderRecord = {
+        id: "00000000-0000-0000-0000-000000000205",
+        customerId: "00000000-0000-0000-0000-000000000002",
+        eventId: event.id,
+        status: "pending" as const,
+        subtotalInCents: 10000,
+        discountInCents: 0,
+        totalInCents: 10000,
+        createdAt: new Date(),
+      };
+
+      await expect(
+        repo.create(
+          orderRecord,
+          [{ lotId: lot.id, quantity: 1, unitPriceInCents: 10000 }],
+          [{ eventId: event.id, lotId: lot.id, code: "TKT-DUPLICATE-ROLLBACK" }],
+        ),
+      ).rejects.toMatchObject({
+        name: "PersistenceError",
+        kind: "unique-constraint",
+      });
+
+      const orderAfterFailure = await repo.findById(orderRecord.id);
+      expect(orderAfterFailure).toBeNull();
     });
   },
 );

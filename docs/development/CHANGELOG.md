@@ -61,6 +61,7 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 - Criado log técnico de execução TDD da task `ORD-002` em `docs/development/Logs/ORD-002.md`.
 - Criado log técnico de execução TDD da task `ORD-003` em `docs/development/Logs/ORD-003.md`.
 - Criado log técnico de execução TDD da task `ORD-004` em `docs/development/Logs/ORD-004.md`.
+- Criado log técnico de execução da task `API-002` em `docs/development/Logs/API-002.md`.
 
 ### Changed
 
@@ -95,6 +96,13 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - regra explícita `isOrderStatusEligibleForActiveTicket` em `src/server/domain/orders/order.rules.ts`
   - reaproveitamento da regra em `src/server/domain/tickets/ticket.rules.ts`
 - Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com conclusão de `ORD-004` e progresso real da fase 003 (`4/11`).
+- Implementada persistência transacional da compra (`API-002`) com migração do client para `drizzle-orm/neon-serverless`:
+  - `src/server/infrastructure/db/client.ts` agora usa `Pool` e suporta `db.transaction()`.
+  - `src/server/repositories/drizzle/drizzle-order.repository.ts` persiste `order -> items -> tickets` em transação única com rollback automático.
+  - `src/server/application/use-cases/create-order.use-case.ts` passou a gerar payload de tickets server-side no fluxo de criação de pedido.
+  - `tests/integration/setup/global-setup.ts` migrado para `drizzle-orm/neon-serverless/migrator`.
+  - cobertura TDD ampliada em `tests/unit/application/create-order.use-case.test.ts` e `tests/integration/repositories/drizzle-order.repository.integration.test.ts`.
+- Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com conclusão de `API-002` e progresso real da fase 003 (`6/11`).
 
 ### Notes
 

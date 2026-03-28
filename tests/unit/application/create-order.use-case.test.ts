@@ -3,6 +3,7 @@ import { expect, test, vi } from "vitest";
 type CreateOrderUseCaseFactory = (dependencies: {
   now: () => Date;
   generateOrderId: () => string;
+  generateTicketCode?: () => string;
   orderRepository: {
     create: (...args: unknown[]) => Promise<unknown>;
   };
@@ -66,9 +67,15 @@ test("ORD-002 RED: calculates totals from server lot price and ignores manipulat
   const createCreateOrderUseCase = await loadCreateOrderFactory();
 
   const orderRepositoryCreate = vi.fn(async (...args: unknown[]) => args[0]);
+  const generateTicketCode = vi
+    .fn()
+    .mockReturnValueOnce("TKT-UNIT-001")
+    .mockReturnValueOnce("TKT-UNIT-002");
+
   const useCase = createCreateOrderUseCase({
     now: () => FIXED_NOW,
     generateOrderId: () => "order-red-001",
+    generateTicketCode,
     orderRepository: { create: orderRepositoryCreate },
     lotRepository: {
       findById: async () => ({
@@ -105,6 +112,7 @@ test("ORD-002 RED: calculates totals from server lot price and ignores manipulat
   expect(orderRepositoryCreate).toHaveBeenCalled();
 
   const [persistedOrder, persistedItems] = orderRepositoryCreate.mock.calls[0] ?? [];
+  const persistedTickets = orderRepositoryCreate.mock.calls[0]?.[2];
   expect(persistedOrder).toMatchObject({
     subtotalInCents: 20000,
     discountInCents: 0,
@@ -117,6 +125,19 @@ test("ORD-002 RED: calculates totals from server lot price and ignores manipulat
       unitPriceInCents: 10000,
     },
   ]);
+  expect(persistedTickets).toEqual([
+    {
+      eventId: EVENT_ID,
+      lotId: LOT_ID,
+      code: "TKT-UNIT-001",
+    },
+    {
+      eventId: EVENT_ID,
+      lotId: LOT_ID,
+      code: "TKT-UNIT-002",
+    },
+  ]);
+  expect(generateTicketCode).toHaveBeenCalledTimes(2);
 });
 
 test("ORD-002 RED: rejects purchase when lot has insufficient stock", async () => {
