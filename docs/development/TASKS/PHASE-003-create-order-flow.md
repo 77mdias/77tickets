@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-28
 **Sprint Atual:** Sprint 003
-**Status Geral:** 🟡 36% (4/11 tarefas completas) - EM ANDAMENTO
+**Status Geral:** 🟡 45% (5/11 tarefas completas) - EM ANDAMENTO
 **ETA:** 1 sprint (7 a 10 dias úteis)
 **Pré-requisito:** Fase 002 (concluída)
 
@@ -14,9 +14,9 @@
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Use-case e Regras de Compra | 4 | 4 | 0 | 0 | 0 |
-| API e Persistência Transacional | 4 | 0 | 0 | 1 | 3 |
+| API e Persistência Transacional | 4 | 1 | 0 | 0 | 3 |
 | Checkout UI, QA e Observabilidade | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **11** | **4** | **0** | **1** | **6** |
+| **TOTAL** | **11** | **5** | **0** | **0** | **6** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Fluxo-alvo definido no AGENTS (`createOrder` server-side).
@@ -142,7 +142,7 @@ Expor o fluxo de compra com handler fino, validação na fronteira e persistênc
 
 #### API.1 - Endpoint de checkout e transação
 
-- [ ] **API-001** - Implementar handler de criação de pedido com Zod
+- [x] **API-001** - Implementar handler de criação de pedido com Zod
 
   **Descrição curta:**
   - Criar endpoint/route adapter para checkout.
@@ -156,13 +156,13 @@ Expor o fluxo de compra com handler fino, validação na fronteira e persistênc
   **Arquivos/áreas afetadas:** `src/server/api/orders/create-order.handler.ts`, `src/server/api/error-mapper.ts`
 
   **Critérios de aceitação:**
-  - [ ] Handler sem regra de negócio.
-  - [ ] Erros não expõem detalhes internos de DB.
+  - [x] Handler sem regra de negócio.
+  - [x] Erros não expõem detalhes internos de DB.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 3h  
   **Dependências:** ORD-003  
-  **Status:** 🟡 Pendente
+  **Status:** ✅ Concluído
 
 - [ ] **API-002** - Implementar persistência transacional de pedido/itens/tickets
 
