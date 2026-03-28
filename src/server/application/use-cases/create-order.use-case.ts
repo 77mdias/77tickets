@@ -14,7 +14,7 @@ import type {
 
 export type { CreateOrderInput, CreateOrderResult };
 
-export type CreateOrderUseCase = (input: CreateOrderInput) => CreateOrderResult;
+export type CreateOrderUseCase = (input: CreateOrderInput) => Promise<CreateOrderResult>;
 
 export interface CreateOrderUseCaseDependencies {
   now: () => Date;

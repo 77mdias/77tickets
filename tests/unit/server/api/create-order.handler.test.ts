@@ -4,11 +4,11 @@ import { createCreateOrderHandler } from "../../../../src/server/api/create-orde
 import type { CreateOrderInput } from "../../../../src/server/application/use-cases/create-order.use-case";
 import { PersistenceError } from "../../../../src/server/repositories";
 
-test("createCreateOrderHandler returns validation error response for invalid payload", () => {
+test("createCreateOrderHandler returns validation error response for invalid payload", async () => {
   let createOrderCalls = 0;
 
   const handler = createCreateOrderHandler({
-    createOrder: () => {
+    createOrder: async () => {
       createOrderCalls += 1;
 
       return {
@@ -30,7 +30,7 @@ test("createCreateOrderHandler returns validation error response for invalid pay
     },
   });
 
-  const response = handler({
+  const response = await handler({
     body: {
       eventId: "not-uuid",
       customerId: "not-uuid",
@@ -44,11 +44,11 @@ test("createCreateOrderHandler returns validation error response for invalid pay
   expect(createOrderCalls).toBe(0);
 });
 
-test("createCreateOrderHandler passes validated typed input to use-case", () => {
+test("createCreateOrderHandler passes validated typed input to use-case", async () => {
   let receivedInput: CreateOrderInput | undefined;
 
   const handler = createCreateOrderHandler({
-    createOrder: (input) => {
+    createOrder: async (input) => {
       receivedInput = input;
 
       return {
@@ -82,7 +82,7 @@ test("createCreateOrderHandler passes validated typed input to use-case", () => 
     couponCode: "EARLYBIRD10",
   };
 
-  const response = handler({ body: payload });
+  const response = await handler({ body: payload });
 
   expect(response.status).toBe(200);
 
@@ -109,9 +109,9 @@ test("createCreateOrderHandler passes validated typed input to use-case", () => 
   });
 });
 
-test("createCreateOrderHandler maps repository persistence conflicts to 409", () => {
+test("createCreateOrderHandler maps repository persistence conflicts to 409", async () => {
   const handler = createCreateOrderHandler({
-    createOrder: () => {
+    createOrder: async () => {
       throw new PersistenceError(
         "unique-constraint",
         "Persistence operation failed: create order.",
@@ -120,7 +120,7 @@ test("createCreateOrderHandler maps repository persistence conflicts to 409", ()
     },
   });
 
-  const response = handler({
+  const response = await handler({
     body: {
       eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
       customerId: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",
@@ -142,9 +142,9 @@ test("createCreateOrderHandler maps repository persistence conflicts to 409", ()
   });
 });
 
-test("createCreateOrderHandler maps unknown persistence failures to 500", () => {
+test("createCreateOrderHandler maps unknown persistence failures to 500", async () => {
   const handler = createCreateOrderHandler({
-    createOrder: () => {
+    createOrder: async () => {
       throw new PersistenceError(
         "unknown",
         "Persistence operation failed: create order.",
@@ -152,7 +152,7 @@ test("createCreateOrderHandler maps unknown persistence failures to 500", () => 
     },
   });
 
-  const response = handler({
+  const response = await handler({
     body: {
       eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
       customerId: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",

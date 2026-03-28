@@ -62,6 +62,10 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 - Criado log técnico de execução TDD da task `ORD-003` em `docs/development/Logs/ORD-003.md`.
 - Criado log técnico de execução TDD da task `ORD-004` em `docs/development/Logs/ORD-004.md`.
 - Criado log técnico de execução da task `API-002` em `docs/development/Logs/API-002.md`.
+- Criado log técnico de execução da task `API-003` em `docs/development/Logs/API-003.md`.
+- Criada suíte de integração do endpoint de compra:
+  - `tests/integration/api/orders/create-order.endpoint.integration.test.ts`
+  - cobertura de sucesso ponta a ponta e erros estruturados (estoque insuficiente, cupom inválido, payload inválido)
 
 ### Changed
 
@@ -103,6 +107,11 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - `tests/integration/setup/global-setup.ts` migrado para `drizzle-orm/neon-serverless/migrator`.
   - cobertura TDD ampliada em `tests/unit/application/create-order.use-case.test.ts` e `tests/integration/repositories/drizzle-order.repository.integration.test.ts`.
 - Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com conclusão de `API-002` e progresso real da fase 003 (`6/11`).
+- Corrigido `create-order` handler para fluxo assíncrono de use-case:
+  - `src/server/api/create-order.handler.ts` agora aguarda `createOrder(...)` e mapeia erros assíncronos para resposta estruturada.
+  - `src/server/application/use-cases/create-order.use-case.ts` tipado explicitamente como `Promise<CreateOrderResult>`.
+  - `tests/unit/server/api/create-order.handler.test.ts` atualizado para validação assíncrona.
+- Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com conclusão de `API-003` e progresso real da fase 003 (`7/11`).
 
 ### Notes
 

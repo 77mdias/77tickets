@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-28
 **Sprint Atual:** Sprint 003
-**Status Geral:** 🟡 55% (6/11 tarefas completas) - EM ANDAMENTO
+**Status Geral:** 🟡 64% (7/11 tarefas completas) - EM ANDAMENTO
 **ETA:** 1 sprint (7 a 10 dias úteis)
 **Pré-requisito:** Fase 002 (concluída)
 
@@ -14,9 +14,9 @@
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Use-case e Regras de Compra | 4 | 4 | 0 | 0 | 0 |
-| API e Persistência Transacional | 4 | 2 | 0 | 0 | 2 |
+| API e Persistência Transacional | 4 | 3 | 0 | 0 | 1 |
 | Checkout UI, QA e Observabilidade | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **11** | **6** | **0** | **0** | **5** |
+| **TOTAL** | **11** | **7** | **0** | **0** | **4** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Fluxo-alvo definido no AGENTS (`createOrder` server-side).
@@ -189,7 +189,7 @@ Expor o fluxo de compra com handler fino, validação na fronteira e persistênc
   **Dependências:** ORD-003, Fase 002 DBR-003
   **Status:** ✅ Concluído
 
-- [ ] **API-003** - Testes de integração do endpoint de compra
+- [x] **API-003** - Testes de integração do endpoint de compra
 
   **Descrição curta:**
   - Validar cenário ponta a ponta da API.
@@ -203,13 +203,13 @@ Expor o fluxo de compra com handler fino, validação na fronteira e persistênc
   **Arquivos/áreas afetadas:** `tests/integration/api/orders/*.test.ts`, `tests/fixtures/orders/*`
 
   **Critérios de aceitação:**
-  - [ ] Cenários críticos passam com dados de teste isolados.
-  - [ ] Cenários negativos retornam erro estruturado.
+  - [x] Cenários críticos passam com dados de teste isolados.
+  - [x] Cenários negativos retornam erro estruturado.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 4h  
   **Dependências:** API-001, API-002  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 - [ ] **API-004** - Teste de autorização para criação de pedido
 

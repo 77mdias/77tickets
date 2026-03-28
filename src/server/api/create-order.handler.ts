@@ -11,7 +11,7 @@ export interface CreateOrderRequest {
 export interface CreateOrderSuccessResponse {
   status: 200;
   body: {
-    data: ReturnType<CreateOrderUseCase>;
+    data: Awaited<ReturnType<CreateOrderUseCase>>;
   };
 }
 
@@ -23,10 +23,10 @@ export interface CreateOrderHandlerDependencies {
 
 export const createCreateOrderHandler = (
   dependencies: CreateOrderHandlerDependencies,
-) => (request: CreateOrderRequest): CreateOrderHandlerResponse => {
+) => async (request: CreateOrderRequest): Promise<CreateOrderHandlerResponse> => {
   try {
     const input = parseInput(createOrderSchema, request.body);
-    const result = dependencies.createOrder(input);
+    const result = await dependencies.createOrder(input);
 
     return {
       status: 200,
