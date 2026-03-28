@@ -9,7 +9,7 @@
 | ---- | ------ | ---------------- | ------ | --------- |
 | 001 | Sprint 001 | `docs/development/TASKS/PHASE-001-foundation-architecture-tdd.md` | 🟢 Concluída | 9/9 |
 | 002 | Sprint 002 | `docs/development/TASKS/PHASE-002-domain-schema-repositories.md` | 🟢 Concluída | 10/10 |
-| 003 | Sprint 003 | `docs/development/TASKS/PHASE-003-create-order-flow.md` | 🟡 Em andamento | 8/11 |
+| 003 | Sprint 003 | `docs/development/TASKS/PHASE-003-create-order-flow.md` | 🟡 Em andamento | 9/11 |
 | 004 | Sprint 004 | `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` | 🔴 Bloqueada | 0/9 |
 | 005 | Sprint 005 | `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` | 🔴 Bloqueada | 0/10 |
 

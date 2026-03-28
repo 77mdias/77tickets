@@ -54,4 +54,13 @@ describe("architectural boundary guardrails", () => {
 
     expect(result.errorCount).toBe(0);
   });
+
+  test("allows route adapters in src/app/api to import server layers", async () => {
+    const result = await lintCode(
+      'import { createCreateOrderHandler } from "@/src/server/api/create-order.handler";\n',
+      "src/app/api/orders/route.ts",
+    );
+
+    expect(result.errorCount).toBe(0);
+  });
 });

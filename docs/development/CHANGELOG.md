@@ -122,6 +122,13 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - `tests/unit/server/application/security/create-order.policy.test.ts` e `tests/unit/server/api/create-order.handler.test.ts` cobrem policy + auditoria.
   - `tests/integration/api/orders/create-order.endpoint.integration.test.ts` atualizado para boundary autenticado.
 - Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com conclusão de `API-004` e progresso real da fase 003 (`8/11`).
+- Implementada integração mínima de checkout com endpoint (`UX-001`):
+  - `src/app/api/orders/route.ts` criado para expor `POST /api/orders` integrado ao handler/use-case/repositórios.
+  - `src/server/api/orders/create-order.route-adapter.ts` criado para adaptar request HTTP, injetar identidade demo server-side e preservar erro estruturado.
+  - `src/features/checkout/checkout-form.tsx` e `src/features/checkout/checkout-client.ts` criados para submissão mínima do checkout com feedback de sucesso/erro sem lógica de preço/estoque no client.
+  - `eslint.config.mjs` ajustado para permitir imports de server apenas em `src/app/api/**`, mantendo o bloqueio para UI.
+  - Novos testes unitários: `tests/unit/server/api/create-order.route-adapter.test.ts` e `tests/unit/features/checkout/checkout-client.test.ts`.
+- Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com conclusão de `UX-001` e progresso real da fase 003 (`9/11`).
 
 ### Notes
 

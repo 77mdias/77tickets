@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-28
 **Sprint Atual:** Sprint 003
-**Status Geral:** 🟡 73% (8/11 tarefas completas) - EM ANDAMENTO
+**Status Geral:** 🟡 82% (9/11 tarefas completas) - EM ANDAMENTO
 **ETA:** 1 sprint (7 a 10 dias úteis)
 **Pré-requisito:** Fase 002 (concluída)
 
@@ -15,8 +15,8 @@
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Use-case e Regras de Compra | 4 | 4 | 0 | 0 | 0 |
 | API e Persistência Transacional | 4 | 4 | 0 | 0 | 0 |
-| Checkout UI, QA e Observabilidade | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **11** | **8** | **0** | **0** | **3** |
+| Checkout UI, QA e Observabilidade | 3 | 1 | 0 | 0 | 2 |
+| **TOTAL** | **11** | **9** | **0** | **0** | **2** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Fluxo-alvo definido no AGENTS (`createOrder` server-side).
@@ -240,7 +240,7 @@ Conectar o fluxo backend ao frontend de forma enxuta, sem mover regra de negóci
 
 #### UX.1 - Integração mínima com o app
 
-- [ ] **UX-001** - Implementar formulário mínimo de checkout integrado ao endpoint
+- [x] **UX-001** - Implementar formulário mínimo de checkout integrado ao endpoint
 
   **Descrição curta:**
   - Adicionar interação mínima para submissão do pedido.
@@ -254,13 +254,13 @@ Conectar o fluxo backend ao frontend de forma enxuta, sem mover regra de negóci
   **Arquivos/áreas afetadas:** `src/features/checkout/*`, `app/*`
 
   **Critérios de aceitação:**
-  - [ ] UI não calcula total nem valida estoque.
-  - [ ] Erro backend exibido de forma compreensível.
+  - [x] UI não calcula total nem valida estoque.
+  - [x] Erro backend exibido de forma compreensível.
 
   **Prioridade:** 🟡 Alta  
   **Estimativa:** 4h  
   **Dependências:** API-001  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 - [ ] **UX-002** - Instrumentar logs e métricas básicas de checkout
 
@@ -313,7 +313,7 @@ Conectar o fluxo backend ao frontend de forma enxuta, sem mover regra de negóci
 - **Suites necessárias:** Unit (use-case/domínio), Integration (API + repositories), Regression (expiração/oversell), smoke manual.
 - **Cobertura alvo:** >85% no módulo de ordem e >80% de handlers de checkout.
 - **Comandos de verificação:** `npm run test:unit`, `npm run test:integration`, `npm run test`, `npm run lint`.
-- **Estado atual:** 🟡 Em andamento (bloqueios concentrados nas tasks UX-001..UX-003).
+- **Estado atual:** 🟡 Em andamento (bloqueios concentrados nas tasks UX-002..UX-003).
 
 ---
 
@@ -332,5 +332,5 @@ Conectar o fluxo backend ao frontend de forma enxuta, sem mover regra de negóci
 - [ ] Cálculo de total e estoque 100% server-side.
 - [ ] Persistência transacional validada por testes.
 - [x] Autorização e regressões críticas cobertas.
-- [ ] UI conectada sem conter regra de negócio.
+- [x] UI conectada sem conter regra de negócio.
 - [ ] Documentação e evidências atualizadas.

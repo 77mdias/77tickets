@@ -34,6 +34,12 @@ const eslintConfig = defineConfig([
     },
   },
   {
+    files: ["src/app/api/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": "off",
+    },
+  },
+  {
     files: ["src/server/api/**/*.{ts,tsx}"],
     rules: {
       "no-restricted-imports": createRestrictedImportsRule([
