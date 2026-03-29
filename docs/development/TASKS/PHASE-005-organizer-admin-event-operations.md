@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 005
-**Status Geral:** 🟡 10% (1/10 tarefas completas) - FASE ATIVA
+**Status Geral:** 🟡 20% (2/10 tarefas completas) - FASE ATIVA
 **ETA:** 1 sprint (7 a 9 dias úteis)
 **Pré-requisito:** Fase 004 (concluída)
 
@@ -13,10 +13,10 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Gestão de Evento | 4 | 1 | 0 | 0 | 3 |
+| Gestão de Evento | 4 | 2 | 0 | 0 | 2 |
 | APIs de Organizer/Admin | 3 | 0 | 0 | 0 | 3 |
 | Segurança, QA e Governança | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **10** | **1** | **0** | **0** | **9** |
+| **TOTAL** | **10** | **2** | **0** | **0** | **8** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de publicação e ownership já descritas no AGENTS.md.
@@ -74,7 +74,7 @@ Assegurar que o ciclo de vida do evento seja governado por regras de domínio ex
   **Dependências:** Fase 004
   **Status:** ✅ Concluído
 
-- [ ] **EVT-002** - Escrever testes RED para regras de publicação
+- [x] **EVT-002** - Escrever testes RED para regras de publicação
 
   **Descrição curta:**
   - Cobrir comportamento esperado antes da implementação.
@@ -88,13 +88,13 @@ Assegurar que o ciclo de vida do evento seja governado por regras de domínio ex
   **Arquivos/áreas afetadas:** `tests/unit/application/publish-event.use-case.test.ts`
 
   **Critérios de aceitação:**
-  - [ ] Testes começam em RED pelos motivos corretos.
-  - [ ] Cenários críticos definidos no AGENTS cobertos.
+  - [x] Testes começam em RED pelos motivos corretos.
+  - [x] Cenários críticos definidos no AGENTS cobertos.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 3h
   **Dependências:** EVT-001
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
 - [ ] **EVT-003** - Implementar `publishEvent` (GREEN)
 
@@ -115,8 +115,8 @@ Assegurar que o ciclo de vida do evento seja governado por regras de domínio ex
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 5h  
-  **Dependências:** EVT-002  
-  **Status:** ⛔ Bloqueado
+  **Dependências:** EVT-002
+  **Status:** ⏳ Pendente
 
 - [ ] **EVT-004** - Cobrir regressões de status e evento cancelado
 
