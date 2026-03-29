@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 004
-**Status Geral:** 🟡 56% (5/9 tarefas completas) - FASE EM EXECUÇÃO
+**Status Geral:** 🟡 67% (6/9 tarefas completas) - FASE EM EXECUÇÃO
 **ETA:** 1 sprint (6 a 8 dias úteis)
 **Pré-requisito:** Fase 003 (concluída)
 
@@ -14,9 +14,9 @@
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Validação de Ticket | 3 | 3 | 0 | 0 | 0 |
-| API de Check-in e Operação | 3 | 2 | 0 | 0 | 1 |
+| API de Check-in e Operação | 3 | 3 | 0 | 0 | 0 |
 | RBAC, Concorrência e QA | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **9** | **5** | **0** | **0** | **4** |
+| **TOTAL** | **9** | **6** | **0** | **0** | **3** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de check-in e validade já definidas no AGENTS.
@@ -163,7 +163,7 @@ Expor o caso de uso de check-in via API e interface operacional simples para equ
   **Dependências:** CHK-003  
   **Status:** ✅ Concluído
 
-- [ ] **OPS-003** - Implementar tela operacional mínima de check-in
+- [x] **OPS-003** - Implementar tela operacional mínima de check-in
 
   **Descrição curta:**
   - Criar interface básica para leitura/validação de ticket.
@@ -177,13 +177,13 @@ Expor o caso de uso de check-in via API e interface operacional simples para equ
   **Arquivos/áreas afetadas:** `src/features/checkin/*`, `app/checkin/*`
 
   **Critérios de aceitação:**
-  - [ ] Fluxo operacional funciona para checker autorizado.
-  - [ ] UI não decide validade do ticket localmente.
+  - [x] Fluxo operacional funciona para checker autorizado.
+  - [x] UI não decide validade do ticket localmente.
 
   **Prioridade:** 🟡 Alta  
   **Estimativa:** 4h  
   **Dependências:** OPS-001  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 ### 📦 RBAC, Concorrência e QA - Segurança operacional
 
@@ -281,7 +281,7 @@ Assegurar que somente papéis autorizados executem check-in e que eventos concor
 ## ✅ Checklist de Encerramento da Fase
 
 - [ ] Validação de ticket implementada e testada.
-- [ ] Fluxo de check-in operacional disponível.
+- [x] Fluxo de check-in operacional disponível.
 - [ ] RBAC completo validado por testes.
 - [ ] Regressões de duplo uso cobertas.
 - [ ] Documentação atualizada e aprovada.

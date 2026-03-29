@@ -160,6 +160,13 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - cobertura de unidade atualizada em `tests/unit/application/validate-checkin.use-case.test.ts` para cenário de concorrência.
   - cobertura de integração estendida em `tests/integration/repositories/drizzle-ticket.repository.integration.test.ts` para tentativa concorrente única vencedora.
   - atualização de progresso em `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` e `docs/development/TASKS.md` para `5/9`.
+- Implementada a task `OPS-003` (tela operacional mínima de check-in):
+  - endpoint `POST /api/checkin` adicionado em `src/app/api/checkin/route.ts`, com composição de handler/use-case/repositórios Drizzle.
+  - adaptador HTTP de check-in criado em `src/server/api/checkin/validate-checkin.route-adapter.ts` com parse seguro, actor `checker` server-side e respostas estruturadas.
+  - interface operacional mínima criada em `src/features/checkin/checkin-form.tsx`, `src/features/checkin/checkin-client.ts` e `src/app/checkin/page.tsx`.
+  - documentação de ambiente atualizada com `DEMO_CHECKER_ID` em `.env.example`.
+  - cobertura unitária adicionada para client/adapter em `tests/unit/features/checkin/checkin-client.test.ts` e `tests/unit/server/api/checkin/validate-checkin.route-adapter.test.ts`.
+  - atualização de progresso em `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` e `docs/development/TASKS.md` para `6/9`.
 
 ### Notes
 
