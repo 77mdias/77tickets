@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 004
-**Status Geral:** 🟡 11% (1/9 tarefas completas) - FASE EM EXECUÇÃO
+**Status Geral:** 🟡 22% (2/9 tarefas completas) - FASE EM EXECUÇÃO
 **ETA:** 1 sprint (6 a 8 dias úteis)
 **Pré-requisito:** Fase 003 (concluída)
 
@@ -13,10 +13,10 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Validação de Ticket | 3 | 1 | 0 | 0 | 2 |
+| Validação de Ticket | 3 | 2 | 0 | 0 | 1 |
 | API de Check-in e Operação | 3 | 0 | 0 | 0 | 3 |
 | RBAC, Concorrência e QA | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **9** | **1** | **0** | **0** | **8** |
+| **TOTAL** | **9** | **2** | **0** | **0** | **7** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de check-in e validade já definidas no AGENTS.
@@ -68,7 +68,7 @@ Centralizar a validação de ingresso em um caso de uso robusto, mantendo regras
   **Dependências:** Fase 003  
   **Status:** ✅ Concluído
 
-- [ ] **CHK-002** - Escrever testes RED de validação de ticket
+- [x] **CHK-002** - Escrever testes RED de validação de ticket
 
   **Descrição curta:**
   - Cobrir comportamento esperado antes de implementar.
@@ -82,13 +82,13 @@ Centralizar a validação de ingresso em um caso de uso robusto, mantendo regras
   **Arquivos/áreas afetadas:** `tests/unit/application/validate-checkin.use-case.test.ts`
 
   **Critérios de aceitação:**
-  - [ ] Cenários críticos iniciam RED.
-  - [ ] Regras do AGENTS estão representadas em testes.
+  - [x] Cenários críticos iniciam RED.
+  - [x] Regras do AGENTS estão representadas em testes.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 3h  
   **Dependências:** CHK-001  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 - [ ] **CHK-003** - Implementar `validateCheckin` até GREEN
 
