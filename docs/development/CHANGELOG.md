@@ -82,6 +82,14 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - use-case `src/server/application/use-cases/update-event-status.use-case.ts`
   - cobertura de testes unit/integration em `tests/unit/server/api/events/*`, `tests/unit/application/update-event-status.use-case.test.ts` e `tests/integration/api/events/auth.test.ts`
   - log técnico em `docs/development/Logs/ADM-001.md`
+- Criada a entrega técnica da task `ADM-002` (governança de cupom por evento):
+  - handlers `src/server/api/coupons/create-coupon.handler.ts` e `src/server/api/coupons/update-coupon.handler.ts`
+  - route adapter e rotas HTTP `POST /api/coupons/create` e `POST /api/coupons/update`
+  - schemas `src/server/api/schemas/create-coupon.schema.ts` e `src/server/api/schemas/update-coupon.schema.ts`
+  - use-cases `src/server/application/use-cases/create-coupon.use-case.ts` e `src/server/application/use-cases/update-coupon.use-case.ts`
+  - expansão do contrato/repositório de cupom para `findById`, `create` e `update`
+  - cobertura de testes unit/integration em `tests/unit/server/api/coupons/*`, `tests/unit/application/*coupon*.test.ts`, `tests/integration/api/coupons/auth.test.ts` e `tests/integration/repositories/drizzle-coupon.repository.integration.test.ts`
+  - log técnico em `docs/development/Logs/ADM-002.md`
 
 ### Changed
 
@@ -90,6 +98,7 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - `src/server/api/schemas/create-order.schema.ts` com payload de itens e validação estrita.
   - testes unitários de schema/handler ajustados para o novo contrato.
 - Atualizados `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` e `docs/development/TASKS.md` com conclusão de `ADM-001` e progresso da fase 005 em `4/10`.
+- Atualizados `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` e `docs/development/TASKS.md` com conclusão de `ADM-002` e progresso da fase 005 em `5/10`.
 - Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com progresso real da fase 003 (`1/11`, em andamento).
 - Definida convenção explícita para atualização contínua de `TASKS`, roadmap e changelog por fase.
 - Atualizada a fase 001 com conclusão da task `ARC-003` e progresso geral de `2/9` para `3/9`.

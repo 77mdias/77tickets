@@ -11,7 +11,7 @@
 | 002 | Sprint 002 | `docs/development/TASKS/PHASE-002-domain-schema-repositories.md` | 🟢 Concluída | 10/10 |
 | 003 | Sprint 003 | `docs/development/TASKS/PHASE-003-create-order-flow.md` | 🟢 Concluída | 11/11 |
 | 004 | Sprint 004 | `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` | 🟢 Concluída | 9/9 |
-| 005 | Sprint 005 | `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` | 🟡 Em andamento | 4/10 |
+| 005 | Sprint 005 | `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` | 🟡 Em andamento | 5/10 |
 
 ## Ordem Recomendada de Execução (TDD-first)
 

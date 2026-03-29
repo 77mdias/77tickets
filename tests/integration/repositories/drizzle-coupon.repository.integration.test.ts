@@ -47,6 +47,77 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
       expect(result).toBeNull();
     });
 
+    test("findById returns CouponRecord for existing coupon id", async () => {
+      await cleanDatabase(db);
+
+      const event = await createEventFixture(db, { status: "published" });
+      const fixture = await createCouponFixture(db, event.id, { code: "BY-ID" });
+
+      const repo = new DrizzleCouponRepository(db);
+      const result = await repo.findById(fixture.id);
+
+      expect(result).not.toBeNull();
+      expect(result!.id).toBe(fixture.id);
+      expect(result!.eventId).toBe(event.id);
+      expect(result!.code).toBe("BY-ID");
+    });
+
+    test("create persists coupon and returns record", async () => {
+      await cleanDatabase(db);
+
+      const event = await createEventFixture(db, { status: "published" });
+      const repo = new DrizzleCouponRepository(db);
+
+      const created = await repo.create({
+        eventId: event.id,
+        code: "CREATE10",
+        discountType: "percentage",
+        discountInCents: null,
+        discountPercentage: 10,
+        maxRedemptions: 100,
+        redemptionCount: 0,
+        validFrom: new Date("2026-01-01T00:00:00.000Z"),
+        validUntil: new Date("2026-12-31T23:59:59.000Z"),
+      });
+
+      expect(created.id).toBeDefined();
+      expect(created.eventId).toBe(event.id);
+      expect(created.code).toBe("CREATE10");
+      expect(created.discountPercentage).toBe(10);
+    });
+
+    test("update persists coupon changes", async () => {
+      await cleanDatabase(db);
+
+      const event = await createEventFixture(db, { status: "published" });
+      const fixture = await createCouponFixture(db, event.id, {
+        code: "UPD10",
+        discountPercentage: 10,
+        maxRedemptions: 100,
+      });
+
+      const repo = new DrizzleCouponRepository(db);
+
+      await repo.update({
+        id: fixture.id,
+        eventId: event.id,
+        code: "UPD20",
+        discountType: "percentage",
+        discountInCents: null,
+        discountPercentage: 20,
+        maxRedemptions: 200,
+        redemptionCount: fixture.redemptionCount,
+        validFrom: new Date("2026-01-01T00:00:00.000Z"),
+        validUntil: new Date("2026-12-31T23:59:59.000Z"),
+      });
+
+      const updated = await repo.findById(fixture.id);
+      expect(updated).not.toBeNull();
+      expect(updated!.code).toBe("UPD20");
+      expect(updated!.discountPercentage).toBe(20);
+      expect(updated!.maxRedemptions).toBe(200);
+    });
+
     test("incrementRedemptionCount atomically increments redemptionCount by 1", async () => {
       await cleanDatabase(db);
 

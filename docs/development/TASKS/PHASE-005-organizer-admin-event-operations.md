@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 005
-**Status Geral:** 🟡 40% (4/10 tarefas completas) - FASE ATIVA
+**Status Geral:** 🟡 50% (5/10 tarefas completas) - FASE ATIVA
 **ETA:** 1 sprint (7 a 9 dias úteis)
 **Pré-requisito:** Fase 004 (concluída)
 
@@ -14,9 +14,9 @@
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Gestão de Evento | 4 | 3 | 0 | 0 | 1 |
-| APIs de Organizer/Admin | 3 | 1 | 0 | 0 | 2 |
+| APIs de Organizer/Admin | 3 | 2 | 0 | 0 | 1 |
 | Segurança, QA e Governança | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **10** | **4** | **0** | **0** | **6** |
+| **TOTAL** | **10** | **5** | **0** | **0** | **5** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de publicação e ownership já descritas no AGENTS.md.
@@ -169,7 +169,7 @@ Disponibilizar APIs e interface mínima para operações administrativas com han
   **Dependências:** EVT-003  
   **Status:** ✅ Concluído
 
-- [ ] **ADM-002** - Implementar governança de cupom por evento
+- [x] **ADM-002** - Implementar governança de cupom por evento
 
   **Descrição curta:**
   - Permitir gestão de cupom no escopo do evento correto.
@@ -183,13 +183,13 @@ Disponibilizar APIs e interface mínima para operações administrativas com han
   **Arquivos/áreas afetadas:** `src/server/application/coupons/*`, `src/server/api/coupons/*`, `tests/integration/api/coupons/*.test.ts`
 
   **Critérios de aceitação:**
-  - [ ] Organizer não gerencia cupom fora do próprio evento.
-  - [ ] Cupom inválido é rejeitado com erro de validação/conflito.
+  - [x] Organizer não gerencia cupom fora do próprio evento.
+  - [x] Cupom inválido é rejeitado com erro de validação/conflito.
 
   **Prioridade:** 🟡 Alta  
   **Estimativa:** 5h  
   **Dependências:** EVT-003, Fase 002 DOM-004  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 - [ ] **ADM-003** - Criar tela mínima de gestão organizer/admin
 
