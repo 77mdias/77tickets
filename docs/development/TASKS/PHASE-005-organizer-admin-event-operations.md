@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 005
-**Status Geral:** ⚪ 0% (0/10 tarefas completas) - FASE ATIVA
+**Status Geral:** 🟡 10% (1/10 tarefas completas) - FASE ATIVA
 **ETA:** 1 sprint (7 a 9 dias úteis)
 **Pré-requisito:** Fase 004 (concluída)
 
@@ -13,10 +13,10 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Gestão de Evento | 4 | 0 | 0 | 1 | 3 |
+| Gestão de Evento | 4 | 1 | 0 | 0 | 3 |
 | APIs de Organizer/Admin | 3 | 0 | 0 | 0 | 3 |
 | Segurança, QA e Governança | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **10** | **0** | **0** | **1** | **9** |
+| **TOTAL** | **10** | **1** | **0** | **0** | **9** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de publicação e ownership já descritas no AGENTS.md.
@@ -52,7 +52,7 @@ Assegurar que o ciclo de vida do evento seja governado por regras de domínio ex
 
 #### EVT.1 - Regras de publicação e status
 
-- [ ] **EVT-001** - Definir contrato/schemas de publicação de evento
+- [x] **EVT-001** - Definir contrato/schemas de publicação de evento
 
   **Descrição curta:**
   - Modelar input para publicar evento e atualizar status.
@@ -66,13 +66,13 @@ Assegurar que o ciclo de vida do evento seja governado por regras de domínio ex
   **Arquivos/áreas afetadas:** `src/server/api/schemas/publish-event.schema.ts`, `src/server/application/events/event.types.ts`
 
   **Critérios de aceitação:**
-  - [ ] Input inválido falha com erro estruturado.
-  - [ ] Contrato cobre campos obrigatórios de publicação.
+  - [x] Input inválido falha com erro estruturado.
+  - [x] Contrato cobre campos obrigatórios de publicação.
 
-  **Prioridade:** 🔴 Crítica  
-  **Estimativa:** 2h  
-  **Dependências:** Fase 004  
-  **Status:** ⏳ Pendente
+  **Prioridade:** 🔴 Crítica
+  **Estimativa:** 2h
+  **Dependências:** Fase 004
+  **Status:** ✅ Concluído
 
 - [ ] **EVT-002** - Escrever testes RED para regras de publicação
 
@@ -91,10 +91,10 @@ Assegurar que o ciclo de vida do evento seja governado por regras de domínio ex
   - [ ] Testes começam em RED pelos motivos corretos.
   - [ ] Cenários críticos definidos no AGENTS cobertos.
 
-  **Prioridade:** 🔴 Crítica  
-  **Estimativa:** 3h  
-  **Dependências:** EVT-001  
-  **Status:** ⛔ Bloqueado
+  **Prioridade:** 🔴 Crítica
+  **Estimativa:** 3h
+  **Dependências:** EVT-001
+  **Status:** ⏳ Pendente
 
 - [ ] **EVT-003** - Implementar `publishEvent` (GREEN)
 
