@@ -83,37 +83,110 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 **Saída esperada:**
 - Processo de entrada com antifraude básico.
 
-### Fase 5 - Hardening (Status: Next - High Priority)
+### Fase 5 - Auth Integration & Schema Completion (Status: Next - High Priority)
+
+> Equivalente ao Sprint 006.
+
+**Objetivo:** fechar o gap de identidade de usuário, integrar auth real e completar schema com campos faltantes.
+
+**Entregas:**
+- Tabela `users` com FKs em `orders` e `events`.
+- Campos de apresentação (`description`, `location`, `imageUrl`) em `events`.
+- Better Auth integrado com adapter Drizzle.
+- Session middleware em todos os handlers.
+- Testes de integração de auth e regressão de RBAC.
+
+**Saída esperada:**
+- Usuário consegue registrar, logar e operar a aplicação com identidade real.
+
+### Fase 6 - Public Customer Experience (Status: Planned - High Priority)
+
+> Equivalente ao Sprint 007.
+
+**Objetivo:** implementar todos os fluxos do comprador com endpoints GET públicos e "Meus Ingressos".
+
+**Entregas:**
+- `listPublished()` no `EventRepository` + endpoint `GET /api/events`.
+- Endpoint `GET /api/events/:slug` com evento + lotes ativos.
+- `listByCustomerId()` em `TicketRepository` e `OrderRepository`.
+- Endpoint `GET /api/orders/mine` com tokens de ticket.
+- Geração de QR code visual para ticket.
+- Páginas: listagem de eventos, detalhe, "Meus Ingressos", checkout conectado.
+
+**Saída esperada:**
+- Demo end-to-end funcional para o fluxo do comprador.
+
+### Fase 7 - Admin Dashboard Completeness (Status: Planned - Medium-High Priority)
+
+> Equivalente ao Sprint 008.
+
+**Objetivo:** completar o painel admin/organizer com criação de evento, CRUD de lotes e visão de pedidos.
+
+**Entregas:**
+- Use-case `createEvent` + endpoint `POST /api/events`.
+- `LotRepository.save()` + use-cases `createLot` e `updateLot` + endpoints.
+- `OrderRepository.listByEventId()` + use-case `listEventOrders` + endpoint.
+- UI admin: criar evento, criar lotes, ver pedidos.
+
+**Saída esperada:**
+- Organizer consegue criar e gerenciar eventos ponta a ponta.
+
+### Fase 8 - Hardening (Status: Planned - Medium Priority)
+
+> Equivalente ao Sprint 009. Corresponde à Fase 5 original do ROADMAP.
 
 **Objetivo:** elevar confiabilidade, segurança e performance para cenário próximo de produção.
 
 **Entregas:**
-- Cobertura de testes nos fluxos prioritários.
-- Revisão de erros, observabilidade e logs.
-- Revisão de queries (evitar N+1) e payloads.
+- Gate de regressão automatizado para fluxos críticos.
+- Audit trail para order.created, checkin.validated, event.published.
+- Shape de erro padronizado em todos os handlers.
+- N+1 eliminado nos principais endpoints.
+- Rate limiting básico nos endpoints de escrita.
+- 3 runbooks operacionais.
 
 **Saída esperada:**
 - Plataforma estável para demonstração avançada.
 
-### Fase 6 - Migration Readiness (Status: Planned - Medium Priority)
+### Fase 9 - Migration Readiness (Status: Planned - Medium Priority)
+
+> Equivalente ao Sprint 010. Corresponde à Fase 6 original do ROADMAP.
 
 **Objetivo:** reduzir risco de migração para `Next.js + NestJS`.
 
 **Entregas:**
-- Auditoria de acoplamentos ao runtime atual.
-- Extração de módulos portáveis de aplicação/domínio.
-- Plano técnico de migração por etapas.
+- Inventário de acoplamentos ao Vinext e Cloudflare Workers.
+- domain e application layers confirmados portáveis empiricamente.
+- `MIGRATION-PLAN.md` com plano incremental e marcos.
+- Guardrails ESLint expandidos para novos acoplamentos detectados.
 
 **Saída esperada:**
-- Caminho de migração com baixo retrabalho.
+- Caminho de migração com baixo retrabalho documentado e validado.
 
-## Backlog Prioritário Imediato (Pós-Fase 005)
+## Backlog Prioritário (Pós-Fase 005 — Atualizado 2026-03-29)
 
-1. **[Alta]** Expandir gate automatizado para regressões críticas de compra/check-in/autorização em pipeline padrão.
-2. **[Alta]** Endurecer observabilidade operacional (erros estruturados, trilhas de auditoria e runbooks de resposta).
-3. **[Alta]** Revisar hotspots de performance/persistência (payload mínimo, consultas críticas e prevenção de N+1).
-4. **[Média]** Mapear acoplamentos de runtime Vinext/Workers que impactam extração para NestJS.
-5. **[Média]** Definir plano incremental de migração com marcos de compatibilidade (`domain`/`application`/`repositories`).
+> Backlog revisado após review completa do gap PRD vs. código. Novas fases adicionadas.
+
+1. **[Alta — Bloqueante]** Integrar auth real + criar tabela `users` com FKs → Fase 5 (Sprint 006).
+2. **[Alta — Demo incompleto]** Implementar fluxo do comprador (listagem, detalhe, meus ingressos, QR) → Fase 6 (Sprint 007).
+3. **[Média-Alta]** Completar admin: criar evento, criar lotes, ver pedidos → Fase 7 (Sprint 008).
+4. **[Média]** Expandir gate de regressões, audit trail, N+1 e runbooks → Fase 8 (Sprint 009).
+5. **[Média]** Auditar acoplamentos e documentar plano de migração NestJS → Fase 9 (Sprint 010).
+
+### Gaps Críticos Identificados na Review (2026-03-29)
+
+| Gap | Severidade | Sprint |
+|-----|-----------|--------|
+| Tabela `users` ausente — FKs sem enforcement | Alta | 006 |
+| Auth mockada nos handlers — inviável para produção | Alta | 006 |
+| Nenhum endpoint GET público — comprador sem navegação | Alta | 007 |
+| `listPublished()` ausente no EventRepository | Alta | 007 |
+| "Meus Ingressos" sem implementação | Alta | 007 |
+| QR code sem geração visual | Alta | 007 |
+| `createEvent` use-case ausente | Média-Alta | 008 |
+| `LotRepository` sem operações de escrita | Média-Alta | 008 |
+| `OrderRepository` sem `listByEventId()` | Média-Alta | 008 |
+| Schema de eventos sem campos de apresentação | Média | 006 |
 
 ## Riscos e Prioridades (Próximas Fases)
 
@@ -135,10 +208,18 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 - Changelog atualizado no bloco `[Unreleased]`.
 - Nenhuma quebra de fronteira arquitetural documentada como dívida oculta.
 
-## Plano de Sprints Iniciais (TDD-first)
+## Plano de Sprints (TDD-first)
 
-1. Sprint 001: Foundation Architecture + TDD Tooling.
-2. Sprint 002: Core Domain + Schema + Repositories.
-3. Sprint 003: Create Order Flow (Server-First).
-4. Sprint 004: Ticket Validation + Check-in + RBAC.
-5. Sprint 005: Organizer/Admin Operations + Event Publication.
+### Sprints Concluídas
+1. Sprint 001: Foundation Architecture + TDD Tooling. ✅
+2. Sprint 002: Core Domain + Schema + Repositories. ✅
+3. Sprint 003: Create Order Flow (Server-First). ✅
+4. Sprint 004: Ticket Validation + Check-in + RBAC. ✅
+5. Sprint 005: Organizer/Admin Operations + Event Publication. ✅
+
+### Sprints Planejadas
+6. Sprint 006: Auth Integration & Schema Completion. 🔵
+7. Sprint 007: Public Customer Experience. 🔵
+8. Sprint 008: Admin Dashboard Completeness. 🔵
+9. Sprint 009: Hardening. 🔵
+10. Sprint 010: Migration Readiness. 🔵
