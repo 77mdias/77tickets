@@ -67,6 +67,7 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 - Criado log técnico de execução da task `OPS-001` em `docs/development/Logs/OPS-001.md`.
 - Criado log técnico de execução da task `OPS-002` em `docs/development/Logs/OPS-002.md`.
 - Criado log técnico de execução da task `SEC-001` em `docs/development/Logs/SEC-001.md`.
+- Criado log técnico de execução da task `SEC-002` (fase 004) em `docs/development/Logs/SEC-002-phase-004.md`.
 - Criada suíte de integração do endpoint de compra:
   - `tests/integration/api/orders/create-order.endpoint.integration.test.ts`
   - cobertura de sucesso ponta a ponta e erros estruturados (estoque insuficiente, cupom inválido, payload inválido)
@@ -175,6 +176,11 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - novas suítes em `tests/unit/server/application/security/checkin-access.policy.test.ts` e `tests/integration/api/checkin/auth.test.ts`.
   - cobertura unitária de handler ampliada em `tests/unit/server/api/checkin/validate-checkin.handler.test.ts` com cenários de RBAC.
   - atualização de progresso em `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` e `docs/development/TASKS.md` para `7/9`.
+- Implementada a task `SEC-002` (regressão de duplo check-in e ticket inválido):
+  - criada suíte de regressão dedicada em `tests/regression/checkin/checkin.regression.test.ts`.
+  - cobertura explícita de concorrência de check-in no mesmo ticket (uma aprovação + uma rejeição `ticket_used`).
+  - cobertura explícita de ticket com pedido expirado (`order_not_eligible`).
+  - atualização de progresso em `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` e `docs/development/TASKS.md` para `8/9`.
 
 ### Notes
 

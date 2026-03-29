@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 004
-**Status Geral:** 🟡 78% (7/9 tarefas completas) - FASE EM EXECUÇÃO
+**Status Geral:** 🟡 89% (8/9 tarefas completas) - FASE EM EXECUÇÃO
 **ETA:** 1 sprint (6 a 8 dias úteis)
 **Pré-requisito:** Fase 003 (concluída)
 
@@ -15,8 +15,8 @@
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Validação de Ticket | 3 | 3 | 0 | 0 | 0 |
 | API de Check-in e Operação | 3 | 3 | 0 | 0 | 0 |
-| RBAC, Concorrência e QA | 3 | 1 | 0 | 0 | 2 |
-| **TOTAL** | **9** | **7** | **0** | **0** | **2** |
+| RBAC, Concorrência e QA | 3 | 2 | 0 | 0 | 1 |
+| **TOTAL** | **9** | **8** | **0** | **0** | **1** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de check-in e validade já definidas no AGENTS.
@@ -214,7 +214,7 @@ Assegurar que somente papéis autorizados executem check-in e que eventos concor
   **Dependências:** OPS-001  
   **Status:** ✅ Concluído
 
-- [ ] **SEC-002** - Criar regressão de duplo check-in e ticket inválido
+- [x] **SEC-002** - Criar regressão de duplo check-in e ticket inválido
 
   **Descrição curta:**
   - Registrar e proteger contra regressões frequentes.
@@ -228,13 +228,13 @@ Assegurar que somente papéis autorizados executem check-in e que eventos concor
   **Arquivos/áreas afetadas:** `tests/regression/checkin/*.test.ts`
 
   **Critérios de aceitação:**
-  - [ ] Regressões cobertas e automatizadas.
-  - [ ] Falha reproduzível em caso de quebra futura.
+  - [x] Regressões cobertas e automatizadas.
+  - [x] Falha reproduzível em caso de quebra futura.
 
   **Prioridade:** 🟡 Alta  
   **Estimativa:** 2h30  
   **Dependências:** CHK-003, OPS-002  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 - [ ] **SEC-003** - Encerramento de fase com QA e documentação
 
@@ -265,7 +265,7 @@ Assegurar que somente papéis autorizados executem check-in e que eventos concor
 - **Suites necessárias:** Unit (use-case/policy), Integration (API/repository), Regression (concorrência), smoke manual de operação.
 - **Cobertura alvo:** >85% de check-in/security.
 - **Comandos de verificação:** `npm run test:unit`, `npm run test:integration`, `npm run test`, `npm run lint`.
-- **Estado atual:** 🟡 Em andamento (RBAC coberto; regressões SEC-002 e encerramento SEC-003 pendentes).
+- **Estado atual:** 🟡 Em andamento (RBAC e regressões SEC-002 cobertos; encerramento SEC-003 pendente).
 
 ---
 
@@ -280,8 +280,8 @@ Assegurar que somente papéis autorizados executem check-in e que eventos concor
 
 ## ✅ Checklist de Encerramento da Fase
 
-- [ ] Validação de ticket implementada e testada.
+- [x] Validação de ticket implementada e testada.
 - [x] Fluxo de check-in operacional disponível.
 - [x] RBAC completo validado por testes.
-- [ ] Regressões de duplo uso cobertas.
+- [x] Regressões de duplo uso cobertas.
 - [ ] Documentação atualizada e aprovada.
