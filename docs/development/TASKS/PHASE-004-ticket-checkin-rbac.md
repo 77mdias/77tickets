@@ -1,11 +1,11 @@
 # 🚀 Tasks - Fase 004: Ticket Validation + Check-in + RBAC
 
-**Status:** 🔴 BLOQUEADA
-**Última atualização:** 2026-03-26
+**Status:** 🟡 EM ANDAMENTO
+**Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 004
-**Status Geral:** ⚪ 0% (0/9 tarefas completas) - FASE PLANEJADA
+**Status Geral:** 🟡 11% (1/9 tarefas completas) - FASE EM EXECUÇÃO
 **ETA:** 1 sprint (6 a 8 dias úteis)
-**Pré-requisito:** Fase 003 (pendente)
+**Pré-requisito:** Fase 003 (concluída)
 
 ---
 
@@ -13,10 +13,10 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Validação de Ticket | 3 | 0 | 0 | 0 | 3 |
+| Validação de Ticket | 3 | 1 | 0 | 0 | 2 |
 | API de Check-in e Operação | 3 | 0 | 0 | 0 | 3 |
 | RBAC, Concorrência e QA | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **9** | **0** | **0** | **0** | **9** |
+| **TOTAL** | **9** | **1** | **0** | **0** | **8** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de check-in e validade já definidas no AGENTS.
@@ -46,7 +46,7 @@ Centralizar a validação de ingresso em um caso de uso robusto, mantendo regras
 
 #### CHK.1 - Regras e comportamento do check-in
 
-- [ ] **CHK-001** - Definir contrato e schemas de validação de check-in
+- [x] **CHK-001** - Definir contrato e schemas de validação de check-in
 
   **Descrição curta:**
   - Definir payload de validação (ticketId/eventId/checker).
@@ -60,13 +60,13 @@ Centralizar a validação de ingresso em um caso de uso robusto, mantendo regras
   **Arquivos/áreas afetadas:** `src/server/api/schemas/validate-checkin.schema.ts`, `src/server/application/checkin/checkin.types.ts`
 
   **Critérios de aceitação:**
-  - [ ] Input inválido falha com erro de validação.
-  - [ ] Contrato contém informações mínimas para auditoria.
+  - [x] Input inválido falha com erro de validação.
+  - [x] Contrato contém informações mínimas para auditoria.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 2h  
   **Dependências:** Fase 003  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 - [ ] **CHK-002** - Escrever testes RED de validação de ticket
 
