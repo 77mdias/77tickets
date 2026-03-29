@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 004
-**Status Geral:** 🟡 22% (2/9 tarefas completas) - FASE EM EXECUÇÃO
+**Status Geral:** 🟡 33% (3/9 tarefas completas) - FASE EM EXECUÇÃO
 **ETA:** 1 sprint (6 a 8 dias úteis)
 **Pré-requisito:** Fase 003 (concluída)
 
@@ -13,10 +13,10 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Validação de Ticket | 3 | 2 | 0 | 0 | 1 |
+| Validação de Ticket | 3 | 3 | 0 | 0 | 0 |
 | API de Check-in e Operação | 3 | 0 | 0 | 0 | 3 |
 | RBAC, Concorrência e QA | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **9** | **2** | **0** | **0** | **7** |
+| **TOTAL** | **9** | **3** | **0** | **0** | **6** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de check-in e validade já definidas no AGENTS.
@@ -90,7 +90,7 @@ Centralizar a validação de ingresso em um caso de uso robusto, mantendo regras
   **Dependências:** CHK-001  
   **Status:** ✅ Concluído
 
-- [ ] **CHK-003** - Implementar `validateCheckin` até GREEN
+- [x] **CHK-003** - Implementar `validateCheckin` até GREEN
 
   **Descrição curta:**
   - Implementar lógica de validação e consumo único do ticket.
@@ -101,16 +101,16 @@ Centralizar a validação de ingresso em um caso de uso robusto, mantendo regras
   - Validar elegibilidade de check-in.
   - Marcar ticket como usado com metadados.
 
-  **Arquivos/áreas afetadas:** `src/server/application/validate-checkin.use-case.ts`, `src/server/domain/tickets/*`
+  **Arquivos/áreas afetadas:** `src/server/application/use-cases/validate-checkin.use-case.ts`, `src/server/domain/tickets/*`
 
   **Critérios de aceitação:**
-  - [ ] Ticket usado não pode ser reutilizado.
-  - [ ] Testes unitários de check-in passam.
+  - [x] Ticket usado não pode ser reutilizado.
+  - [x] Testes unitários de check-in passam.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 5h  
   **Dependências:** CHK-002  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 ### 📦 API de Check-in e Operação - Handler e fluxo operacional
 

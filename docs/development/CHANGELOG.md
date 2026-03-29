@@ -141,6 +141,11 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - atualização de status/progresso da fase 003 para `11/11` em `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md`;
   - liberação operacional da fase 004 registrada em `docs/development/TASKS.md` e `docs/development/ROADMAP.md`;
   - log técnico consolidado em `docs/development/Logs/UX-003.md`.
+- Implementada a task `CHK-003` (validação de check-in em camada de aplicação):
+  - `src/server/application/use-cases/validate-checkin.use-case.ts` com fluxo de aprovação/rejeição e consumo único (`markAsUsed`).
+  - `src/server/application/use-cases/index.ts` exportando o novo use-case.
+  - atualização de progresso em `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` e `docs/development/TASKS.md` para `3/9`.
+  - log técnico em `docs/development/Logs/CHK-003.md`.
 
 ### Notes
 
