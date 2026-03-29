@@ -18,7 +18,8 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 ## Atualização Operacional (2026-03-29)
 
 - Fase 004 (`Ticket Validation + Check-in + RBAC`) concluída com QA/documentação da `SEC-003`.
-- Fase 005 (`Organizer/Admin Operations + Event Publication`) liberada para execução com backlog refinado por lições de RBAC, erros estruturados e regressões operacionais.
+- Fase 005 (`Organizer/Admin Operations + Event Publication`) encerrada formalmente com `GOV-003` e handoff documental.
+- Próximo foco operacional: `Hardening` (prioridade alta) seguido de `Migration Readiness` (prioridade média).
 
 ## Fases
 
@@ -34,7 +35,7 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 **Saída esperada:**
 - Time operando com padrão único para novas entregas.
 
-### Fase 1 - Core Domain Modeling (Status: In Progress)
+### Fase 1 - Core Domain Modeling (Status: Done)
 
 **Objetivo:** formalizar entidades e regras centrais de eventos, lotes, pedidos, tickets e cupons.
 
@@ -46,7 +47,7 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 **Saída esperada:**
 - Núcleo de regras desacoplado do framework.
 
-### Fase 2 - Purchase Flow MVP (Status: Planned)
+### Fase 2 - Purchase Flow MVP (Status: Done)
 
 **Objetivo:** implementar fluxo de compra ponta a ponta com cálculo e validações server-side.
 
@@ -58,7 +59,7 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 **Saída esperada:**
 - Fluxo de compra com consistência transacional e testes.
 
-### Fase 3 - Organizer/Admin Operations (Status: Planned)
+### Fase 3 - Organizer/Admin Operations (Status: Done)
 
 **Objetivo:** habilitar gestão de eventos com RBAC por papel.
 
@@ -70,7 +71,7 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 **Saída esperada:**
 - Operação administrativa sem violar limites de ownership.
 
-### Fase 4 - Check-in and Ticket Integrity (Status: Planned)
+### Fase 4 - Check-in and Ticket Integrity (Status: Done)
 
 **Objetivo:** garantir validação de ingressos no check-in sem reuso indevido.
 
@@ -82,7 +83,7 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 **Saída esperada:**
 - Processo de entrada com antifraude básico.
 
-### Fase 5 - Hardening (Status: Planned)
+### Fase 5 - Hardening (Status: Next - High Priority)
 
 **Objetivo:** elevar confiabilidade, segurança e performance para cenário próximo de produção.
 
@@ -94,7 +95,7 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 **Saída esperada:**
 - Plataforma estável para demonstração avançada.
 
-### Fase 6 - Migration Readiness (Status: Planned)
+### Fase 6 - Migration Readiness (Status: Planned - Medium Priority)
 
 **Objetivo:** reduzir risco de migração para `Next.js + NestJS`.
 
@@ -106,13 +107,19 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 **Saída esperada:**
 - Caminho de migração com baixo retrabalho.
 
-## Backlog Prioritário Imediato
+## Backlog Prioritário Imediato (Pós-Fase 005)
 
-1. Definir contrato/schemas de publicação e atualização de evento (`EVT-001`).
-2. Consolidar regras de ownership `organizer` vs `admin` com testes de autorização (`GOV-001`).
-3. Padronizar respostas de erro seguras para operações admin/organizer (authorization/conflict/validation).
-4. Cobrir regressões de transição de status e evento cancelado (`EVT-004`).
-5. Preparar checklist de QA funcional para publish/update com perfis distintos (`GOV-002`).
+1. **[Alta]** Expandir gate automatizado para regressões críticas de compra/check-in/autorização em pipeline padrão.
+2. **[Alta]** Endurecer observabilidade operacional (erros estruturados, trilhas de auditoria e runbooks de resposta).
+3. **[Alta]** Revisar hotspots de performance/persistência (payload mínimo, consultas críticas e prevenção de N+1).
+4. **[Média]** Mapear acoplamentos de runtime Vinext/Workers que impactam extração para NestJS.
+5. **[Média]** Definir plano incremental de migração com marcos de compatibilidade (`domain`/`application`/`repositories`).
+
+## Riscos e Prioridades (Próximas Fases)
+
+- **Risco alto:** regressões silenciosas em regras de autorização e transições de status.
+- **Risco alto:** baixa visibilidade operacional em erros de produção sem trilha de auditoria padronizada.
+- **Risco médio:** retrabalho na migração para `Next.js + NestJS` se novos acoplamentos de framework forem introduzidos.
 
 ## Dependências Técnicas Estratégicas
 

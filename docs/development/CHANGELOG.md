@@ -101,6 +101,7 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - expansão da matriz de autorização em `tests/integration/api/coupons/auth.test.ts` com cenários positivos de `organizer/admin` e bloqueio de roles não autorizadas.
   - log técnico em `docs/development/Logs/GOV-001.md`.
 - Criado log técnico de execução da task `GOV-002` em `docs/development/Logs/GOV-002.md`.
+- Criado log técnico de encerramento da task `GOV-003` em `docs/development/Logs/GOV-003.md`.
 
 ### Changed
 
@@ -113,6 +114,8 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 - Atualizados `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` e `docs/development/TASKS.md` com conclusão de `ADM-003` e progresso da fase 005 em `6/10`.
 - Atualizados `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` e `docs/development/TASKS.md` com conclusão de `GOV-001` e progresso da fase 005 em `8/10`.
 - Atualizados `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` e `docs/development/TASKS.md` com conclusão de `GOV-002`, progresso da fase 005 em `9/10` e desbloqueio de `GOV-003` para pendente.
+- Atualizados `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` e `docs/development/TASKS.md` com conclusão de `GOV-003` e encerramento da fase 005 em `10/10`.
+- Atualizado `docs/development/ROADMAP.md` com sincronização pós-fase 005, prioridades/riscos de hardening e trilha de migration readiness.
 - Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com progresso real da fase 003 (`1/11`, em andamento).
 - Definida convenção explícita para atualização contínua de `TASKS`, roadmap e changelog por fase.
 - Atualizada a fase 001 com conclusão da task `ARC-003` e progresso geral de `2/9` para `3/9`.

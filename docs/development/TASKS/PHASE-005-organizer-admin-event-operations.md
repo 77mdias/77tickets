@@ -1,10 +1,10 @@
 # 🚀 Tasks - Fase 005: Organizer/Admin Operations + Event Publication
 
-**Status:** 🟡 EM ANDAMENTO
+**Status:** 🟢 CONCLUÍDA
 **Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 005
-**Status Geral:** 🟡 90% (9/10 tarefas completas) - FASE ATIVA
-**ETA:** 1 sprint (7 a 9 dias úteis)
+**Status Geral:** 🟢 100% (10/10 tarefas completas) - FASE ENCERRADA
+**ETA:** Concluída em 1 sprint
 **Pré-requisito:** Fase 004 (concluída)
 
 ---
@@ -15,8 +15,8 @@
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Gestão de Evento | 4 | 4 | 0 | 0 | 0 |
 | APIs de Organizer/Admin | 3 | 3 | 0 | 0 | 0 |
-| Segurança, QA e Governança | 3 | 2 | 0 | 1 | 0 |
-| **TOTAL** | **10** | **9** | **0** | **1** | **0** |
+| Segurança, QA e Governança | 3 | 3 | 0 | 0 | 0 |
+| **TOTAL** | **10** | **10** | **0** | **0** | **0** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de publicação e ownership já descritas no AGENTS.md.
@@ -264,7 +264,7 @@ Consolidar autorização por papel/ownership para operações de gestão e encer
   **Dependências:** EVT-003, ADM-001..ADM-003, GOV-001  
   **Status:** ✅ Concluído
 
-- [ ] **GOV-003** - Encerrar fase com documentação e handoff
+- [x] **GOV-003** - Encerrar fase com documentação e handoff
 
   **Descrição curta:**
   - Atualizar documentação operacional e roadmap.
@@ -278,13 +278,13 @@ Consolidar autorização por papel/ownership para operações de gestão e encer
   **Arquivos/áreas afetadas:** `docs/development/ROADMAP.md`, `docs/development/CHANGELOG.md`, `docs/development/TASKS.md`
 
   **Critérios de aceitação:**
-  - [ ] Documentação sincronizada com entregas reais.
-  - [ ] Próximas fases definidas com riscos e prioridades.
+  - [x] Documentação sincronizada com entregas reais.
+  - [x] Próximas fases definidas com riscos e prioridades.
 
   **Prioridade:** 🟢 Média  
   **Estimativa:** 1h30  
   **Dependências:** EVT-001..EVT-004, ADM-001..ADM-003, GOV-001..GOV-002  
-  **Status:** 🟡 Pendente
+  **Status:** ✅ Concluído
 
 ---
 
@@ -293,7 +293,7 @@ Consolidar autorização por papel/ownership para operações de gestão e encer
 - **Suites necessárias:** Unit (publish/policy), Integration (events/coupons/auth), Regression (status/cancelamento), smoke manual.
 - **Cobertura alvo:** >80% em módulos de gestão/evento e >90% em policies de autorização.
 - **Comandos de verificação:** `npm run test:unit`, `npm run test:integration`, `npm run test`, `npm run lint`.
-- **Estado atual:** 🟡 Em andamento (GOV-002 concluída; aguardando GOV-003 para encerramento formal da fase).
+- **Estado atual:** 🟢 Fase encerrada com GOV-003 concluída e handoff documental realizado.
 
 ---
 
@@ -308,8 +308,8 @@ Consolidar autorização por papel/ownership para operações de gestão e encer
 
 ## ✅ Checklist de Encerramento da Fase
 
-- [ ] Publicação de evento com pré-condições implementada.
-- [ ] RBAC/ownership validado por testes automatizados.
-- [ ] Endpoints de organizer/admin estáveis e documentados.
+- [x] Publicação de evento com pré-condições implementada.
+- [x] RBAC/ownership validado por testes automatizados.
+- [x] Endpoints de organizer/admin estáveis e documentados.
 - [x] Fluxo operacional homologado.
-- [ ] Documentação atualizada e handoff concluído.
+- [x] Documentação atualizada e handoff concluído.
