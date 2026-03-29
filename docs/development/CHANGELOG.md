@@ -68,6 +68,7 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 - Criado log técnico de execução da task `OPS-002` em `docs/development/Logs/OPS-002.md`.
 - Criado log técnico de execução da task `SEC-001` em `docs/development/Logs/SEC-001.md`.
 - Criado log técnico de execução da task `SEC-002` (fase 004) em `docs/development/Logs/SEC-002-phase-004.md`.
+- Criado log técnico de execução da task `SEC-003` (encerramento da fase 004) em `docs/development/Logs/SEC-003-phase-004.md`.
 - Criada suíte de integração do endpoint de compra:
   - `tests/integration/api/orders/create-order.endpoint.integration.test.ts`
   - cobertura de sucesso ponta a ponta e erros estruturados (estoque insuficiente, cupom inválido, payload inválido)
@@ -181,6 +182,11 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - cobertura explícita de concorrência de check-in no mesmo ticket (uma aprovação + uma rejeição `ticket_used`).
   - cobertura explícita de ticket com pedido expirado (`order_not_eligible`).
   - atualização de progresso em `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` e `docs/development/TASKS.md` para `8/9`.
+- Concluída a task `SEC-003` (encerramento de fase com QA e documentação):
+  - fechamento da fase 004 para `9/9` em `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` e `docs/development/TASKS.md`;
+  - sincronização de roadmap em `docs/development/ROADMAP.md` com transição para a fase 005;
+  - refinamento do backlog da fase 005 em `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md`;
+  - registro das evidências e lições aprendidas em `docs/development/Logs/SEC-003-phase-004.md`.
 
 ### Notes
 

@@ -1,11 +1,11 @@
 # 🚀 Tasks - Fase 005: Organizer/Admin Operations + Event Publication
 
-**Status:** 🔴 BLOQUEADA
-**Última atualização:** 2026-03-26
+**Status:** 🟡 EM ANDAMENTO
+**Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 005
-**Status Geral:** ⚪ 0% (0/10 tarefas completas) - FASE PLANEJADA
+**Status Geral:** ⚪ 0% (0/10 tarefas completas) - FASE ATIVA
 **ETA:** 1 sprint (7 a 9 dias úteis)
-**Pré-requisito:** Fase 004 (pendente)
+**Pré-requisito:** Fase 004 (concluída)
 
 ---
 
@@ -13,15 +13,20 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Gestão de Evento | 4 | 0 | 0 | 0 | 4 |
+| Gestão de Evento | 4 | 0 | 0 | 1 | 3 |
 | APIs de Organizer/Admin | 3 | 0 | 0 | 0 | 3 |
 | Segurança, QA e Governança | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **10** | **0** | **0** | **0** | **10** |
+| **TOTAL** | **10** | **0** | **0** | **1** | **9** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de publicação e ownership já descritas no AGENTS.md.
-- ⚠️ Fase depende de RBAC operacional consolidado na fase 004.
+- ✅ Dependência de RBAC operacional consolidada na fase 004.
 - ⚠️ Alto impacto em governança de acesso e consistência do catálogo de eventos.
+
+### 🔎 Refinamentos pós-fase 004 (SEC-003)
+- Priorizar testes de autorização `cross-organizer` logo no início da fase.
+- Garantir `reason` estável em erros de autorização/conflito para auditoria operacional.
+- Incluir regressões de status/cancelamento no gate padrão para evitar quebra silenciosa.
 
 ---
 
@@ -67,7 +72,7 @@ Assegurar que o ciclo de vida do evento seja governado por regras de domínio ex
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 2h  
   **Dependências:** Fase 004  
-  **Status:** ⛔ Bloqueado
+  **Status:** ⏳ Pendente
 
 - [ ] **EVT-002** - Escrever testes RED para regras de publicação
 
@@ -288,7 +293,7 @@ Consolidar autorização por papel/ownership para operações de gestão e encer
 - **Suites necessárias:** Unit (publish/policy), Integration (events/coupons/auth), Regression (status/cancelamento), smoke manual.
 - **Cobertura alvo:** >80% em módulos de gestão/evento e >90% em policies de autorização.
 - **Comandos de verificação:** `npm run test:unit`, `npm run test:integration`, `npm run test`, `npm run lint`.
-- **Estado atual:** ⚠️ Em falha (fase bloqueada por dependências).
+- **Estado atual:** 🟡 Em andamento (fase iniciada; dependências internas de sequência ainda em aberto).
 
 ---
 

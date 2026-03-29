@@ -1,6 +1,6 @@
 # TicketFlow Roadmap
 
-> Última atualização: 2026-03-28
+> Última atualização: 2026-03-29
 > Baseado em: [`AGENTS.md`](../../AGENTS.md)
 
 ## Objetivo
@@ -15,10 +15,10 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 - TDD obrigatório para mudanças de comportamento.
 - Segurança e autorização server-side como padrão.
 
-## Atualização Operacional (2026-03-28)
+## Atualização Operacional (2026-03-29)
 
-- Fase 003 (`Create Order Flow`) concluída com QA final e documentação consolidada.
-- Fase 004 (`Ticket Validation + Check-in + RBAC`) liberada para execução operacional.
+- Fase 004 (`Ticket Validation + Check-in + RBAC`) concluída com QA/documentação da `SEC-003`.
+- Fase 005 (`Organizer/Admin Operations + Event Publication`) liberada para execução com backlog refinado por lições de RBAC, erros estruturados e regressões operacionais.
 
 ## Fases
 
@@ -108,11 +108,11 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 
 ## Backlog Prioritário Imediato
 
-1. Implementar e testar `createOrder` com cálculo server-side.
-2. Implementar validação de estoque/lotes com janela de venda.
-3. Implementar aplicação de cupom com limites e validade.
-4. Implementar geração e validação de tickets/check-in.
-5. Consolidar autorização RBAC por papel e ownership.
+1. Definir contrato/schemas de publicação e atualização de evento (`EVT-001`).
+2. Consolidar regras de ownership `organizer` vs `admin` com testes de autorização (`GOV-001`).
+3. Padronizar respostas de erro seguras para operações admin/organizer (authorization/conflict/validation).
+4. Cobrir regressões de transição de status e evento cancelado (`EVT-004`).
+5. Preparar checklist de QA funcional para publish/update com perfis distintos (`GOV-002`).
 
 ## Dependências Técnicas Estratégicas
 
