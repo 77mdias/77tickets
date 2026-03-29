@@ -64,6 +64,7 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 - Criado log técnico de execução da task `API-002` em `docs/development/Logs/API-002.md`.
 - Criado log técnico de execução da task `API-003` em `docs/development/Logs/API-003.md`.
 - Criado log técnico de execução da task `API-004` em `docs/development/Logs/API-004.md`.
+- Criado log técnico de execução da task `OPS-001` em `docs/development/Logs/OPS-001.md`.
 - Criada suíte de integração do endpoint de compra:
   - `tests/integration/api/orders/create-order.endpoint.integration.test.ts`
   - cobertura de sucesso ponta a ponta e erros estruturados (estoque insuficiente, cupom inválido, payload inválido)
@@ -146,6 +147,11 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - `src/server/application/use-cases/index.ts` exportando o novo use-case.
   - atualização de progresso em `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` e `docs/development/TASKS.md` para `3/9`.
   - log técnico em `docs/development/Logs/CHK-003.md`.
+- Implementada a task `OPS-001` (handler de check-in com erro estruturado):
+  - `src/server/api/checkin/validate-checkin.handler.ts` com parse de input via Zod e delegação do fluxo ao use-case `validateCheckin`.
+  - mapeamento de rejeições para códigos estáveis (`not-found`, `authorization`, `conflict`) com `details.reason`.
+  - cobertura unitária em `tests/unit/server/api/checkin/validate-checkin.handler.test.ts` para sucesso, validação de payload e mapeamento de falhas.
+  - atualização de progresso em `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` e `docs/development/TASKS.md` para `4/9`.
 
 ### Notes
 

@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 004
-**Status Geral:** 🟡 33% (3/9 tarefas completas) - FASE EM EXECUÇÃO
+**Status Geral:** 🟡 44% (4/9 tarefas completas) - FASE EM EXECUÇÃO
 **ETA:** 1 sprint (6 a 8 dias úteis)
 **Pré-requisito:** Fase 003 (concluída)
 
@@ -14,9 +14,9 @@
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Validação de Ticket | 3 | 3 | 0 | 0 | 0 |
-| API de Check-in e Operação | 3 | 0 | 0 | 0 | 3 |
+| API de Check-in e Operação | 3 | 1 | 0 | 0 | 2 |
 | RBAC, Concorrência e QA | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **9** | **3** | **0** | **0** | **6** |
+| **TOTAL** | **9** | **4** | **0** | **0** | **5** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de check-in e validade já definidas no AGENTS.
@@ -119,7 +119,7 @@ Expor o caso de uso de check-in via API e interface operacional simples para equ
 
 #### OPS.1 - Endpoint e interface operacional
 
-- [ ] **OPS-001** - Implementar handler de check-in com mapeamento de erros
+- [x] **OPS-001** - Implementar handler de check-in com mapeamento de erros
 
   **Descrição curta:**
   - Criar endpoint para validação em tempo de operação.
@@ -133,13 +133,13 @@ Expor o caso de uso de check-in via API e interface operacional simples para equ
   **Arquivos/áreas afetadas:** `src/server/api/checkin/validate-checkin.handler.ts`, `src/server/api/error-mapper.ts`
 
   **Critérios de aceitação:**
-  - [ ] Handler sem regra de negócio.
-  - [ ] Erros estruturados conforme padrão do projeto.
+  - [x] Handler sem regra de negócio.
+  - [x] Erros estruturados conforme padrão do projeto.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 3h  
   **Dependências:** CHK-003  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 - [ ] **OPS-002** - Criar integração de persistência atômica no check-in
 
