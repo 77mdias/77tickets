@@ -90,6 +90,12 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - expansão do contrato/repositório de cupom para `findById`, `create` e `update`
   - cobertura de testes unit/integration em `tests/unit/server/api/coupons/*`, `tests/unit/application/*coupon*.test.ts`, `tests/integration/api/coupons/auth.test.ts` e `tests/integration/repositories/drizzle-coupon.repository.integration.test.ts`
   - log técnico em `docs/development/Logs/ADM-002.md`
+- Criada a entrega técnica da task `ADM-003` (tela mínima de gestão organizer/admin):
+  - tela operacional em `src/app/admin/page.tsx` com módulo `src/features/admin/management-form.tsx`
+  - client helper em `src/features/admin/management-client.ts` para payloads/headers e extração de feedback
+  - integração com `POST /api/events/publish`, `POST /api/events/update-status`, `POST /api/coupons/create` e `POST /api/coupons/update`
+  - cobertura unitária em `tests/unit/features/admin/management-client.test.ts`
+  - log técnico em `docs/development/Logs/ADM-003.md`
 
 ### Changed
 
@@ -99,6 +105,7 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - testes unitários de schema/handler ajustados para o novo contrato.
 - Atualizados `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` e `docs/development/TASKS.md` com conclusão de `ADM-001` e progresso da fase 005 em `4/10`.
 - Atualizados `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` e `docs/development/TASKS.md` com conclusão de `ADM-002` e progresso da fase 005 em `5/10`.
+- Atualizados `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` e `docs/development/TASKS.md` com conclusão de `ADM-003` e progresso da fase 005 em `6/10`.
 - Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com progresso real da fase 003 (`1/11`, em andamento).
 - Definida convenção explícita para atualização contínua de `TASKS`, roadmap e changelog por fase.
 - Atualizada a fase 001 com conclusão da task `ARC-003` e progresso geral de `2/9` para `3/9`.

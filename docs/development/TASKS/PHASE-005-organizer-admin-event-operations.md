@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 005
-**Status Geral:** 🟡 50% (5/10 tarefas completas) - FASE ATIVA
+**Status Geral:** 🟡 60% (6/10 tarefas completas) - FASE ATIVA
 **ETA:** 1 sprint (7 a 9 dias úteis)
 **Pré-requisito:** Fase 004 (concluída)
 
@@ -14,9 +14,9 @@
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Gestão de Evento | 4 | 3 | 0 | 0 | 1 |
-| APIs de Organizer/Admin | 3 | 2 | 0 | 0 | 1 |
+| APIs de Organizer/Admin | 3 | 3 | 0 | 0 | 0 |
 | Segurança, QA e Governança | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **10** | **5** | **0** | **0** | **5** |
+| **TOTAL** | **10** | **6** | **0** | **0** | **4** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de publicação e ownership já descritas no AGENTS.md.
@@ -191,7 +191,7 @@ Disponibilizar APIs e interface mínima para operações administrativas com han
   **Dependências:** EVT-003, Fase 002 DOM-004  
   **Status:** ✅ Concluído
 
-- [ ] **ADM-003** - Criar tela mínima de gestão organizer/admin
+- [x] **ADM-003** - Criar tela mínima de gestão organizer/admin
 
   **Descrição curta:**
   - Entregar UI funcional para operar publicação e status.
@@ -205,13 +205,13 @@ Disponibilizar APIs e interface mínima para operações administrativas com han
   **Arquivos/áreas afetadas:** `src/features/admin/*`, `src/features/events/*`, `app/admin/*`
 
   **Critérios de aceitação:**
-  - [ ] UI não contém regras de publicação/ownership.
-  - [ ] Fluxo operacional completo para organizer/admin.
+  - [x] UI não contém regras de publicação/ownership.
+  - [x] Fluxo operacional completo para organizer/admin.
 
   **Prioridade:** 🟡 Alta  
   **Estimativa:** 5h  
   **Dependências:** ADM-001, ADM-002  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 ### 📦 Segurança, QA e Governança - RBAC final e readiness operacional
 
