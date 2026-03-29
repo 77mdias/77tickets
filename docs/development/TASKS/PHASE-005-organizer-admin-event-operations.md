@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 005
-**Status Geral:** 🟡 60% (6/10 tarefas completas) - FASE ATIVA
+**Status Geral:** 🟡 80% (8/10 tarefas completas) - FASE ATIVA
 **ETA:** 1 sprint (7 a 9 dias úteis)
 **Pré-requisito:** Fase 004 (concluída)
 
@@ -13,10 +13,10 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Gestão de Evento | 4 | 3 | 0 | 0 | 1 |
+| Gestão de Evento | 4 | 4 | 0 | 0 | 0 |
 | APIs de Organizer/Admin | 3 | 3 | 0 | 0 | 0 |
-| Segurança, QA e Governança | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **10** | **6** | **0** | **0** | **4** |
+| Segurança, QA e Governança | 3 | 1 | 0 | 0 | 2 |
+| **TOTAL** | **10** | **8** | **0** | **0** | **2** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de publicação e ownership já descritas no AGENTS.md.
@@ -220,7 +220,7 @@ Consolidar autorização por papel/ownership para operações de gestão e encer
 
 #### GOV.1 - Segurança e encerramento da fase
 
-- [ ] **GOV-001** - Cobrir RBAC/ownership completo em operações de gestão
+- [x] **GOV-001** - Cobrir RBAC/ownership completo em operações de gestão
 
   **Descrição curta:**
   - Testar permissões para `organizer` e `admin` em todos endpoints da fase.
@@ -234,13 +234,13 @@ Consolidar autorização por papel/ownership para operações de gestão e encer
   **Arquivos/áreas afetadas:** `tests/integration/api/events/auth*.test.ts`, `tests/integration/api/coupons/auth*.test.ts`, `src/server/application/security/*`
 
   **Critérios de aceitação:**
-  - [ ] Organizer só opera no próprio escopo.
-  - [ ] Admin com acesso global validado por testes.
+  - [x] Organizer só opera no próprio escopo.
+  - [x] Admin com acesso global validado por testes.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 3h  
   **Dependências:** ADM-001, ADM-002  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 - [ ] **GOV-002** - Executar QA funcional de ciclo de gestão de evento
 

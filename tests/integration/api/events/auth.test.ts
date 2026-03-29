@@ -74,6 +74,26 @@ describe("events auth integration", () => {
     expect(publishEvent).not.toHaveBeenCalled();
   });
 
+  test("publish allows organizer within ownership scope", async () => {
+    const publishEvent = vi.fn(async () => ({
+      eventId: EVENT_ID,
+      status: "published" as const,
+    }));
+
+    const handler = createPublishEventHandler({
+      eventRepository: createEventRepository(ORGANIZER_A),
+      createPublishEventForOrganizer: vi.fn(() => publishEvent),
+    });
+
+    const response = await handler({
+      actor: buildActor("organizer", ORGANIZER_A),
+      body: { eventId: EVENT_ID },
+    });
+
+    expect(response.status).toBe(200);
+    expect(publishEvent).toHaveBeenCalledWith({ eventId: EVENT_ID });
+  });
+
   test("publish allows admin globally", async () => {
     const publishEvent = vi.fn(async () => ({
       eventId: EVENT_ID,
@@ -92,6 +112,27 @@ describe("events auth integration", () => {
 
     expect(response.status).toBe(200);
     expect(publishEvent).toHaveBeenCalledWith({ eventId: EVENT_ID });
+  });
+
+  test("publish blocks checker role", async () => {
+    const publishEvent = vi.fn(async () => ({
+      eventId: EVENT_ID,
+      status: "published" as const,
+    }));
+
+    const handler = createPublishEventHandler({
+      eventRepository: createEventRepository(ORGANIZER_A),
+      createPublishEventForOrganizer: vi.fn(() => publishEvent),
+    });
+
+    const response = await handler({
+      actor: buildActor("checker", "00000000-0000-0000-0000-000000000011"),
+      body: { eventId: EVENT_ID },
+    });
+
+    expect(response.status).toBe(403);
+    expect(response.body.error.code).toBe("authorization");
+    expect(publishEvent).not.toHaveBeenCalled();
   });
 
   test("update blocks organizer outside ownership scope", async () => {
@@ -138,6 +179,29 @@ describe("events auth integration", () => {
     });
   });
 
+  test("update allows organizer within ownership scope", async () => {
+    const updateEventStatus = vi.fn(async () => ({
+      eventId: EVENT_ID,
+      status: "cancelled" as const,
+    }));
+
+    const handler = createUpdateEventHandler({
+      eventRepository: createEventRepository(ORGANIZER_A),
+      createUpdateEventStatusForOrganizer: vi.fn(() => updateEventStatus),
+    });
+
+    const response = await handler({
+      actor: buildActor("organizer", ORGANIZER_A),
+      body: { eventId: EVENT_ID, targetStatus: "cancelled" },
+    });
+
+    expect(response.status).toBe(200);
+    expect(updateEventStatus).toHaveBeenCalledWith({
+      eventId: EVENT_ID,
+      targetStatus: "cancelled",
+    });
+  });
+
   test("update blocks customer role", async () => {
     const updateEventStatus = vi.fn(async () => ({
       eventId: EVENT_ID,
@@ -151,6 +215,27 @@ describe("events auth integration", () => {
 
     const response = await handler({
       actor: buildActor("customer", "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5"),
+      body: { eventId: EVENT_ID, targetStatus: "cancelled" },
+    });
+
+    expect(response.status).toBe(403);
+    expect(response.body.error.code).toBe("authorization");
+    expect(updateEventStatus).not.toHaveBeenCalled();
+  });
+
+  test("update blocks checker role", async () => {
+    const updateEventStatus = vi.fn(async () => ({
+      eventId: EVENT_ID,
+      status: "cancelled" as const,
+    }));
+
+    const handler = createUpdateEventHandler({
+      eventRepository: createEventRepository(ORGANIZER_A),
+      createUpdateEventStatusForOrganizer: vi.fn(() => updateEventStatus),
+    });
+
+    const response = await handler({
+      actor: buildActor("checker", "00000000-0000-0000-0000-000000000011"),
       body: { eventId: EVENT_ID, targetStatus: "cancelled" },
     });
 

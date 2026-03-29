@@ -85,6 +85,41 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("coupon governance auth integrat
     expect(response.body.error.code).toBe("authorization");
   });
 
+  test("allows organizer to create coupon within ownership scope", async () => {
+    await cleanDatabase(db);
+
+    const event = await createEventFixture(db, {
+      organizerId: ORGANIZER_A,
+      status: "published",
+    });
+
+    const handler = createCreateHandler();
+
+    const response = await handler({
+      actor: buildActor("organizer", ORGANIZER_A),
+      body: {
+        eventId: event.id,
+        code: " save20 ",
+        discountType: "percentage",
+        discountInCents: null,
+        discountPercentage: 20,
+        maxRedemptions: 100,
+        validFrom: "2026-06-01T00:00:00.000Z",
+        validUntil: "2026-06-30T23:59:59.000Z",
+      },
+    });
+
+    expect(response.status).toBe(200);
+
+    if (response.status !== 200) return;
+
+    expect(response.body.data).toMatchObject({
+      eventId: event.id,
+      code: "SAVE20",
+      discountType: "percentage",
+    });
+  });
+
   test("allows admin to create coupon globally and persists normalized code", async () => {
     await cleanDatabase(db);
 
@@ -123,6 +158,36 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("coupon governance auth integrat
     expect(persisted).not.toBeNull();
   });
 
+  test("blocks customer and checker when creating coupon", async () => {
+    await cleanDatabase(db);
+
+    const event = await createEventFixture(db, {
+      organizerId: ORGANIZER_A,
+      status: "published",
+    });
+
+    const handler = createCreateHandler();
+
+    for (const role of ["customer", "checker"] as const) {
+      const response = await handler({
+        actor: buildActor(role, "00000000-0000-0000-0000-000000000077"),
+        body: {
+          eventId: event.id,
+          code: "SAVE20",
+          discountType: "percentage",
+          discountInCents: null,
+          discountPercentage: 20,
+          maxRedemptions: 100,
+          validFrom: "2026-06-01T00:00:00.000Z",
+          validUntil: "2026-06-30T23:59:59.000Z",
+        },
+      });
+
+      expect(response.status).toBe(403);
+      expect(response.body.error.code).toBe("authorization");
+    }
+  });
+
   test("blocks organizer when updating coupon from another organizer event", async () => {
     await cleanDatabase(db);
 
@@ -158,6 +223,127 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("coupon governance auth integrat
     expect(response.body.error.code).toBe("authorization");
   });
 
+  test("allows organizer to update coupon within ownership scope", async () => {
+    await cleanDatabase(db);
+
+    const event = await createEventFixture(db, {
+      organizerId: ORGANIZER_A,
+      status: "published",
+    });
+
+    const coupon = await createCouponFixture(db, event.id, {
+      id: COUPON_ID,
+      code: "SAVE10",
+      validFrom: new Date("2026-06-01T00:00:00.000Z"),
+      validUntil: new Date("2026-06-30T23:59:59.000Z"),
+    });
+
+    const handler = createUpdateHandler();
+
+    const response = await handler({
+      actor: buildActor("organizer", ORGANIZER_A),
+      body: {
+        couponId: coupon.id,
+        code: " save20 ",
+        discountType: "percentage",
+        discountInCents: null,
+        discountPercentage: 20,
+        maxRedemptions: 100,
+        validFrom: "2026-06-01T00:00:00.000Z",
+        validUntil: "2026-06-30T23:59:59.000Z",
+      },
+    });
+
+    expect(response.status).toBe(200);
+
+    if (response.status !== 200) return;
+
+    expect(response.body.data).toMatchObject({
+      couponId: coupon.id,
+      eventId: event.id,
+      code: "SAVE20",
+    });
+  });
+
+  test("allows admin to update coupon globally", async () => {
+    await cleanDatabase(db);
+
+    const event = await createEventFixture(db, {
+      organizerId: ORGANIZER_A,
+      status: "published",
+    });
+
+    const coupon = await createCouponFixture(db, event.id, {
+      id: COUPON_ID,
+      code: "SAVE10",
+      validFrom: new Date("2026-06-01T00:00:00.000Z"),
+      validUntil: new Date("2026-06-30T23:59:59.000Z"),
+    });
+
+    const handler = createUpdateHandler();
+
+    const response = await handler({
+      actor: buildActor("admin", "00000000-0000-0000-0000-000000000099"),
+      body: {
+        couponId: coupon.id,
+        code: " save20 ",
+        discountType: "percentage",
+        discountInCents: null,
+        discountPercentage: 20,
+        maxRedemptions: 100,
+        validFrom: "2026-06-01T00:00:00.000Z",
+        validUntil: "2026-06-30T23:59:59.000Z",
+      },
+    });
+
+    expect(response.status).toBe(200);
+
+    if (response.status !== 200) return;
+
+    expect(response.body.data).toMatchObject({
+      couponId: coupon.id,
+      eventId: event.id,
+      code: "SAVE20",
+    });
+  });
+
+  test("blocks customer and checker when updating coupon", async () => {
+    await cleanDatabase(db);
+
+    const event = await createEventFixture(db, {
+      organizerId: ORGANIZER_A,
+      status: "published",
+    });
+
+    const coupon = await createCouponFixture(db, event.id, {
+      id: COUPON_ID,
+      code: "SAVE10",
+      validFrom: new Date("2026-06-01T00:00:00.000Z"),
+      validUntil: new Date("2026-06-30T23:59:59.000Z"),
+    });
+
+    const handler = createUpdateHandler();
+
+    for (const role of ["customer", "checker"] as const) {
+      const response = await handler({
+        actor: buildActor(role, "00000000-0000-0000-0000-000000000077"),
+        body: {
+          couponId: coupon.id,
+          code: "SAVE20",
+          discountType: "percentage",
+          discountInCents: null,
+          discountPercentage: 20,
+          maxRedemptions: 100,
+          validFrom: "2026-06-01T00:00:00.000Z",
+          validUntil: "2026-06-30T23:59:59.000Z",
+        },
+      });
+
+      expect(response.status).toBe(403);
+      expect(response.body.error.code).toBe("authorization");
+    }
+  });
+
   test("rejects invalid coupon window with conflict reason", async () => {
     await cleanDatabase(db);
 
@@ -188,4 +374,3 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("coupon governance auth integrat
     });
   });
 });
-

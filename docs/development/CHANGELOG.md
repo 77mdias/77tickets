@@ -96,6 +96,10 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - integração com `POST /api/events/publish`, `POST /api/events/update-status`, `POST /api/coupons/create` e `POST /api/coupons/update`
   - cobertura unitária em `tests/unit/features/admin/management-client.test.ts`
   - log técnico em `docs/development/Logs/ADM-003.md`
+- Criada a entrega técnica da task `GOV-001` (RBAC/ownership completo em operações de gestão):
+  - expansão da matriz de autorização em `tests/integration/api/events/auth.test.ts` com cenários de `organizer` no próprio escopo e bloqueio de `checker`.
+  - expansão da matriz de autorização em `tests/integration/api/coupons/auth.test.ts` com cenários positivos de `organizer/admin` e bloqueio de roles não autorizadas.
+  - log técnico em `docs/development/Logs/GOV-001.md`.
 
 ### Changed
 
@@ -106,6 +110,7 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 - Atualizados `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` e `docs/development/TASKS.md` com conclusão de `ADM-001` e progresso da fase 005 em `4/10`.
 - Atualizados `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` e `docs/development/TASKS.md` com conclusão de `ADM-002` e progresso da fase 005 em `5/10`.
 - Atualizados `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` e `docs/development/TASKS.md` com conclusão de `ADM-003` e progresso da fase 005 em `6/10`.
+- Atualizados `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` e `docs/development/TASKS.md` com conclusão de `GOV-001` e progresso da fase 005 em `8/10`.
 - Atualizados `docs/development/TASKS/PHASE-003-create-order-flow.md` e `docs/development/TASKS.md` com progresso real da fase 003 (`1/11`, em andamento).
 - Definida convenção explícita para atualização contínua de `TASKS`, roadmap e changelog por fase.
 - Atualizada a fase 001 com conclusão da task `ARC-003` e progresso geral de `2/9` para `3/9`.
