@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 005
-**Status Geral:** 🟡 30% (3/10 tarefas completas) - FASE ATIVA
+**Status Geral:** 🟡 40% (4/10 tarefas completas) - FASE ATIVA
 **ETA:** 1 sprint (7 a 9 dias úteis)
 **Pré-requisito:** Fase 004 (concluída)
 
@@ -14,9 +14,9 @@
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Gestão de Evento | 4 | 3 | 0 | 0 | 1 |
-| APIs de Organizer/Admin | 3 | 0 | 0 | 0 | 3 |
+| APIs de Organizer/Admin | 3 | 1 | 0 | 0 | 2 |
 | Segurança, QA e Governança | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **10** | **3** | **0** | **0** | **7** |
+| **TOTAL** | **10** | **4** | **0** | **0** | **6** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de publicação e ownership já descritas no AGENTS.md.
@@ -147,7 +147,7 @@ Disponibilizar APIs e interface mínima para operações administrativas com han
 
 #### ADM.1 - Endpoints e operações de gestão
 
-- [ ] **ADM-001** - Implementar endpoints de publish/update para organizer/admin
+- [x] **ADM-001** - Implementar endpoints de publish/update para organizer/admin
 
   **Descrição curta:**
   - Criar handlers para publicação e atualização de evento.
@@ -161,13 +161,13 @@ Disponibilizar APIs e interface mínima para operações administrativas com han
   **Arquivos/áreas afetadas:** `src/server/api/events/publish-event.handler.ts`, `src/server/api/events/update-event.handler.ts`
 
   **Critérios de aceitação:**
-  - [ ] Handler permanece fino.
-  - [ ] Erros de autorização/conflito padronizados.
+  - [x] Handler permanece fino.
+  - [x] Erros de autorização/conflito padronizados.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 4h  
   **Dependências:** EVT-003  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 - [ ] **ADM-002** - Implementar governança de cupom por evento
 
