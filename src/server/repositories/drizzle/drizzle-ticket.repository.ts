@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 import type { Db } from "../../infrastructure/db/client";
 import { tickets } from "../../infrastructure/db/schema";
@@ -47,12 +47,18 @@ export class DrizzleTicketRepository implements TicketRepository {
     return rows.map(toTicketRecord);
   }
 
-  async markAsUsed(ticketId: EntityId, checkedInAt: Date): Promise<void> {
+  async markAsUsedIfActive(
+    ticketId: EntityId,
+    checkedInAt: Date,
+  ): Promise<boolean> {
     try {
-      await this.db
+      const updatedRows = await this.db
         .update(tickets)
         .set({ status: "used", checkedInAt })
-        .where(eq(tickets.id, ticketId));
+        .where(and(eq(tickets.id, ticketId), eq(tickets.status, "active")))
+        .returning({ id: tickets.id });
+
+      return updatedRows.length > 0;
     } catch (error) {
       throw mapPersistenceError(error, "mark ticket as used");
     }

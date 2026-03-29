@@ -24,5 +24,5 @@ export interface TicketRepository {
   findByCode(code: string): Promise<TicketRecord | null>;
   listByOrderId(orderId: EntityId): Promise<TicketRecord[]>;
   createMany(tickets: NewTicketData[]): Promise<TicketRecord[]>;
-  markAsUsed(ticketId: EntityId, checkedInAt: Date): Promise<void>;
+  markAsUsedIfActive(ticketId: EntityId, checkedInAt: Date): Promise<boolean>;
 }

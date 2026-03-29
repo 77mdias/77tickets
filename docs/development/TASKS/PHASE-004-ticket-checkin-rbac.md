@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 004
-**Status Geral:** 🟡 44% (4/9 tarefas completas) - FASE EM EXECUÇÃO
+**Status Geral:** 🟡 56% (5/9 tarefas completas) - FASE EM EXECUÇÃO
 **ETA:** 1 sprint (6 a 8 dias úteis)
 **Pré-requisito:** Fase 003 (concluída)
 
@@ -14,9 +14,9 @@
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Validação de Ticket | 3 | 3 | 0 | 0 | 0 |
-| API de Check-in e Operação | 3 | 1 | 0 | 0 | 2 |
+| API de Check-in e Operação | 3 | 2 | 0 | 0 | 1 |
 | RBAC, Concorrência e QA | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **9** | **4** | **0** | **0** | **5** |
+| **TOTAL** | **9** | **5** | **0** | **0** | **4** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de check-in e validade já definidas no AGENTS.
@@ -141,7 +141,7 @@ Expor o caso de uso de check-in via API e interface operacional simples para equ
   **Dependências:** CHK-003  
   **Status:** ✅ Concluído
 
-- [ ] **OPS-002** - Criar integração de persistência atômica no check-in
+- [x] **OPS-002** - Criar integração de persistência atômica no check-in
 
   **Descrição curta:**
   - Garantir update seguro do ticket no banco.
@@ -152,16 +152,16 @@ Expor o caso de uso de check-in via API e interface operacional simples para equ
   - Retornar conflito em segunda tentativa.
   - Cobrir corrida simples com teste de integração.
 
-  **Arquivos/áreas afetadas:** `src/server/repositories/drizzle/ticket.repository.ts`, `tests/integration/repositories/checkin/*.test.ts`
+  **Arquivos/áreas afetadas:** `src/server/repositories/drizzle/drizzle-ticket.repository.ts`, `tests/integration/repositories/drizzle-ticket.repository.integration.test.ts`
 
   **Critérios de aceitação:**
-  - [ ] Apenas uma tentativa concorrente obtém sucesso.
-  - [ ] Estado final do ticket consistente.
+  - [x] Apenas uma tentativa concorrente obtém sucesso.
+  - [x] Estado final do ticket consistente.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 4h  
   **Dependências:** CHK-003  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 - [ ] **OPS-003** - Implementar tela operacional mínima de check-in
 

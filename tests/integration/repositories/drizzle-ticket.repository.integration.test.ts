@@ -89,7 +89,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
       expect(results.every((t) => t.orderId === order1.id)).toBe(true);
     });
 
-    test("markAsUsed sets status to used and records checkedInAt", async () => {
+    test("markAsUsedIfActive sets status to used and records checkedInAt", async () => {
       await cleanDatabase(db);
 
       const event = await createEventFixture(db, { status: "published" });
@@ -100,12 +100,46 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
       const checkedInAt = new Date("2027-06-01T15:30:00Z");
 
       const repo = new DrizzleTicketRepository(db);
-      await repo.markAsUsed(ticket.id, checkedInAt);
+      const didMark = await repo.markAsUsedIfActive(ticket.id, checkedInAt);
 
+      expect(didMark).toBe(true);
       const updated = await repo.findByCode("MARK-USED-001");
       expect(updated!.status).toBe("used");
       expect(updated!.checkedInAt).not.toBeNull();
       expect(updated!.checkedInAt!.toISOString()).toBe(checkedInAt.toISOString());
+    });
+
+    test("OPS-002: only one concurrent markAsUsedIfActive call succeeds", async () => {
+      await cleanDatabase(db);
+
+      const event = await createEventFixture(db, { status: "published" });
+      const lot = await createLotFixture(db, event.id);
+      const order = await createOrderFixture(db, event.id, { status: "paid" });
+      const ticket = await createTicketFixture(
+        db,
+        { eventId: event.id, orderId: order.id, lotId: lot.id },
+        { code: "MARK-USED-RACE-001" },
+      );
+
+      const firstCheckinAt = new Date("2027-06-01T15:30:00.000Z");
+      const secondCheckinAt = new Date("2027-06-01T15:30:01.000Z");
+      const repo = new DrizzleTicketRepository(db);
+
+      const [firstResult, secondResult] = await Promise.all([
+        repo.markAsUsedIfActive(ticket.id, firstCheckinAt),
+        repo.markAsUsedIfActive(ticket.id, secondCheckinAt),
+      ]);
+
+      expect([firstResult, secondResult].filter(Boolean)).toHaveLength(1);
+
+      const updated = await repo.findByCode("MARK-USED-RACE-001");
+      expect(updated).not.toBeNull();
+      expect(updated!.status).toBe("used");
+      expect(updated!.checkedInAt).not.toBeNull();
+      expect([
+        firstCheckinAt.toISOString(),
+        secondCheckinAt.toISOString(),
+      ]).toContain(updated!.checkedInAt!.toISOString());
     });
 
     test("createMany maps duplicate code constraint to PersistenceError", async () => {

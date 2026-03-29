@@ -65,6 +65,7 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 - Criado log técnico de execução da task `API-003` em `docs/development/Logs/API-003.md`.
 - Criado log técnico de execução da task `API-004` em `docs/development/Logs/API-004.md`.
 - Criado log técnico de execução da task `OPS-001` em `docs/development/Logs/OPS-001.md`.
+- Criado log técnico de execução da task `OPS-002` em `docs/development/Logs/OPS-002.md`.
 - Criada suíte de integração do endpoint de compra:
   - `tests/integration/api/orders/create-order.endpoint.integration.test.ts`
   - cobertura de sucesso ponta a ponta e erros estruturados (estoque insuficiente, cupom inválido, payload inválido)
@@ -152,6 +153,13 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - mapeamento de rejeições para códigos estáveis (`not-found`, `authorization`, `conflict`) com `details.reason`.
   - cobertura unitária em `tests/unit/server/api/checkin/validate-checkin.handler.test.ts` para sucesso, validação de payload e mapeamento de falhas.
   - atualização de progresso em `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` e `docs/development/TASKS.md` para `4/9`.
+- Implementada a task `OPS-002` (persistência atômica no check-in):
+  - `src/server/repositories/drizzle/drizzle-ticket.repository.ts` atualizado com `markAsUsedIfActive` usando `UPDATE` condicional por `status = active`.
+  - `src/server/application/use-cases/validate-checkin.use-case.ts` atualizado para rejeitar com `ticket_used` quando a marcação atômica falha em corrida concorrente.
+  - `src/server/repositories/ticket.repository.contracts.ts` ajustado para expor contrato explícito de marcação atômica com retorno booleano.
+  - cobertura de unidade atualizada em `tests/unit/application/validate-checkin.use-case.test.ts` para cenário de concorrência.
+  - cobertura de integração estendida em `tests/integration/repositories/drizzle-ticket.repository.integration.test.ts` para tentativa concorrente única vencedora.
+  - atualização de progresso em `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` e `docs/development/TASKS.md` para `5/9`.
 
 ### Notes
 

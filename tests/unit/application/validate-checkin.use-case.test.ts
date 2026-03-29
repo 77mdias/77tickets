@@ -18,7 +18,10 @@ type ValidateCheckinUseCaseFactory = (dependencies: {
       status: TicketStatus;
       checkedInAt: Date | null;
     } | null>;
-    markAsUsed: (ticketId: string, checkedInAt: Date) => Promise<void>;
+    markAsUsedIfActive: (
+      ticketId: string,
+      checkedInAt: Date,
+    ) => Promise<boolean>;
   };
   orderRepository: {
     findById: (orderId: string) => Promise<{
@@ -66,12 +69,14 @@ function makeDependencies(options?: {
   ticketStatus?: TicketStatus;
   orderStatus?: OrderStatus;
   ticketEventId?: string;
+  markAsUsedIfActiveResult?: boolean;
 }) {
   const ticketStatus = options?.ticketStatus ?? "active";
   const orderStatus = options?.orderStatus ?? "paid";
   const ticketEventId = options?.ticketEventId ?? EVENT_ID;
+  const markAsUsedIfActiveResult = options?.markAsUsedIfActiveResult ?? true;
 
-  const markAsUsed = vi.fn(async () => undefined);
+  const markAsUsedIfActive = vi.fn(async () => markAsUsedIfActiveResult);
 
   return {
     now: () => FIXED_NOW,
@@ -86,7 +91,7 @@ function makeDependencies(options?: {
         status: ticketStatus,
         checkedInAt: null,
       })),
-      markAsUsed,
+      markAsUsedIfActive,
     },
     orderRepository: {
       findById: vi.fn(async () => ({
@@ -124,7 +129,7 @@ test("CHK-002 RED: approves check-in for active ticket in matching event with el
     checkerId: CHECKER_ID,
   });
   expect(typeof result.validatedAt).toBe("string");
-  expect(dependencies.ticketRepository.markAsUsed).toHaveBeenCalledWith(
+  expect(dependencies.ticketRepository.markAsUsedIfActive).toHaveBeenCalledWith(
     TICKET_ID,
     FIXED_NOW,
   );
@@ -148,7 +153,7 @@ test("CHK-002 RED: rejects check-in when ticket was already used", async () => {
     eventId: EVENT_ID,
     checkerId: CHECKER_ID,
   });
-  expect(dependencies.ticketRepository.markAsUsed).not.toHaveBeenCalled();
+  expect(dependencies.ticketRepository.markAsUsedIfActive).not.toHaveBeenCalled();
 });
 
 test("CHK-002 RED: rejects check-in when ticket is cancelled", async () => {
@@ -169,7 +174,7 @@ test("CHK-002 RED: rejects check-in when ticket is cancelled", async () => {
     eventId: EVENT_ID,
     checkerId: CHECKER_ID,
   });
-  expect(dependencies.ticketRepository.markAsUsed).not.toHaveBeenCalled();
+  expect(dependencies.ticketRepository.markAsUsedIfActive).not.toHaveBeenCalled();
 });
 
 test("CHK-002 RED: rejects check-in when order is expired", async () => {
@@ -190,7 +195,7 @@ test("CHK-002 RED: rejects check-in when order is expired", async () => {
     eventId: EVENT_ID,
     checkerId: CHECKER_ID,
   });
-  expect(dependencies.ticketRepository.markAsUsed).not.toHaveBeenCalled();
+  expect(dependencies.ticketRepository.markAsUsedIfActive).not.toHaveBeenCalled();
 });
 
 test("CHK-002 RED: rejects check-in when ticket belongs to a different event", async () => {
@@ -211,5 +216,29 @@ test("CHK-002 RED: rejects check-in when ticket belongs to a different event", a
     eventId: EVENT_ID,
     checkerId: CHECKER_ID,
   });
-  expect(dependencies.ticketRepository.markAsUsed).not.toHaveBeenCalled();
+  expect(dependencies.ticketRepository.markAsUsedIfActive).not.toHaveBeenCalled();
+});
+
+test("OPS-002: rejects check-in when atomic mark fails due concurrent usage", async () => {
+  const createValidateCheckinUseCase = await loadValidateCheckinFactory();
+  const dependencies = makeDependencies({ markAsUsedIfActiveResult: false });
+
+  const validateCheckin = createValidateCheckinUseCase(dependencies);
+
+  const result = await validateCheckin({
+    ticketId: TICKET_ID,
+    eventId: EVENT_ID,
+  });
+
+  expect(result).toMatchObject({
+    outcome: "rejected",
+    reason: "ticket_used",
+    ticketId: TICKET_ID,
+    eventId: EVENT_ID,
+    checkerId: CHECKER_ID,
+  });
+  expect(dependencies.ticketRepository.markAsUsedIfActive).toHaveBeenCalledWith(
+    TICKET_ID,
+    FIXED_NOW,
+  );
 });
