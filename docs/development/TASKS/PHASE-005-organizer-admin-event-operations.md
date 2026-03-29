@@ -96,7 +96,7 @@ Assegurar que o ciclo de vida do evento seja governado por regras de domínio ex
   **Dependências:** EVT-001
   **Status:** ✅ Concluído
 
-- [ ] **EVT-003** - Implementar `publishEvent` (GREEN)
+- [x] **EVT-003** - Implementar `publishEvent` (GREEN)
 
   **Descrição curta:**
   - Implementar use-case de publicação conforme regras.
@@ -110,13 +110,13 @@ Assegurar que o ciclo de vida do evento seja governado por regras de domínio ex
   **Arquivos/áreas afetadas:** `src/server/application/publish-event.use-case.ts`, `src/server/domain/events/*`
 
   **Critérios de aceitação:**
-  - [ ] Evento sem configuração mínima não publica.
-  - [ ] Testes unitários passam com regras completas.
+  - [x] Evento sem configuração mínima não publica.
+  - [x] Testes unitários passam com regras completas.
 
-  **Prioridade:** 🔴 Crítica  
-  **Estimativa:** 5h  
+  **Prioridade:** 🔴 Crítica
+  **Estimativa:** 5h
   **Dependências:** EVT-002
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
 - [ ] **EVT-004** - Cobrir regressões de status e evento cancelado
 
