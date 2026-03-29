@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 005
-**Status Geral:** 🟡 80% (8/10 tarefas completas) - FASE ATIVA
+**Status Geral:** 🟡 90% (9/10 tarefas completas) - FASE ATIVA
 **ETA:** 1 sprint (7 a 9 dias úteis)
 **Pré-requisito:** Fase 004 (concluída)
 
@@ -15,8 +15,8 @@
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Gestão de Evento | 4 | 4 | 0 | 0 | 0 |
 | APIs de Organizer/Admin | 3 | 3 | 0 | 0 | 0 |
-| Segurança, QA e Governança | 3 | 1 | 0 | 0 | 2 |
-| **TOTAL** | **10** | **8** | **0** | **0** | **2** |
+| Segurança, QA e Governança | 3 | 2 | 0 | 1 | 0 |
+| **TOTAL** | **10** | **9** | **0** | **1** | **0** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de publicação e ownership já descritas no AGENTS.md.
@@ -242,7 +242,7 @@ Consolidar autorização por papel/ownership para operações de gestão e encer
   **Dependências:** ADM-001, ADM-002  
   **Status:** ✅ Concluído
 
-- [ ] **GOV-002** - Executar QA funcional de ciclo de gestão de evento
+- [x] **GOV-002** - Executar QA funcional de ciclo de gestão de evento
 
   **Descrição curta:**
   - Homologar fluxo real de publicação e atualização.
@@ -256,13 +256,13 @@ Consolidar autorização por papel/ownership para operações de gestão e encer
   **Arquivos/áreas afetadas:** `docs/development/Logs/*`, `docs/development/TASKS.md`
 
   **Critérios de aceitação:**
-  - [ ] Checklist completo com evidência anexada.
-  - [ ] Nenhum bloqueador crítico aberto.
+  - [x] Checklist completo com evidência anexada.
+  - [x] Nenhum bloqueador crítico aberto.
 
   **Prioridade:** 🟡 Alta  
   **Estimativa:** 2h  
   **Dependências:** EVT-003, ADM-001..ADM-003, GOV-001  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 - [ ] **GOV-003** - Encerrar fase com documentação e handoff
 
@@ -284,7 +284,7 @@ Consolidar autorização por papel/ownership para operações de gestão e encer
   **Prioridade:** 🟢 Média  
   **Estimativa:** 1h30  
   **Dependências:** EVT-001..EVT-004, ADM-001..ADM-003, GOV-001..GOV-002  
-  **Status:** ⛔ Bloqueado
+  **Status:** 🟡 Pendente
 
 ---
 
@@ -293,7 +293,7 @@ Consolidar autorização por papel/ownership para operações de gestão e encer
 - **Suites necessárias:** Unit (publish/policy), Integration (events/coupons/auth), Regression (status/cancelamento), smoke manual.
 - **Cobertura alvo:** >80% em módulos de gestão/evento e >90% em policies de autorização.
 - **Comandos de verificação:** `npm run test:unit`, `npm run test:integration`, `npm run test`, `npm run lint`.
-- **Estado atual:** 🟡 Em andamento (fase iniciada; dependências internas de sequência ainda em aberto).
+- **Estado atual:** 🟡 Em andamento (GOV-002 concluída; aguardando GOV-003 para encerramento formal da fase).
 
 ---
 
@@ -311,5 +311,5 @@ Consolidar autorização por papel/ownership para operações de gestão e encer
 - [ ] Publicação de evento com pré-condições implementada.
 - [ ] RBAC/ownership validado por testes automatizados.
 - [ ] Endpoints de organizer/admin estáveis e documentados.
-- [ ] Fluxo operacional homologado.
+- [x] Fluxo operacional homologado.
 - [ ] Documentação atualizada e handoff concluído.
