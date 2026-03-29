@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 005
-**Status Geral:** 🟡 20% (2/10 tarefas completas) - FASE ATIVA
+**Status Geral:** 🟡 30% (3/10 tarefas completas) - FASE ATIVA
 **ETA:** 1 sprint (7 a 9 dias úteis)
 **Pré-requisito:** Fase 004 (concluída)
 
@@ -13,10 +13,10 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Gestão de Evento | 4 | 2 | 0 | 0 | 2 |
+| Gestão de Evento | 4 | 3 | 0 | 0 | 1 |
 | APIs de Organizer/Admin | 3 | 0 | 0 | 0 | 3 |
 | Segurança, QA e Governança | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **10** | **2** | **0** | **0** | **8** |
+| **TOTAL** | **10** | **3** | **0** | **0** | **7** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de publicação e ownership já descritas no AGENTS.md.
@@ -118,7 +118,7 @@ Assegurar que o ciclo de vida do evento seja governado por regras de domínio ex
   **Dependências:** EVT-002
   **Status:** ✅ Concluído
 
-- [ ] **EVT-004** - Cobrir regressões de status e evento cancelado
+- [x] **EVT-004** - Cobrir regressões de status e evento cancelado
 
   **Descrição curta:**
   - Garantir proteção contra republicação indevida.
@@ -132,13 +132,13 @@ Assegurar que o ciclo de vida do evento seja governado por regras de domínio ex
   **Arquivos/áreas afetadas:** `tests/regression/events/*.test.ts`, `src/server/domain/events/*`
 
   **Critérios de aceitação:**
-  - [ ] Regras de transição inválida protegidas.
-  - [ ] Regressões reproduzíveis em caso de quebra.
+  - [x] Regras de transição inválida protegidas.
+  - [x] Regressões reproduzíveis em caso de quebra.
 
-  **Prioridade:** 🟡 Alta  
-  **Estimativa:** 2h30  
-  **Dependências:** EVT-003  
-  **Status:** ⛔ Bloqueado
+  **Prioridade:** 🟡 Alta
+  **Estimativa:** 2h30
+  **Dependências:** EVT-003
+  **Status:** ✅ Concluído
 
 ### 📦 APIs de Organizer/Admin - Operação e gestão de catálogo
 
