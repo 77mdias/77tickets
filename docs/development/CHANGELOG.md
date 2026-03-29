@@ -66,6 +66,7 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 - Criado log técnico de execução da task `API-004` em `docs/development/Logs/API-004.md`.
 - Criado log técnico de execução da task `OPS-001` em `docs/development/Logs/OPS-001.md`.
 - Criado log técnico de execução da task `OPS-002` em `docs/development/Logs/OPS-002.md`.
+- Criado log técnico de execução da task `SEC-001` em `docs/development/Logs/SEC-001.md`.
 - Criada suíte de integração do endpoint de compra:
   - `tests/integration/api/orders/create-order.endpoint.integration.test.ts`
   - cobertura de sucesso ponta a ponta e erros estruturados (estoque insuficiente, cupom inválido, payload inválido)
@@ -167,6 +168,13 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - documentação de ambiente atualizada com `DEMO_CHECKER_ID` em `.env.example`.
   - cobertura unitária adicionada para client/adapter em `tests/unit/features/checkin/checkin-client.test.ts` e `tests/unit/server/api/checkin/validate-checkin.route-adapter.test.ts`.
   - atualização de progresso em `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` e `docs/development/TASKS.md` para `6/9`.
+- Implementada a task `SEC-001` (RBAC completo de check-in por papel/escopo):
+  - `src/server/application/security/checkin-access.policy.ts` criado com regra de acesso por papel (`admin/checker` global, `organizer` por ownership, `customer` negado).
+  - `src/server/api/checkin/validate-checkin.handler.ts` atualizado para autorização explícita por papel/escopo antes do use-case.
+  - `src/app/api/checkin/route.ts` atualizado para injetar `eventRepository` no handler.
+  - novas suítes em `tests/unit/server/application/security/checkin-access.policy.test.ts` e `tests/integration/api/checkin/auth.test.ts`.
+  - cobertura unitária de handler ampliada em `tests/unit/server/api/checkin/validate-checkin.handler.test.ts` com cenários de RBAC.
+  - atualização de progresso em `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` e `docs/development/TASKS.md` para `7/9`.
 
 ### Notes
 

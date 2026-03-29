@@ -1,4 +1,5 @@
 import type { ValidateCheckinFailureResult } from "../../application/checkin";
+import { assertCheckinAccess } from "../../application/security";
 import {
   createAuthorizationError,
   createConflictError,
@@ -6,6 +7,7 @@ import {
 } from "../../application/errors";
 import type { SecurityActor } from "../../application/security";
 import type { ValidateCheckinUseCase } from "../../application/use-cases";
+import type { EventRepository } from "../../repositories";
 import { mapAppErrorToResponse, type ErrorResponse } from "../error-mapper";
 import { validateCheckinSchema } from "../schemas";
 import { parseInput } from "../validation";
@@ -30,6 +32,7 @@ export type ValidateCheckinHandlerResponse =
 
 export interface ValidateCheckinHandlerDependencies {
   validateCheckin: ValidateCheckinUseCase;
+  eventRepository: Pick<EventRepository, "findById">;
 }
 
 const mapCheckinRejectionToError = (
@@ -60,6 +63,17 @@ export const createValidateCheckinHandler = (
   ): Promise<ValidateCheckinHandlerResponse> => {
     try {
       const input = parseInput(validateCheckinSchema, request.body);
+      const eventOrganizerId =
+        request.actor.role === "organizer"
+          ? (await dependencies.eventRepository.findById(input.eventId))
+              ?.organizerId ?? null
+          : null;
+
+      assertCheckinAccess({
+        actor: request.actor,
+        eventOrganizerId,
+      });
+
       const result = await dependencies.validateCheckin(input);
 
       if (result.outcome === "rejected") {

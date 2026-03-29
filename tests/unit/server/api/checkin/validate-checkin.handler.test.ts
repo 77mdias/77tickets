@@ -1,6 +1,7 @@
 import { expect, test, vi } from "vitest";
 
 import { createValidateCheckinHandler } from "../../../../../src/server/api/checkin/validate-checkin.handler";
+import type { EventRepository } from "../../../../../src/server/repositories";
 import type { ValidateCheckinUseCase } from "../../../../../src/server/application/use-cases";
 
 const CHECKER_ACTOR = {
@@ -13,6 +14,33 @@ const VALID_BODY = {
   eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
 };
 
+const ORGANIZER_ID = "00000000-0000-0000-0000-000000000010";
+const OTHER_ORGANIZER_ID = "00000000-0000-0000-0000-000000000011";
+
+const createHandlerDependencies = (
+  validateCheckin: ValidateCheckinUseCase,
+  eventOrganizerId: string | null = ORGANIZER_ID,
+) => ({
+  validateCheckin,
+  eventRepository: {
+    findById: vi.fn(async () => {
+      if (eventOrganizerId === null) {
+        return null;
+      }
+
+      return {
+        id: VALID_BODY.eventId,
+        organizerId: eventOrganizerId,
+        slug: "event-checkin",
+        title: "Event Check-in",
+        status: "published" as const,
+        startsAt: new Date("2027-06-01T10:00:00.000Z"),
+        endsAt: null,
+      };
+    }),
+  } satisfies Pick<EventRepository, "findById">,
+});
+
 test("createValidateCheckinHandler returns 400 validation error for invalid payload", async () => {
   const validateCheckin = vi.fn<Parameters<ValidateCheckinUseCase>, ReturnType<ValidateCheckinUseCase>>(
     async () => ({
@@ -24,7 +52,7 @@ test("createValidateCheckinHandler returns 400 validation error for invalid payl
     }),
   );
 
-  const handler = createValidateCheckinHandler({ validateCheckin });
+  const handler = createValidateCheckinHandler(createHandlerDependencies(validateCheckin));
 
   const response = await handler({
     actor: CHECKER_ACTOR,
@@ -50,7 +78,7 @@ test("createValidateCheckinHandler returns 200 with check-in data when use-case 
     }),
   );
 
-  const handler = createValidateCheckinHandler({ validateCheckin });
+  const handler = createValidateCheckinHandler(createHandlerDependencies(validateCheckin));
 
   const response = await handler({
     actor: CHECKER_ACTOR,
@@ -85,7 +113,7 @@ test("createValidateCheckinHandler maps ticket_not_found to 404 not-found", asyn
     }),
   );
 
-  const handler = createValidateCheckinHandler({ validateCheckin });
+  const handler = createValidateCheckinHandler(createHandlerDependencies(validateCheckin));
 
   const response = await handler({
     actor: CHECKER_ACTOR,
@@ -109,7 +137,7 @@ test("createValidateCheckinHandler maps unauthorized_checker to 403 authorizatio
     }),
   );
 
-  const handler = createValidateCheckinHandler({ validateCheckin });
+  const handler = createValidateCheckinHandler(createHandlerDependencies(validateCheckin));
 
   const response = await handler({
     actor: CHECKER_ACTOR,
@@ -133,7 +161,7 @@ test("createValidateCheckinHandler maps operational rejections to 409 conflict",
     }),
   );
 
-  const handler = createValidateCheckinHandler({ validateCheckin });
+  const handler = createValidateCheckinHandler(createHandlerDependencies(validateCheckin));
 
   const response = await handler({
     actor: CHECKER_ACTOR,
@@ -152,7 +180,7 @@ test("createValidateCheckinHandler maps unexpected failures to 500 internal", as
     },
   );
 
-  const handler = createValidateCheckinHandler({ validateCheckin });
+  const handler = createValidateCheckinHandler(createHandlerDependencies(validateCheckin));
 
   const response = await handler({
     actor: CHECKER_ACTOR,
@@ -162,4 +190,58 @@ test("createValidateCheckinHandler maps unexpected failures to 500 internal", as
   expect(response.status).toBe(500);
   expect(response.body.error.code).toBe("internal");
   expect(response.body.error.message).toBe("Internal server error");
+});
+
+test("createValidateCheckinHandler blocks customer role with 403 authorization", async () => {
+  const validateCheckin = vi.fn<Parameters<ValidateCheckinUseCase>, ReturnType<ValidateCheckinUseCase>>(
+    async () => ({
+      outcome: "approved",
+      ticketId: VALID_BODY.ticketId,
+      eventId: VALID_BODY.eventId,
+      checkerId: CHECKER_ACTOR.userId,
+      validatedAt: "2026-03-29T12:00:00.000Z",
+    }),
+  );
+
+  const handler = createValidateCheckinHandler(createHandlerDependencies(validateCheckin));
+
+  const response = await handler({
+    actor: {
+      role: "customer",
+      userId: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",
+    },
+    body: VALID_BODY,
+  });
+
+  expect(response.status).toBe(403);
+  expect(response.body.error.code).toBe("authorization");
+  expect(validateCheckin).not.toHaveBeenCalled();
+});
+
+test("createValidateCheckinHandler blocks organizer outside event ownership", async () => {
+  const validateCheckin = vi.fn<Parameters<ValidateCheckinUseCase>, ReturnType<ValidateCheckinUseCase>>(
+    async () => ({
+      outcome: "approved",
+      ticketId: VALID_BODY.ticketId,
+      eventId: VALID_BODY.eventId,
+      checkerId: CHECKER_ACTOR.userId,
+      validatedAt: "2026-03-29T12:00:00.000Z",
+    }),
+  );
+
+  const handler = createValidateCheckinHandler(
+    createHandlerDependencies(validateCheckin, OTHER_ORGANIZER_ID),
+  );
+
+  const response = await handler({
+    actor: {
+      role: "organizer",
+      userId: ORGANIZER_ID,
+    },
+    body: VALID_BODY,
+  });
+
+  expect(response.status).toBe(403);
+  expect(response.body.error.code).toBe("authorization");
+  expect(validateCheckin).not.toHaveBeenCalled();
 });

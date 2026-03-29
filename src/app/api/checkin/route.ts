@@ -7,6 +7,7 @@ import {
 import { createValidateCheckinUseCase } from "@/src/server/application/use-cases";
 import { createDb } from "@/src/server/infrastructure/db/client";
 import {
+  DrizzleEventRepository,
   DrizzleOrderRepository,
   DrizzleTicketRepository,
 } from "@/src/server/repositories/drizzle";
@@ -26,11 +27,14 @@ const buildPostCheckinRouteHandler = (): PostCheckinRouteHandler => {
     orderRepository: new DrizzleOrderRepository(db),
   });
 
-  const handleValidateCheckin = createValidateCheckinHandler({ validateCheckin });
+  const eventRepository = new DrizzleEventRepository(db);
 
   return createValidateCheckinRouteAdapter({
     checkerId,
-    handleValidateCheckin,
+    handleValidateCheckin: createValidateCheckinHandler({
+      validateCheckin,
+      eventRepository,
+    }),
   });
 };
 

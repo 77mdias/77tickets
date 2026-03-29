@@ -3,7 +3,7 @@
 **Status:** 🟡 EM ANDAMENTO
 **Última atualização:** 2026-03-29
 **Sprint Atual:** Sprint 004
-**Status Geral:** 🟡 67% (6/9 tarefas completas) - FASE EM EXECUÇÃO
+**Status Geral:** 🟡 78% (7/9 tarefas completas) - FASE EM EXECUÇÃO
 **ETA:** 1 sprint (6 a 8 dias úteis)
 **Pré-requisito:** Fase 003 (concluída)
 
@@ -15,8 +15,8 @@
 | --------- | ----- | --------- | ------------ | -------- | --------- |
 | Validação de Ticket | 3 | 3 | 0 | 0 | 0 |
 | API de Check-in e Operação | 3 | 3 | 0 | 0 | 0 |
-| RBAC, Concorrência e QA | 3 | 0 | 0 | 0 | 3 |
-| **TOTAL** | **9** | **6** | **0** | **0** | **3** |
+| RBAC, Concorrência e QA | 3 | 1 | 0 | 0 | 2 |
+| **TOTAL** | **9** | **7** | **0** | **0** | **2** |
 
 ### 🎯 Principais Indicadores (opcional)
 - ✅ Regras de check-in e validade já definidas no AGENTS.
@@ -192,7 +192,7 @@ Assegurar que somente papéis autorizados executem check-in e que eventos concor
 
 #### SEC.1 - Segurança e validação final
 
-- [ ] **SEC-001** - Cobrir RBAC completo de check-in por papel/escopo
+- [x] **SEC-001** - Cobrir RBAC completo de check-in por papel/escopo
 
   **Descrição curta:**
   - Validar permissões para `checker`, `organizer`, `admin`, `customer`.
@@ -206,13 +206,13 @@ Assegurar que somente papéis autorizados executem check-in e que eventos concor
   **Arquivos/áreas afetadas:** `src/server/application/security/*`, `tests/integration/api/checkin/auth*.test.ts`
 
   **Critérios de aceitação:**
-  - [ ] Role sem permissão é bloqueada.
-  - [ ] Admin mantém acesso global conforme regra.
+  - [x] Role sem permissão é bloqueada.
+  - [x] Admin mantém acesso global conforme regra.
 
   **Prioridade:** 🔴 Crítica  
   **Estimativa:** 3h  
   **Dependências:** OPS-001  
-  **Status:** ⛔ Bloqueado
+  **Status:** ✅ Concluído
 
 - [ ] **SEC-002** - Criar regressão de duplo check-in e ticket inválido
 
@@ -265,7 +265,7 @@ Assegurar que somente papéis autorizados executem check-in e que eventos concor
 - **Suites necessárias:** Unit (use-case/policy), Integration (API/repository), Regression (concorrência), smoke manual de operação.
 - **Cobertura alvo:** >85% de check-in/security.
 - **Comandos de verificação:** `npm run test:unit`, `npm run test:integration`, `npm run test`, `npm run lint`.
-- **Estado atual:** ⚠️ Em falha (fase bloqueada).
+- **Estado atual:** 🟡 Em andamento (RBAC coberto; regressões SEC-002 e encerramento SEC-003 pendentes).
 
 ---
 
@@ -282,6 +282,6 @@ Assegurar que somente papéis autorizados executem check-in e que eventos concor
 
 - [ ] Validação de ticket implementada e testada.
 - [x] Fluxo de check-in operacional disponível.
-- [ ] RBAC completo validado por testes.
+- [x] RBAC completo validado por testes.
 - [ ] Regressões de duplo uso cobertas.
 - [ ] Documentação atualizada e aprovada.
