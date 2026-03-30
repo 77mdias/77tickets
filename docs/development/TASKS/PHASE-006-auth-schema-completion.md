@@ -38,7 +38,7 @@
 
   **Status:** Concluído
   Tabela `user` criada via Better Auth schema Drizzle em `src/server/infrastructure/db/schema/users.ts`.
-  Inclui também: `session`, `account`, `verification`. Migration `0000` aplicada.
+  Inclui também: `session`, `account`, `verification`. Migration `0001` aplicada.
 
 - [x] **SCH-002** - Criar migração: FK `orders.customer_id → users.id`
 
@@ -62,7 +62,7 @@
   `UserRepository` com `findById` implementado em:
   - `src/server/repositories/user.repository.contracts.ts`
   - `src/server/repositories/drizzle/drizzle-user.repository.ts`
-  Cobertura de integração em `tests/integration/repositories/drizzle-user.repository.integration.test.ts`.
+  Implementações adicionais `findByEmail` e `save` também disponíveis.
 
 ---
 
@@ -89,8 +89,8 @@
 - [x] **AUTH-002** - Implementar session middleware para handlers
 
   **Status:** Concluído
-  Helper `getSession` implementado em `src/server/api/auth.ts`:
-  - Extrai Bearer token ou cookie da requisição
+  Helper `getSession` implementado em `src/server/api/auth/get-session.ts`:
+  - Extrai sessão via Better Auth (`auth.api.getSession`) a partir dos headers da requisição
   - Retorna `SessionContext { userId, role }`
   - Lança `createUnauthenticatedError()` se sessão inválida/ausente
 
@@ -104,10 +104,8 @@
   Todos os 6 route adapters refatorados para injetar `getSession` em deps e extrair sessão real:
   - `src/server/api/orders/create-order.route-adapter.ts`
   - `src/server/api/checkin/validate-checkin.route-adapter.ts`
-  - `src/server/api/events/publish-event.route-adapter.ts`
-  - `src/server/api/events/update-event-status.route-adapter.ts`
-  - `src/server/api/coupons/create-coupon.route-adapter.ts`
-  - `src/server/api/coupons/update-coupon.route-adapter.ts`
+  - `src/server/api/events/events.route-adapter.ts` (publish + update)
+  - `src/server/api/coupons/coupons.route-adapter.ts` (create + update)
 
   Nenhum handler aceita mais `userId`/`role` via header arbitrário.
   Sessão inválida retorna `401 Unauthorized`.
@@ -143,5 +141,7 @@
 - [x] Schema de eventos com campos `description`, `location`, `imageUrl`.
 - [x] Usuário consegue registrar, logar e manter sessão.
 - [x] Todos os handlers usam identidade real da sessão.
-- [x] `npm run test` passando: 254 unit + 18 regression + 356 integration = 628 total.
+- [x] `npm run test` passando: 255 unit + 18 regression + 357 integration = 630 total.
 - [x] CHANGELOG atualizado.
+- [x] `npm run lint:architecture` sem violações.
+- [x] Homologação manual do fluxo auth evidenciada em 2026-03-30 (`sign-up` → `sign-in` → endpoint protegido).

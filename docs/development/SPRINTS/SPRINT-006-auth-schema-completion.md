@@ -1,8 +1,10 @@
 ## Sprint 006 — Auth Integration & Schema Completion
 
+**Status da sprint (análise em 2026-03-30):** concluída.
+
 ### Objetivo
 
-Fechar o gap crítico de identidade de usuário integrando auth real, criando a tabela `users` com FKs de referência e completando o schema de eventos com campos de apresentação necessários para as fases seguintes.
+Fechar o gap crítico de identidade de usuário integrando auth real, criando a tabela `user` (modelo Better Auth) com FKs de referência e completando o schema de eventos com campos de apresentação necessários para as fases seguintes.
 
 ---
 
@@ -17,10 +19,10 @@ Fechar o gap crítico de identidade de usuário integrando auth real, criando a 
 
 ## Etapa 1 — Discovery Técnico
 
-* Confirmar biblioteca de auth: Better Auth com adapter Drizzle (recomendado pela PRD).
-* Mapear todos os handlers que recebem `userId`/`role` injetados para atualização em AUTH-003.
-* Identificar fixtures de testes de integração que usam UUIDs hardcoded — precisarão de `users` reais após SCH-001.
-* Verificar compatibilidade do Better Auth com Cloudflare Workers (modo edge).
+- [x] Biblioteca de auth confirmada: Better Auth + adapter Drizzle (`src/server/infrastructure/auth/auth.config.ts`).
+- [x] Handlers/adapters mapeados e migrados para sessão real (6 endpoints de API).
+- [x] Fixtures de integração adaptadas para existência de usuários reais (`tests/integration/setup/index.ts`).
+- [x] Configuração com `trustedOrigins` e `bearer()` aplicada para runtime web/serverless.
 
 ---
 
@@ -31,19 +33,19 @@ Fechar o gap crítico de identidade de usuário integrando auth real, criando a 
 
 ### Casos de teste planejados
 
-* [ ] Cenário 1: registro de usuário cria registro em `users` com role correto.
-* [ ] Cenário 2: login retorna sessão válida com userId e role.
-* [ ] Cenário 3: requisição sem sessão válida retorna `401 Unauthorized`.
-* [ ] Cenário 4: customer não acessa endpoint de organizer (RBAC preservado com auth real).
-* [ ] Cenário 5: organizer acessa apenas seus próprios eventos (ownership preservado).
+* [x] Cenário 1: registro de usuário cria registro com role correto (`tests/integration/api/auth/auth.integration.test.ts`).
+* [x] Cenário 2: login retorna sessão válida com `userId` e `role` (`tests/integration/api/auth/auth.integration.test.ts`).
+* [x] Cenário 3: requisição sem sessão válida retorna `401 Unauthorized` (suítes de adapters + regressão auth).
+* [x] Cenário 4: customer não acessa endpoint de organizer (RBAC preservado em handlers e regressão).
+* [x] Cenário 5: organizer acessa apenas seus próprios eventos (ownership validado em `tests/integration/api/events/auth.test.ts`).
 
 ---
 
 ## Etapa 3 — Testes Primeiro (TDD)
 
-* Escrever testes RED para sessão inválida → 401 em handlers existentes.
-* Escrever testes RED para extração de role da sessão.
-* Implementar (GREEN) → refatorar.
+* [x] Testes para sessão inválida (`401`) implementados antes do fechamento da sprint.
+* [x] Testes para extração de role da sessão implementados.
+* [x] Suítes de unit/regression/integration verdes no estado atual.
 
 ---
 
@@ -51,7 +53,7 @@ Fechar o gap crítico de identidade de usuário integrando auth real, criando a 
 
 Sequência recomendada:
 
-1. SCH-001: tabela `users` + enum `user_role`
+1. SCH-001: tabela `user` (Better Auth)
 2. SCH-002, SCH-003: FKs em `orders` e `events`
 3. SCH-004: campos de apresentação em `events`
 4. SCH-005: `UserRepository` contract + implementação Drizzle
@@ -65,17 +67,18 @@ Sequência recomendada:
 
 ## Etapa 5 — Validação
 
-* `npm run test` — todos os testes passando.
-* `npm run lint:architecture` — sem violações.
-* Fluxo manual: registrar → logar → fazer request autenticado → verificar sessão.
-* Verificar que os 6 endpoints existentes retornam `401` sem sessão.
+* [x] `npm run test` — passando em 2026-03-30: `255 unit + 18 regression + 357 integration = 630`.
+* [x] `npm run lint:architecture` — sem violações.
+* [x] Fluxo manual de homologação (registrar → logar → request autenticado) evidenciado em 2026-03-30: sem sessão `401 unauthenticated`; com sessão válida `400 validation` (request autenticado alcançando validação de payload).
+* [x] Endpoints da sprint cobertos para `401` sem sessão em testes de adapters/regressão.
 
 ---
 
 ## Critérios de Aceite da Sprint
 
-- [ ] Tabela `users` criada com FKs em `orders` e `events`.
-- [ ] Auth integrado com registro e login funcionais.
-- [ ] Todos os handlers validam sessão real.
-- [ ] Testes de auth e RBAC passando.
-- [ ] `npm run test` verde.
+- [x] Tabela `user` criada com FKs em `orders` e `events`.
+- [x] Auth integrado com registro e login funcionais.
+- [x] Todos os handlers da sprint validam sessão real.
+- [x] Testes de auth e RBAC passando.
+- [x] `npm run test` verde.
+- [x] `npm run lint:architecture` sem violações.

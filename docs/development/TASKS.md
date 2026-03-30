@@ -1,6 +1,6 @@
 # TicketFlow Tasks Index
 
-> Última atualização: 2026-03-29
+> Última atualização: 2026-03-30
 > Fonte: `docs/development/SPRINTS/*` e `docs/development/TASKS/*`
 
 ## Visão Geral de Fases
@@ -12,7 +12,7 @@
 | 003 | Sprint 003 | `docs/development/TASKS/PHASE-003-create-order-flow.md` | 🟢 Concluída | 11/11 |
 | 004 | Sprint 004 | `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` | 🟢 Concluída | 9/9 |
 | 005 | Sprint 005 | `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` | 🟢 Concluída | 10/10 |
-| 006 | Sprint 006 | `docs/development/TASKS/PHASE-006-auth-schema-completion.md` | 🔵 Planejada | 0/10 |
+| 006 | Sprint 006 | `docs/development/TASKS/PHASE-006-auth-schema-completion.md` | 🟢 Concluída | 10/10 |
 | 007 | Sprint 007 | `docs/development/TASKS/PHASE-007-public-customer-experience.md` | 🔵 Planejada | 0/13 |
 | 008 | Sprint 008 | `docs/development/TASKS/PHASE-008-admin-dashboard-completeness.md` | 🔵 Planejada | 0/13 |
 | 009 | Sprint 009 | `docs/development/TASKS/PHASE-009-hardening.md` | 🔵 Planejada | 0/10 |
@@ -26,9 +26,9 @@
 3. Fase 003: fluxo `createOrder` ponta a ponta. ✅
 4. Fase 004: validação de ticket + check-in + RBAC operacional. ✅
 5. Fase 005: operações organizer/admin + publicação de eventos. ✅
+6. Fase 006: auth real + tabela users + campos de apresentação em events. ✅
 
 ### Planejadas
-6. Fase 006: auth real + tabela users + campos de apresentação em events. 🔵 **[PRÓXIMA]**
 7. Fase 007: listagem pública, detalhe de evento, meus ingressos, QR code. 🔵
 8. Fase 008: criar evento, criar lotes, ver pedidos — admin completo. 🔵
 9. Fase 009: hardening — regressões, audit trail, N+1, rate limiting. 🔵
