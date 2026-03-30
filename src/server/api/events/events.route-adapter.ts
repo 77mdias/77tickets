@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 import {
   createValidationError,
   type AppErrorPayload,
@@ -14,17 +12,12 @@ import type {
   UpdateEventRequest,
 } from "./update-event.handler";
 import { mapAppErrorToResponse } from "../error-mapper";
-import { parseInput } from "../validation";
+import type { SessionContext } from "../auth";
 
-const actorSchema: z.ZodType<SecurityActor> = z
-  .object({
-    userId: z.uuid(),
-    role: z.enum(["organizer", "admin"]),
-  })
-  .strict();
-
-const toJsonResponse = (status: number, payload: { error: AppErrorPayload } | { data: unknown }) =>
-  Response.json(payload, { status });
+const toJsonResponse = (
+  status: number,
+  payload: { error: AppErrorPayload } | { data: unknown },
+) => Response.json(payload, { status });
 
 const readRequestBody = async (request: Request): Promise<unknown> => {
   try {
@@ -34,20 +27,15 @@ const readRequestBody = async (request: Request): Promise<unknown> => {
   }
 };
 
-const readActorFromHeaders = (headers: Headers): SecurityActor => {
-  return parseInput(actorSchema, {
-    userId: headers.get("x-actor-id"),
-    role: headers.get("x-actor-role"),
-  });
-};
-
 export interface PublishEventRouteAdapterDependencies {
+  getSession: (request: Request) => Promise<SessionContext>;
   handlePublishEvent: (
     request: PublishEventRequest,
   ) => Promise<PublishEventHandlerResponse>;
 }
 
 export interface UpdateEventRouteAdapterDependencies {
+  getSession: (request: Request) => Promise<SessionContext>;
   handleUpdateEvent: (request: UpdateEventRequest) => Promise<UpdateEventHandlerResponse>;
 }
 
@@ -55,10 +43,13 @@ export const createPublishEventRouteAdapter =
   (dependencies: PublishEventRouteAdapterDependencies) =>
   async (request: Request): Promise<Response> => {
     try {
-      const actor = readActorFromHeaders(request.headers);
+      const session = await dependencies.getSession(request);
       const body = await readRequestBody(request);
+      const actor: SecurityActor = {
+        userId: session.userId,
+        role: session.role as SecurityActor["role"],
+      };
       const response = await dependencies.handlePublishEvent({ actor, body });
-
       return toJsonResponse(response.status, response.body);
     } catch (error) {
       const mapped = mapAppErrorToResponse(error);
@@ -70,10 +61,13 @@ export const createUpdateEventRouteAdapter =
   (dependencies: UpdateEventRouteAdapterDependencies) =>
   async (request: Request): Promise<Response> => {
     try {
-      const actor = readActorFromHeaders(request.headers);
+      const session = await dependencies.getSession(request);
       const body = await readRequestBody(request);
+      const actor: SecurityActor = {
+        userId: session.userId,
+        role: session.role as SecurityActor["role"],
+      };
       const response = await dependencies.handleUpdateEvent({ actor, body });
-
       return toJsonResponse(response.status, response.body);
     } catch (error) {
       const mapped = mapAppErrorToResponse(error);

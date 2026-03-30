@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 import {
   createValidationError,
   type AppErrorPayload,
@@ -14,17 +12,12 @@ import type {
   UpdateCouponRequest,
 } from "./update-coupon.handler";
 import { mapAppErrorToResponse } from "../error-mapper";
-import { parseInput } from "../validation";
+import type { SessionContext } from "../auth";
 
-const actorSchema: z.ZodType<SecurityActor> = z
-  .object({
-    userId: z.uuid(),
-    role: z.enum(["organizer", "admin"]),
-  })
-  .strict();
-
-const toJsonResponse = (status: number, payload: { error: AppErrorPayload } | { data: unknown }) =>
-  Response.json(payload, { status });
+const toJsonResponse = (
+  status: number,
+  payload: { error: AppErrorPayload } | { data: unknown },
+) => Response.json(payload, { status });
 
 const readRequestBody = async (request: Request): Promise<unknown> => {
   try {
@@ -34,20 +27,15 @@ const readRequestBody = async (request: Request): Promise<unknown> => {
   }
 };
 
-const readActorFromHeaders = (headers: Headers): SecurityActor => {
-  return parseInput(actorSchema, {
-    userId: headers.get("x-actor-id"),
-    role: headers.get("x-actor-role"),
-  });
-};
-
 export interface CreateCouponRouteAdapterDependencies {
+  getSession: (request: Request) => Promise<SessionContext>;
   handleCreateCoupon: (
     request: CreateCouponRequest,
   ) => Promise<CreateCouponHandlerResponse>;
 }
 
 export interface UpdateCouponRouteAdapterDependencies {
+  getSession: (request: Request) => Promise<SessionContext>;
   handleUpdateCoupon: (
     request: UpdateCouponRequest,
   ) => Promise<UpdateCouponHandlerResponse>;
@@ -57,10 +45,13 @@ export const createCreateCouponRouteAdapter =
   (dependencies: CreateCouponRouteAdapterDependencies) =>
   async (request: Request): Promise<Response> => {
     try {
-      const actor = readActorFromHeaders(request.headers);
+      const session = await dependencies.getSession(request);
       const body = await readRequestBody(request);
+      const actor: SecurityActor = {
+        userId: session.userId,
+        role: session.role as SecurityActor["role"],
+      };
       const response = await dependencies.handleCreateCoupon({ actor, body });
-
       return toJsonResponse(response.status, response.body);
     } catch (error) {
       const mapped = mapAppErrorToResponse(error);
@@ -72,10 +63,13 @@ export const createUpdateCouponRouteAdapter =
   (dependencies: UpdateCouponRouteAdapterDependencies) =>
   async (request: Request): Promise<Response> => {
     try {
-      const actor = readActorFromHeaders(request.headers);
+      const session = await dependencies.getSession(request);
       const body = await readRequestBody(request);
+      const actor: SecurityActor = {
+        userId: session.userId,
+        role: session.role as SecurityActor["role"],
+      };
       const response = await dependencies.handleUpdateCoupon({ actor, body });
-
       return toJsonResponse(response.status, response.body);
     } catch (error) {
       const mapped = mapAppErrorToResponse(error);

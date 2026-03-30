@@ -1,6 +1,7 @@
 import { createCreateCouponHandler } from "@/src/server/api/coupons/create-coupon.handler";
 import { createCreateCouponRouteAdapter } from "@/src/server/api/coupons/coupons.route-adapter";
 import { getDatabaseUrlOrThrow } from "@/src/server/api/orders/create-order.route-adapter";
+import { getSession } from "@/src/server/api/auth";
 import { createCreateCouponUseCase } from "@/src/server/application/use-cases";
 import { createDb } from "@/src/server/infrastructure/db/client";
 import {
@@ -25,6 +26,7 @@ const buildPostCreateCouponRouteHandler = (): PostCreateCouponRouteHandler => {
   });
 
   return createCreateCouponRouteAdapter({
+    getSession,
     handleCreateCoupon,
   });
 };

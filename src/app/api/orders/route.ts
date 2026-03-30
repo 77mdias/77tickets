@@ -2,8 +2,8 @@ import { createCreateOrderHandler } from "@/src/server/api/create-order.handler"
 import {
   createCreateOrderRouteAdapter,
   getDatabaseUrlOrThrow,
-  resolveDemoCustomerId,
 } from "@/src/server/api/orders/create-order.route-adapter";
+import { getSession } from "@/src/server/api/auth";
 import { createCreateOrderUseCase } from "@/src/server/application/use-cases/create-order.use-case";
 import { createDb } from "@/src/server/infrastructure/db/client";
 import { createConsoleCheckoutObservability } from "@/src/server/infrastructure/observability";
@@ -21,7 +21,6 @@ const generateUuid = (): string => {
   if (typeof globalThis.crypto?.randomUUID === "function") {
     return globalThis.crypto.randomUUID();
   }
-
   throw new Error("crypto.randomUUID is unavailable");
 };
 
@@ -39,10 +38,9 @@ const buildPostOrdersRouteHandler = (): PostOrdersRouteHandler => {
   });
 
   const handleCreateOrder = createCreateOrderHandler({ createOrder, observability });
-  const customerId = resolveDemoCustomerId(process.env.DEMO_CUSTOMER_ID);
 
   return createCreateOrderRouteAdapter({
-    customerId,
+    getSession,
     handleCreateOrder,
   });
 };
@@ -51,7 +49,6 @@ const getPostOrdersRouteHandler = (): PostOrdersRouteHandler => {
   if (!cachedPostOrdersRouteHandler) {
     cachedPostOrdersRouteHandler = buildPostOrdersRouteHandler();
   }
-
   return cachedPostOrdersRouteHandler;
 };
 
