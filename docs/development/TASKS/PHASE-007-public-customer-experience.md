@@ -1,9 +1,9 @@
 # 🚀 Tasks - Fase 007: Public Customer Experience
 
-**Status:** 🔵 PLANEJADA
-**Última atualização:** 2026-03-29
+**Status:** 🟢 CONCLUÍDA
+**Última atualização:** 2026-03-30
 **Sprint Atual:** Sprint 007
-**Status Geral:** 🔵 0% (0/13 tarefas completas)
+**Status Geral:** 🟢 100% (13/13 tarefas completas)
 **ETA:** 1–2 sprints
 **Pré-requisito:** Fase 006 (auth real integrada)
 
@@ -13,16 +13,16 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Read-Side Backend | 7 | 0 | 0 | 7 | 0 |
-| UI e Fluxo do Comprador | 4 | 0 | 0 | 4 | 0 |
-| QR e Ticket Visual | 1 | 0 | 0 | 1 | 0 |
-| Conectar Checkout | 1 | 0 | 0 | 1 | 0 |
-| **TOTAL** | **13** | **0** | **0** | **13** | **0** |
+| Read-Side Backend | 7 | 7 | 0 | 0 | 0 |
+| UI e Fluxo do Comprador | 4 | 4 | 0 | 0 | 0 |
+| QR e Ticket Visual | 1 | 1 | 0 | 0 | 0 |
+| Conectar Checkout | 1 | 1 | 0 | 0 | 0 |
+| **TOTAL** | **13** | **13** | **0** | **0** | **0** |
 
 ### 🎯 Principais Indicadores
-- 🔴 Zero endpoints GET públicos na aplicação atual — comprador não tem como navegar.
-- 🔴 Read-side dos repositórios incompleto — faltam `listPublished`, `listByCustomerId`, `listByOrderId` expostos.
-- ⚠️ Esta fase entrega o demo funcional ponta a ponta para o fluxo do comprador.
+- 🟢 Endpoints GET públicos entregues e testados (`/api/events`, `/api/events/:slug`, `/api/orders/mine`).
+- 🟢 Read-side concluído com `listPublished()` e `listByCustomerId()` em pedidos/tickets.
+- 🟢 Fluxo ponta a ponta do comprador disponível: login → evento → checkout → meus ingressos com QR.
 
 ---
 
@@ -45,7 +45,7 @@ Completar o read-side da camada de repositórios e expor os endpoints GET necess
 
 #### EVT.R - Eventos públicos
 
-- [ ] **EVT-003** - Adicionar `listPublished()` ao `EventRepository`
+- [x] **EVT-003** - Adicionar `listPublished()` ao `EventRepository`
 
   **Descrição curta:**
   - Adicionar método `listPublished(options?: { limit, offset })` ao contrato e à implementação Drizzle.
@@ -59,16 +59,16 @@ Completar o read-side da camada de repositórios e expor os endpoints GET necess
   **Arquivos/áreas afetadas:** `event.repository.contracts.ts`, `drizzle-event.repository.ts`
 
   **Critérios de aceitação:**
-  - [ ] Retorna somente eventos publicados.
-  - [ ] Suporte a paginação básica (limit/offset).
-  - [ ] Testes de integração cobrindo listagem vazia e com resultados.
+  - [x] Retorna somente eventos publicados.
+  - [x] Suporte a paginação básica (limit/offset).
+  - [x] Testes de integração cobrindo listagem vazia e com resultados.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 2h
   **Dependências:** Fase 006 (SCH-004)
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
-- [ ] **EVT-005** - Use-case `listPublishedEvents`
+- [x] **EVT-005** - Use-case `listPublishedEvents`
 
   **Descrição curta:**
   - Implementar use-case de listagem pública de eventos sem autenticação.
@@ -81,15 +81,15 @@ Completar o read-side da camada de repositórios e expor os endpoints GET necess
   **Arquivos/áreas afetadas:** `src/server/application/use-cases/`
 
   **Critérios de aceitação:**
-  - [ ] Use-case retorna eventos publicados paginados.
-  - [ ] Testes unitários com mock de repositório.
+  - [x] Use-case retorna eventos publicados paginados.
+  - [x] Testes unitários com mock de repositório.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 1h30
   **Dependências:** EVT-003
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
-- [ ] **EVT-006** - Handler + endpoint `GET /api/events`
+- [x] **EVT-006** - Handler + endpoint `GET /api/events`
 
   **Descrição curta:**
   - Handler thin para listagem pública de eventos.
@@ -102,16 +102,16 @@ Completar o read-side da camada de repositórios e expor os endpoints GET necess
   **Arquivos/áreas afetadas:** `src/server/api/events/`, `src/app/api/events/`
 
   **Critérios de aceitação:**
-  - [ ] `GET /api/events` retorna lista de eventos publicados.
-  - [ ] Paginação funcional.
-  - [ ] Testes de handler e integração.
+  - [x] `GET /api/events` retorna lista de eventos publicados.
+  - [x] Paginação funcional.
+  - [x] Testes de handler e integração.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 2h
   **Dependências:** EVT-005
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
-- [ ] **EVT-007** - Handler + endpoint `GET /api/events/:slug`
+- [x] **EVT-007** - Handler + endpoint `GET /api/events/:slug`
 
   **Descrição curta:**
   - Endpoint de detalhe de evento por slug, incluindo lotes ativos.
@@ -125,18 +125,18 @@ Completar o read-side da camada de repositórios e expor os endpoints GET necess
   **Arquivos/áreas afetadas:** `src/server/application/use-cases/`, `src/server/api/events/`, `src/app/api/events/[slug]/`
 
   **Critérios de aceitação:**
-  - [ ] Retorna evento + lotes ativos no período de venda.
-  - [ ] Lotes fora do período ou esgotados retornam com `available: 0`.
-  - [ ] 404 para slug inexistente ou evento não publicado.
+  - [x] Retorna evento + lotes ativos no período de venda.
+  - [x] Lotes fora do período ou esgotados retornam com `available: 0`.
+  - [x] 404 para slug inexistente ou evento não publicado.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 3h
   **Dependências:** EVT-005
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
 #### TKT.R / ORD.R - Tickets e pedidos do comprador
 
-- [ ] **TKT-001** - Adicionar `listByCustomerId()` ao `TicketRepository`
+- [x] **TKT-001** - Adicionar `listByCustomerId()` ao `TicketRepository`
 
   **Descrição curta:**
   - Adicionar método `listByCustomerId(customerId)` ao contrato e implementação Drizzle.
@@ -149,15 +149,15 @@ Completar o read-side da camada de repositórios e expor os endpoints GET necess
   **Arquivos/áreas afetadas:** `ticket.repository.contracts.ts`, `drizzle-ticket.repository.ts`
 
   **Critérios de aceitação:**
-  - [ ] Retorna apenas tickets do customer especificado.
-  - [ ] Testes de integração.
+  - [x] Retorna apenas tickets do customer especificado.
+  - [x] Testes de integração.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 2h
   **Dependências:** Fase 006 (SCH-001)
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
-- [ ] **ORD-005** - Adicionar `listByCustomerId()` ao `OrderRepository`
+- [x] **ORD-005** - Adicionar `listByCustomerId()` ao `OrderRepository`
 
   **Descrição curta:**
   - Adicionar método `listByCustomerId(customerId)` ao contrato e implementação Drizzle.
@@ -170,15 +170,15 @@ Completar o read-side da camada de repositórios e expor os endpoints GET necess
   **Arquivos/áreas afetadas:** `order.repository.contracts.ts`, `drizzle-order.repository.ts`
 
   **Critérios de aceitação:**
-  - [ ] Retorna pedidos do customer com items.
-  - [ ] Testes de integração.
+  - [x] Retorna pedidos do customer com items.
+  - [x] Testes de integração.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 2h
   **Dependências:** Fase 006 (SCH-002)
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
-- [ ] **ORD-006** - Use-case `getCustomerOrders`
+- [x] **ORD-006** - Use-case `getCustomerOrders`
 
   **Descrição curta:**
   - Use-case autenticado: retornar pedidos do cliente com items e tickets associados.
@@ -190,16 +190,16 @@ Completar o read-side da camada de repositórios e expor os endpoints GET necess
   **Arquivos/áreas afetadas:** `src/server/application/use-cases/`
 
   **Critérios de aceitação:**
-  - [ ] Retorna pedidos com items e tokens de ticket.
-  - [ ] Customer não acessa pedidos de outros customers.
-  - [ ] Testes unitários com mock de repositórios.
+  - [x] Retorna pedidos com items e tokens de ticket.
+  - [x] Customer não acessa pedidos de outros customers.
+  - [x] Testes unitários com mock de repositórios.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 2h
   **Dependências:** ORD-005, TKT-001
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
-- [ ] **ORD-007** - Handler + endpoint `GET /api/orders/mine`
+- [x] **ORD-007** - Handler + endpoint `GET /api/orders/mine`
 
   **Descrição curta:**
   - Endpoint autenticado para listar pedidos do customer logado com tickets e tokens.
@@ -211,20 +211,20 @@ Completar o read-side da camada de repositórios e expor os endpoints GET necess
   **Arquivos/áreas afetadas:** `src/server/api/orders/`, `src/app/api/orders/mine/`
 
   **Critérios de aceitação:**
-  - [ ] 401 sem sessão válida.
-  - [ ] Retorna pedidos com tokens de ticket.
-  - [ ] Testes de handler e integração.
+  - [x] 401 sem sessão válida.
+  - [x] Retorna pedidos com tokens de ticket.
+  - [x] Testes de handler e integração.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 2h
   **Dependências:** ORD-006
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
 ---
 
 ### 📦 QR e Ticket Visual — Geração e exibição de QR
 
-- [ ] **QR-001** - Implementar geração de QR code visual para ticket
+- [x] **QR-001** - Implementar geração de QR code visual para ticket
 
   **Descrição curta:**
   - Criar adapter de infraestrutura para gerar QR code a partir do token do ticket.
@@ -238,20 +238,20 @@ Completar o read-side da camada de repositórios e expor os endpoints GET necess
   **Arquivos/áreas afetadas:** `src/features/` ou `src/server/infrastructure/qr/`
 
   **Critérios de aceitação:**
-  - [ ] Token de ticket renderizado como QR code na página "Meus Ingressos".
-  - [ ] QR legível por leitor padrão.
-  - [ ] Sem dependências pesadas no bundle.
+  - [x] Token de ticket renderizado como QR code na página "Meus Ingressos".
+  - [x] QR legível por leitor padrão.
+  - [x] Sem dependências pesadas no bundle.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 2h
   **Dependências:** ORD-007
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
 ---
 
 ### 📦 UI e Fluxo do Comprador — Páginas públicas e autenticadas
 
-- [ ] **UX-004** - Página pública: listagem de eventos (`/`)
+- [x] **UX-004** - Página pública: listagem de eventos (`/`)
 
   **Descrição curta:**
   - Atualizar `src/app/page.tsx` para listar eventos publicados via `GET /api/events`.
@@ -264,16 +264,16 @@ Completar o read-side da camada de repositórios e expor os endpoints GET necess
   **Arquivos/áreas afetadas:** `src/app/page.tsx`, `src/features/events/`
 
   **Critérios de aceitação:**
-  - [ ] Lista eventos publicados em tempo real.
-  - [ ] Estado vazio exibido corretamente.
-  - [ ] Link para página de detalhe funcionando.
+  - [x] Lista eventos publicados em tempo real.
+  - [x] Estado vazio exibido corretamente.
+  - [x] Link para página de detalhe funcionando.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 3h
   **Dependências:** EVT-006
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
-- [ ] **UX-005** - Página de detalhe de evento com seleção de lotes (`/eventos/[slug]`)
+- [x] **UX-005** - Página de detalhe de evento com seleção de lotes (`/eventos/[slug]`)
 
   **Descrição curta:**
   - Criar `src/app/eventos/[slug]/page.tsx` consumindo `GET /api/events/:slug`.
@@ -287,16 +287,16 @@ Completar o read-side da camada de repositórios e expor os endpoints GET necess
   **Arquivos/áreas afetadas:** `src/app/eventos/[slug]/page.tsx`, `src/features/checkout/`
 
   **Critérios de aceitação:**
-  - [ ] Evento exibido com todos os campos de apresentação.
-  - [ ] Lotes com estoque > 0 e dentro do período mostrados.
-  - [ ] Seleção de quantidade dentro do `maxPerOrder`.
+  - [x] Evento exibido com todos os campos de apresentação.
+  - [x] Lotes com estoque > 0 e dentro do período mostrados.
+  - [x] Seleção de quantidade dentro do `maxPerOrder`.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 4h
   **Dependências:** EVT-007
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
-- [ ] **UX-006** - Página autenticada: "Meus Ingressos" com QR (`/meus-ingressos`)
+- [x] **UX-006** - Página autenticada: "Meus Ingressos" com QR (`/meus-ingressos`)
 
   **Descrição curta:**
   - Criar `src/app/meus-ingressos/page.tsx` consumindo `GET /api/orders/mine`.
@@ -309,20 +309,20 @@ Completar o read-side da camada de repositórios e expor os endpoints GET necess
   **Arquivos/áreas afetadas:** `src/app/meus-ingressos/page.tsx`, `src/features/tickets/`
 
   **Critérios de aceitação:**
-  - [ ] Redirecionamento para login se não autenticado.
-  - [ ] Lista de tickets com QR code renderizado.
-  - [ ] Status do ticket exibido (válido/usado/cancelado).
+  - [x] Redirecionamento para login se não autenticado.
+  - [x] Lista de tickets com QR code renderizado.
+  - [x] Status do ticket exibido (válido/usado/cancelado).
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 4h
   **Dependências:** ORD-007, QR-001
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
 ---
 
 ### 📦 Conectar Checkout — Integração end-to-end
 
-- [ ] **UX-007** - Conectar `checkout-form` ao auth real + `createOrder`
+- [x] **UX-007** - Conectar `checkout-form` ao auth real + `createOrder`
 
   **Descrição curta:**
   - Atualizar `src/features/checkout/checkout-form.tsx` para usar sessão real.
@@ -337,26 +337,26 @@ Completar o read-side da camada de repositórios e expor os endpoints GET necess
   **Arquivos/áreas afetadas:** `src/features/checkout/checkout-form.tsx`, `src/app/api/orders/route.ts`
 
   **Critérios de aceitação:**
-  - [ ] `customerId` nunca vem do body do formulário.
-  - [ ] Fluxo ponta a ponta funcionando para usuário logado.
-  - [ ] Redirecionamento para "Meus Ingressos" após compra.
-  - [ ] Teste de integração end-to-end cobrindo o fluxo completo.
+  - [x] `customerId` nunca vem do body do formulário.
+  - [x] Fluxo ponta a ponta funcionando para usuário logado.
+  - [x] Redirecionamento para "Meus Ingressos" após compra.
+  - [x] Teste de integração end-to-end cobrindo o fluxo completo.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 3h
   **Dependências:** Fase 006 (AUTH-002), ORD-007
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
 ---
 
 ## ✅ Critérios de Encerramento da Fase
 
-- [ ] `GET /api/events` e `GET /api/events/:slug` funcionais e testados.
-- [ ] `GET /api/orders/mine` funcional para customer autenticado.
-- [ ] Página de listagem, detalhe e "Meus Ingressos" funcionando.
-- [ ] QR code visível em "Meus Ingressos".
-- [ ] Fluxo ponta a ponta: acessar evento → checkout → ver ticket com QR.
-- [ ] `npm run test` passando (unit + regression + integration).
-- [ ] `npm run lint:architecture` sem violações.
-- [ ] GOV doc de encerramento criado.
-- [ ] CHANGELOG atualizado.
+- [x] `GET /api/events` e `GET /api/events/:slug` funcionais e testados.
+- [x] `GET /api/orders/mine` funcional para customer autenticado.
+- [x] Página de listagem, detalhe e "Meus Ingressos" funcionando.
+- [x] QR code visível em "Meus Ingressos".
+- [x] Fluxo ponta a ponta: acessar evento → checkout → ver ticket com QR.
+- [x] `npm run test` passando (unit + regression + integration).
+- [x] `npm run lint:architecture` sem violações.
+- [x] GOV doc de encerramento criado.
+- [x] CHANGELOG atualizado.

@@ -6,6 +6,16 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 
 ### Added
 
+- Entrega completa da Fase 007 (Public Customer Experience):
+  - novos métodos read-side em repositórios: `EventRepository.listPublished`, `OrderRepository.listByCustomerId`, `TicketRepository.listByCustomerId` + implementações Drizzle;
+  - novos use-cases: `listPublishedEvents`, `getEventDetail`, `getCustomerOrders`;
+  - novos handlers/route adapters: listagem pública de eventos, detalhe por slug e pedidos do cliente autenticado;
+  - novas rotas API: `GET /api/events`, `GET /api/events/:slug`, `GET /api/orders/mine`;
+  - novas páginas do fluxo comprador: `/`, `/eventos/[slug]`, `/checkout`, `/meus-ingressos`, `/login`;
+  - geração de QR visual por ticket via `qrcode` no frontend (`src/features/tickets/ticket-qr.tsx`);
+  - novas suítes de teste unit/integration para repositórios, use-cases e endpoints da Fase 007.
+- Criado log de encerramento de governança da fase:
+  - `docs/development/Logs/GOV-004-phase-007.md`.
 - Criado [`docs/development/README.md`](./README.md) com guia operacional da documentação de desenvolvimento.
 - Criado [`docs/development/ROADMAP.md`](./ROADMAP.md) com fases evolutivas alinhadas ao `AGENTS.md`.
 - Criado [`docs/development/CHANGELOG.md`](./CHANGELOG.md) para rastreabilidade de mudanças.
@@ -149,6 +159,10 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 
 ### Changed
 
+- Atualizada `docs/development/TASKS/PHASE-007-public-customer-experience.md` para status concluído (`13/13`) com critérios de aceite marcados.
+- Atualizada `docs/development/TASKS.md` para refletir Sprint/Fase 007 como concluída (`13/13`).
+- `src/features/checkout/checkout-form.tsx` atualizado para fluxo autenticado e redirecionamento para `/meus-ingressos` após compra.
+- `src/app/page.tsx` deixou de ser checkout mínimo e passou a ser listagem pública de eventos.
 - Atualizada a task `ORD-001` na fase 003 com contrato de entrada/saída do `createOrder` concluído:
   - `src/server/application/orders/order.types.ts` com tipos explícitos de comando/resultado.
   - `src/server/api/schemas/create-order.schema.ts` com payload de itens e validação estrita.

@@ -13,7 +13,7 @@
 | 004 | Sprint 004 | `docs/development/TASKS/PHASE-004-ticket-checkin-rbac.md` | 🟢 Concluída | 9/9 |
 | 005 | Sprint 005 | `docs/development/TASKS/PHASE-005-organizer-admin-event-operations.md` | 🟢 Concluída | 10/10 |
 | 006 | Sprint 006 | `docs/development/TASKS/PHASE-006-auth-schema-completion.md` | 🟢 Concluída | 10/10 |
-| 007 | Sprint 007 | `docs/development/TASKS/PHASE-007-public-customer-experience.md` | 🔵 Planejada | 0/13 |
+| 007 | Sprint 007 | `docs/development/TASKS/PHASE-007-public-customer-experience.md` | 🟢 Concluída | 13/13 |
 | 008 | Sprint 008 | `docs/development/TASKS/PHASE-008-admin-dashboard-completeness.md` | 🔵 Planejada | 0/13 |
 | 009 | Sprint 009 | `docs/development/TASKS/PHASE-009-hardening.md` | 🔵 Planejada | 0/10 |
 | 010 | Sprint 010 | `docs/development/TASKS/PHASE-010-migration-readiness.md` | 🔵 Planejada | 0/8 |
@@ -29,7 +29,7 @@
 6. Fase 006: auth real + tabela users + campos de apresentação em events. ✅
 
 ### Planejadas
-7. Fase 007: listagem pública, detalhe de evento, meus ingressos, QR code. 🔵
+7. Fase 007: listagem pública, detalhe de evento, meus ingressos, QR code. ✅
 8. Fase 008: criar evento, criar lotes, ver pedidos — admin completo. 🔵
 9. Fase 009: hardening — regressões, audit trail, N+1, rate limiting. 🔵
 10. Fase 010: migration readiness — auditoria de acoplamentos + MIGRATION-PLAN.md. 🔵
