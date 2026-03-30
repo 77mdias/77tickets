@@ -35,6 +35,39 @@ function loadEnvFile(): void {
   }
 }
 
+// Reset schema: drop all application tables and ENUM types in dependency order
+// so that migrations always run on a clean database. This prevents the test DB
+// from getting stuck with partial migrations (e.g. FK constraint failure on
+// stale data from a prior run).
+async function resetSchema(db: { execute: (query: unknown) => Promise<unknown> }): Promise<void> {
+  // Drop tables in reverse FK dependency order to avoid constraint errors
+  const drops = [
+    // Drizzle stores its migration tracking in the "drizzle" schema
+    `DROP SCHEMA IF EXISTS "drizzle" CASCADE`,
+    // Application tables (reverse FK dependency order)
+    `DROP TABLE IF EXISTS "tickets" CASCADE`,
+    `DROP TABLE IF EXISTS "order_items" CASCADE`,
+    `DROP TABLE IF EXISTS "orders" CASCADE`,
+    `DROP TABLE IF EXISTS "coupons" CASCADE`,
+    `DROP TABLE IF EXISTS "lots" CASCADE`,
+    `DROP TABLE IF EXISTS "events" CASCADE`,
+    `DROP TABLE IF EXISTS "account" CASCADE`,
+    `DROP TABLE IF EXISTS "session" CASCADE`,
+    `DROP TABLE IF EXISTS "verification" CASCADE`,
+    `DROP TABLE IF EXISTS "user" CASCADE`,
+    // Custom ENUM types defined in migration 0000
+    `DROP TYPE IF EXISTS "public"."event_status" CASCADE`,
+    `DROP TYPE IF EXISTS "public"."lot_status" CASCADE`,
+    `DROP TYPE IF EXISTS "public"."order_status" CASCADE`,
+    `DROP TYPE IF EXISTS "public"."ticket_status" CASCADE`,
+    `DROP TYPE IF EXISTS "public"."discount_type" CASCADE`,
+  ];
+
+  for (const statement of drops) {
+    await db.execute(sql.raw(statement));
+  }
+}
+
 export async function setup(): Promise<void> {
   loadEnvFile();
 
@@ -60,6 +93,8 @@ export async function setup(): Promise<void> {
       `TEST_DATABASE_URL is set but the database is unreachable.\nCause: ${String(error)}`,
     );
   }
+
+  await resetSchema(db);
 
   const { migrate } = await import("drizzle-orm/neon-serverless/migrator");
   await migrate(db, { migrationsFolder: resolve(process.cwd(), "drizzle") });

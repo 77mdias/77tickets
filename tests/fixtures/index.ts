@@ -24,7 +24,33 @@ import {
   orderItems,
   orders,
   tickets,
+  user,
 } from "../../src/server/infrastructure/db/schema";
+import type { UserRole } from "../../src/server/infrastructure/db/schema/users";
+
+// ─── Users ────────────────────────────────────────────────────────────────────
+
+type UserInsert = typeof user.$inferInsert;
+type UserRow = typeof user.$inferSelect;
+
+export async function createUserFixture(
+  db: Db,
+  overrides: Partial<UserInsert> = {},
+): Promise<UserRow> {
+  const defaults: UserInsert = {
+    email: `user-${Date.now()}-${Math.random().toString(36).slice(2, 7)}@test.local`,
+    name: "Test User",
+    role: "customer" as UserRole,
+    emailVerified: false,
+  };
+
+  const [row] = await db
+    .insert(user)
+    .values({ ...defaults, ...overrides })
+    .returning();
+
+  return row;
+}
 
 // ─── Events ──────────────────────────────────────────────────────────────────
 

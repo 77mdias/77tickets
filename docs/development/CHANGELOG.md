@@ -102,6 +102,50 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - log técnico em `docs/development/Logs/GOV-001.md`.
 - Criado log técnico de execução da task `GOV-002` em `docs/development/Logs/GOV-002.md`.
 - Criado log técnico de encerramento da task `GOV-003` em `docs/development/Logs/GOV-003.md`.
+- Implementado schema Better Auth completo (Sprint 006 — SCH-001):
+  - `src/server/infrastructure/db/schema/users.ts` com tabelas `user`, `session`, `account`, `verification`.
+  - Enum `userRoleEnum` com os 4 papéis do sistema: `customer`, `organizer`, `admin`, `checker`.
+  - Migration `0000` gerada via `drizzle-kit generate`.
+- Adicionados campos de apresentação ao schema de eventos e FKs de integridade referencial (Sprint 006 — SCH-004, SCH-002, SCH-003):
+  - `src/server/infrastructure/db/schema/events.ts` com `description`, `location`, `imageUrl`.
+  - FKs `events.organizer_id → user.id` e `orders.customer_id → user.id`.
+  - Migrations `0001` e `0002` geradas e aplicadas.
+  - `EventRecord` no contrato do repositório atualizado com os novos campos.
+  - Testes de integração dos repositórios Drizzle adaptados para usar `TEST_USER_IDS` fixos.
+- Implementado `UserRepository` com contrato e implementação Drizzle (Sprint 006 — SCH-005):
+  - `src/server/repositories/user.repository.contracts.ts` com tipo `UserRecord` e método `findById`.
+  - `src/server/repositories/drizzle/drizzle-user.repository.ts` com implementação via Drizzle.
+  - Cobertura de integração em `tests/integration/repositories/drizzle-user.repository.integration.test.ts`.
+- Integrado Better Auth v1.5.6 com adapter Drizzle (Sprint 006 — AUTH-001):
+  - `src/server/infrastructure/auth/auth.config.ts` refatorado como factory `createAuth(db: Db)`.
+  - Configuração: `emailAndPassword`, `bearer()` plugin, `advanced.database.generateId` → `crypto.randomUUID()`.
+  - Hook `before` bloqueia registro de `admin`/`checker` na rota pública com `APIError("FORBIDDEN")`.
+  - Singleton `auth = createAuth(defaultDb)` exportado para uso na aplicação.
+  - Rotas expostas em `src/app/api/auth/[...all]/route.ts`.
+  - Migration `0003` com `ALTER TABLE "account" ADD COLUMN "password" text`.
+- Implementado session middleware `getSession` para handlers (Sprint 006 — AUTH-002):
+  - `src/server/api/auth.ts` com helper que extrai sessão da requisição e retorna `SessionContext { userId, role }`.
+  - Código de erro `UNAUTHENTICATED` adicionado; mapeado para `401` no `mapErrorToResponse`.
+- Refatorados todos os 6 route adapters para usar `getSession` real (Sprint 006 — AUTH-003):
+  - `src/server/api/orders/create-order.route-adapter.ts`
+  - `src/server/api/checkin/validate-checkin.route-adapter.ts`
+  - `src/server/api/events/publish-event.route-adapter.ts`
+  - `src/server/api/events/update-event-status.route-adapter.ts`
+  - `src/server/api/coupons/create-coupon.route-adapter.ts`
+  - `src/server/api/coupons/update-coupon.route-adapter.ts`
+  - `checkerId` movido do deps do `createValidateCheckinUseCase` para o input do use-case.
+  - Todos os testes unitários de route adapters adaptados para mock de `getSession` e cenário 401.
+- Criada suíte de integração de auth (Sprint 006 — AUTH-004):
+  - `tests/integration/api/auth/auth.integration.test.ts` com 6 cenários: sign-up customer/organizer, bloqueio de admin/checker, sign-in com token, getSession com Bearer resolve role.
+- Criada suíte de regressão de RBAC com sessão real (Sprint 006 — AUTH-005):
+  - `tests/regression/auth/rbac-session-integration.regression.test.ts` com 3 cenários: 401 sem sessão, role extraído da sessão (não do cliente), customerId injetado server-side.
+- Atualizado `tests/integration/setup/global-setup.ts` com reset completo de schema antes de migrations:
+  - Drop individual de tabelas em ordem reversa de FK e dos ENUM types customizados.
+  - Drop do schema `drizzle` (tracking de migrations) para forçar re-migração completa.
+- Atualizado `tests/integration/setup/index.ts` com `TEST_USER_IDS` fixos e `SEED_USERS`:
+  - `cleanDatabase` re-semeia 8 usuários bem-conhecidos após TRUNCATE para satisfazer FKs.
+- Atualizado `tests/fixtures/index.ts` com `createUserFixture(db, overrides)`.
+- Encerrada Fase 006 com 10/10 tarefas concluídas: 628 testes passando (254 unit + 18 regression + 356 integration).
 
 ### Changed
 
