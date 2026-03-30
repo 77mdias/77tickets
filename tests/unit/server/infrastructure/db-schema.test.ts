@@ -26,12 +26,29 @@ describe("schema module", () => {
   test("exports all domain aggregate tables", async () => {
     const schema = await import("../../../../src/server/infrastructure/db/schema");
 
+    expect(isTable(schema.user)).toBe(true);
+    expect(isTable(schema.session)).toBe(true);
+    expect(isTable(schema.account)).toBe(true);
+    expect(isTable(schema.verification)).toBe(true);
     expect(isTable(schema.events)).toBe(true);
     expect(isTable(schema.lots)).toBe(true);
     expect(isTable(schema.orders)).toBe(true);
     expect(isTable(schema.orderItems)).toBe(true);
     expect(isTable(schema.tickets)).toBe(true);
     expect(isTable(schema.coupons)).toBe(true);
+  });
+
+  test("user table has expected columns", async () => {
+    const { user } = await import("../../../../src/server/infrastructure/db/schema");
+    const columns = getTableColumns(user);
+
+    expect(columns).toHaveProperty("id");
+    expect(columns).toHaveProperty("name");
+    expect(columns).toHaveProperty("email");
+    expect(columns).toHaveProperty("emailVerified");
+    expect(columns).toHaveProperty("role");
+    expect(columns).toHaveProperty("createdAt");
+    expect(columns).toHaveProperty("updatedAt");
   });
 
   test("events table has expected columns", async () => {
