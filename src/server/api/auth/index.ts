@@ -1,1 +1,1 @@
-export { getSession, type SessionContext } from "./get-session";
+export { createGetSession, type ResolveSession, type SessionContext } from "./get-session";

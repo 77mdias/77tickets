@@ -1,7 +1,7 @@
 import { createUpdateEventRouteAdapter } from "@/src/server/api/events/events.route-adapter";
 import { createUpdateEventHandler } from "@/src/server/api/events/update-event.handler";
 import { getDatabaseUrlOrThrow } from "@/src/server/api/orders/create-order.route-adapter";
-import { getSession } from "@/src/server/api/auth";
+import { getSession } from "@/src/server/infrastructure/auth";
 import { createUpdateEventStatusUseCase } from "@/src/server/application/use-cases";
 import { createDb } from "@/src/server/infrastructure/db/client";
 import { DrizzleEventRepository } from "@/src/server/repositories/drizzle";

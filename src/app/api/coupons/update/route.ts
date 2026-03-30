@@ -1,7 +1,7 @@
 import { createUpdateCouponHandler } from "@/src/server/api/coupons/update-coupon.handler";
 import { createUpdateCouponRouteAdapter } from "@/src/server/api/coupons/coupons.route-adapter";
 import { getDatabaseUrlOrThrow } from "@/src/server/api/orders/create-order.route-adapter";
-import { getSession } from "@/src/server/api/auth";
+import { getSession } from "@/src/server/infrastructure/auth";
 import { createUpdateCouponUseCase } from "@/src/server/application/use-cases";
 import { createDb } from "@/src/server/infrastructure/db/client";
 import {

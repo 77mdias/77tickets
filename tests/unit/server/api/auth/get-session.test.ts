@@ -1,27 +1,16 @@
 import { describe, expect, test, vi } from "vitest";
 
-vi.mock("../../../../../src/server/infrastructure/auth/auth.config", () => ({
-  auth: {
-    api: {
-      getSession: vi.fn(),
-    },
-  },
-}));
+import { createGetSession } from "../../../../../src/server/api/auth/get-session";
 
-// eslint-disable-next-line import/first
-import { auth } from "../../../../../src/server/infrastructure/auth/auth.config";
-// eslint-disable-next-line import/first
-import { getSession } from "../../../../../src/server/api/auth/get-session";
-
-describe("getSession", () => {
+describe("createGetSession", () => {
   test("returns SessionContext when session is valid", async () => {
-    vi.mocked(auth.api.getSession).mockResolvedValueOnce({
+    const resolveSession = vi.fn(async () => ({
       user: {
         id: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",
         role: "customer",
-      } as never,
-      session: {} as never,
-    });
+      },
+    }));
+    const getSession = createGetSession(resolveSession);
 
     const request = new Request("http://localhost/api/orders", {
       headers: { cookie: "session=abc123" },
@@ -31,19 +20,17 @@ describe("getSession", () => {
 
     expect(result.userId).toBe("57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5");
     expect(result.role).toBe("customer");
-    expect(auth.api.getSession).toHaveBeenCalledWith({
-      headers: request.headers,
-    });
+    expect(resolveSession).toHaveBeenCalledWith(request);
   });
 
   test("returns organizer role from session", async () => {
-    vi.mocked(auth.api.getSession).mockResolvedValueOnce({
+    const resolveSession = vi.fn(async () => ({
       user: {
         id: "5c95fe31-36f0-4a53-bbf3-5ca3cfe36df9",
         role: "organizer",
-      } as never,
-      session: {} as never,
-    });
+      },
+    }));
+    const getSession = createGetSession(resolveSession);
 
     const request = new Request("http://localhost/api/events/publish");
     const result = await getSession(request);
@@ -53,7 +40,8 @@ describe("getSession", () => {
   });
 
   test("throws unauthenticated AppError when session is null", async () => {
-    vi.mocked(auth.api.getSession).mockResolvedValueOnce(null);
+    const resolveSession = vi.fn(async () => null);
+    const getSession = createGetSession(resolveSession);
 
     const request = new Request("http://localhost/api/orders");
 
@@ -63,11 +51,36 @@ describe("getSession", () => {
     });
   });
 
-  test("propagates errors from auth.api.getSession", async () => {
-    vi.mocked(auth.api.getSession).mockRejectedValueOnce(new Error("DB connection failed"));
+  test("propagates errors from resolveSession", async () => {
+    const resolveSession = vi.fn(async () => {
+      throw new Error("DB connection failed");
+    });
+    const getSession = createGetSession(resolveSession);
 
     const request = new Request("http://localhost/api/orders");
 
     await expect(getSession(request)).rejects.toThrow("DB connection failed");
+  });
+
+  test("falls back to customer when role is missing or invalid", async () => {
+    const resolveSession = vi
+      .fn()
+      .mockResolvedValueOnce({
+        user: {
+          id: "5c95fe31-36f0-4a53-bbf3-5ca3cfe36df9",
+        },
+      })
+      .mockResolvedValueOnce({
+        user: {
+          id: "5c95fe31-36f0-4a53-bbf3-5ca3cfe36df9",
+          role: "super-admin",
+        },
+      });
+
+    const getSession = createGetSession(resolveSession);
+    const request = new Request("http://localhost/api/orders");
+
+    await expect(getSession(request)).resolves.toMatchObject({ role: "customer" });
+    await expect(getSession(request)).resolves.toMatchObject({ role: "customer" });
   });
 });

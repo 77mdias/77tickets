@@ -3,7 +3,7 @@ import {
   createCreateOrderRouteAdapter,
   getDatabaseUrlOrThrow,
 } from "@/src/server/api/orders/create-order.route-adapter";
-import { getSession } from "@/src/server/api/auth";
+import { getSession } from "@/src/server/infrastructure/auth";
 import { createCreateOrderUseCase } from "@/src/server/application/use-cases/create-order.use-case";
 import { createDb } from "@/src/server/infrastructure/db/client";
 import { createConsoleCheckoutObservability } from "@/src/server/infrastructure/observability";

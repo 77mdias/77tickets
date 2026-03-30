@@ -3,7 +3,7 @@ import {
   createValidateCheckinRouteAdapter,
   getDatabaseUrlOrThrow,
 } from "@/src/server/api/checkin/validate-checkin.route-adapter";
-import { getSession } from "@/src/server/api/auth";
+import { getSession } from "@/src/server/infrastructure/auth";
 import { createValidateCheckinUseCase } from "@/src/server/application/use-cases";
 import { createDb } from "@/src/server/infrastructure/db/client";
 import {

@@ -1,21 +1,41 @@
-import { auth } from "@/src/server/infrastructure/auth/auth.config";
 import { createUnauthenticatedError } from "@/src/server/application/errors";
-import type { UserRole } from "@/src/server/repositories/user.repository.contracts";
+import type { UserRole } from "@/src/server/application/security";
 
 export interface SessionContext {
   userId: string;
   role: UserRole;
 }
 
-export async function getSession(request: Request): Promise<SessionContext> {
-  const session = await auth.api.getSession({ headers: request.headers });
-
-  if (!session) {
-    throw createUnauthenticatedError("Sessão inválida ou expirada");
-  }
-
-  return {
-    userId: session.user.id,
-    role: (session.user as { role?: string }).role as UserRole ?? "customer",
+interface ResolvedSession {
+  user: {
+    id: string;
+    role?: unknown;
   };
 }
+
+export type ResolveSession = (request: Request) => Promise<ResolvedSession | null>;
+
+const ALLOWED_USER_ROLES: readonly UserRole[] = [
+  "customer",
+  "organizer",
+  "admin",
+  "checker",
+];
+
+const isUserRole = (role: unknown): role is UserRole =>
+  typeof role === "string" &&
+  ALLOWED_USER_ROLES.includes(role as UserRole);
+
+export const createGetSession = (resolveSession: ResolveSession) =>
+  async (request: Request): Promise<SessionContext> => {
+    const session = await resolveSession(request);
+
+    if (!session) {
+      throw createUnauthenticatedError("Sessão inválida ou expirada");
+    }
+
+    return {
+      userId: session.user.id,
+      role: isUserRole(session.user.role) ? session.user.role : "customer",
+    };
+  };
