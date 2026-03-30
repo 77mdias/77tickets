@@ -59,6 +59,9 @@ describe("schema module", () => {
     expect(columns).toHaveProperty("organizerId");
     expect(columns).toHaveProperty("slug");
     expect(columns).toHaveProperty("title");
+    expect(columns).toHaveProperty("description");
+    expect(columns).toHaveProperty("location");
+    expect(columns).toHaveProperty("imageUrl");
     expect(columns).toHaveProperty("status");
     expect(columns).toHaveProperty("startsAt");
     expect(columns).toHaveProperty("endsAt");

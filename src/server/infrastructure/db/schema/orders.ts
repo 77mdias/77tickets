@@ -1,5 +1,6 @@
 import { index, integer, pgEnum, pgTable, timestamp, uuid } from "drizzle-orm/pg-core";
 
+import { user } from "./users";
 import { events } from "./events";
 import { lots } from "./lots";
 
@@ -14,7 +15,9 @@ export const orders = pgTable(
   "orders",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    customerId: uuid("customer_id").notNull(),
+    customerId: uuid("customer_id")
+      .notNull()
+      .references(() => user.id),
     eventId: uuid("event_id")
       .notNull()
       .references(() => events.id),

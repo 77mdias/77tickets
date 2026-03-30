@@ -8,6 +8,9 @@ export interface EventRecord {
   organizerId: EntityId;
   slug: string;
   title: string;
+  description: string | null;
+  location: string | null;
+  imageUrl: string | null;
   status: EventLifecycleStatus;
   startsAt: Date;
   endsAt: Date | null;
