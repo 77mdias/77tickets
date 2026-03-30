@@ -24,7 +24,6 @@ function createCheckinDependencies(options?: {
 
   return {
     now: () => FIXED_NOW,
-    checkerId: CHECKER_ID,
     ticketRepository: {
       async findById(ticketId: string) {
         if (ticketId !== TICKET_ID) {
@@ -88,8 +87,8 @@ describe("SEC-002 regression coverage: check-in", () => {
     const validateCheckin = createValidateCheckinUseCase(dependencies);
 
     const [firstAttempt, secondAttempt] = await Promise.all([
-      validateCheckin({ ticketId: TICKET_ID, eventId: EVENT_ID }),
-      validateCheckin({ ticketId: TICKET_ID, eventId: EVENT_ID }),
+      validateCheckin({ ticketId: TICKET_ID, eventId: EVENT_ID, checkerId: CHECKER_ID }),
+      validateCheckin({ ticketId: TICKET_ID, eventId: EVENT_ID, checkerId: CHECKER_ID }),
     ]);
     const results = [firstAttempt, secondAttempt];
 
@@ -109,6 +108,7 @@ describe("SEC-002 regression coverage: check-in", () => {
     const result = await validateCheckin({
       ticketId: TICKET_ID,
       eventId: EVENT_ID,
+      checkerId: CHECKER_ID,
     });
 
     expect(result).toMatchObject({

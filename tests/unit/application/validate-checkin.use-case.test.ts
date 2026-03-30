@@ -7,7 +7,6 @@ type OrderStatus = "pending" | "paid" | "expired" | "cancelled";
 
 type ValidateCheckinUseCaseFactory = (dependencies: {
   now: () => Date;
-  checkerId: string;
   ticketRepository: {
     findById: (ticketId: string) => Promise<{
       id: string;
@@ -38,7 +37,7 @@ type ValidateCheckinUseCaseFactory = (dependencies: {
       items: Array<{ lotId: string; quantity: number; unitPriceInCents: number }>;
     } | null>;
   };
-}) => (input: { ticketId: string; eventId: string }) => Promise<ValidateCheckinResult>;
+}) => (input: { ticketId: string; eventId: string; checkerId: string }) => Promise<ValidateCheckinResult>;
 
 const FIXED_NOW = new Date("2026-03-29T12:00:00.000Z");
 const EVENT_ID = "2f180791-a8f5-4cf8-b703-0f220a44f7c8";
@@ -80,7 +79,6 @@ function makeDependencies(options?: {
 
   return {
     now: () => FIXED_NOW,
-    checkerId: CHECKER_ID,
     ticketRepository: {
       findById: vi.fn(async () => ({
         id: TICKET_ID,
@@ -120,6 +118,7 @@ test("CHK-002 RED: approves check-in for active ticket in matching event with el
   const result = await validateCheckin({
     ticketId: TICKET_ID,
     eventId: EVENT_ID,
+    checkerId: CHECKER_ID,
   });
 
   expect(result).toMatchObject({
@@ -144,6 +143,7 @@ test("CHK-002 RED: rejects check-in when ticket was already used", async () => {
   const result = await validateCheckin({
     ticketId: TICKET_ID,
     eventId: EVENT_ID,
+    checkerId: CHECKER_ID,
   });
 
   expect(result).toMatchObject({
@@ -165,6 +165,7 @@ test("CHK-002 RED: rejects check-in when ticket is cancelled", async () => {
   const result = await validateCheckin({
     ticketId: TICKET_ID,
     eventId: EVENT_ID,
+    checkerId: CHECKER_ID,
   });
 
   expect(result).toMatchObject({
@@ -186,6 +187,7 @@ test("CHK-002 RED: rejects check-in when order is expired", async () => {
   const result = await validateCheckin({
     ticketId: TICKET_ID,
     eventId: EVENT_ID,
+    checkerId: CHECKER_ID,
   });
 
   expect(result).toMatchObject({
@@ -207,6 +209,7 @@ test("CHK-002 RED: rejects check-in when ticket belongs to a different event", a
   const result = await validateCheckin({
     ticketId: TICKET_ID,
     eventId: EVENT_ID,
+    checkerId: CHECKER_ID,
   });
 
   expect(result).toMatchObject({
@@ -228,6 +231,7 @@ test("OPS-002: rejects check-in when atomic mark fails due concurrent usage", as
   const result = await validateCheckin({
     ticketId: TICKET_ID,
     eventId: EVENT_ID,
+    checkerId: CHECKER_ID,
   });
 
   expect(result).toMatchObject({

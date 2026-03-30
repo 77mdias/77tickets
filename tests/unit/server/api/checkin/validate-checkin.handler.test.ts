@@ -85,7 +85,10 @@ test("createValidateCheckinHandler returns 200 with check-in data when use-case 
     body: VALID_BODY,
   });
 
-  expect(validateCheckin).toHaveBeenCalledWith(VALID_BODY);
+  expect(validateCheckin).toHaveBeenCalledWith({
+    ...VALID_BODY,
+    checkerId: CHECKER_ACTOR.userId,
+  });
   expect(response.status).toBe(200);
 
   if (response.status !== 200) {

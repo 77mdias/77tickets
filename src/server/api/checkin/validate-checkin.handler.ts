@@ -74,7 +74,10 @@ export const createValidateCheckinHandler = (
         eventOrganizerId,
       });
 
-      const result = await dependencies.validateCheckin(input);
+      const result = await dependencies.validateCheckin({
+        ...input,
+        checkerId: request.actor.userId,
+      });
 
       if (result.outcome === "rejected") {
         throw mapCheckinRejectionToError(result.reason);

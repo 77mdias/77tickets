@@ -95,6 +95,7 @@ describe("check-in auth integration", () => {
     expect(validateCheckin).toHaveBeenCalledWith({
       ticketId: TICKET_ID,
       eventId: EVENT_ID,
+      checkerId: ORGANIZER_A,
     });
   });
 
@@ -111,7 +112,11 @@ describe("check-in auth integration", () => {
     });
 
     expect(response.status).toBe(200);
-    expect(validateCheckin).toHaveBeenCalled();
+    expect(validateCheckin).toHaveBeenCalledWith({
+      ticketId: TICKET_ID,
+      eventId: EVENT_ID,
+      checkerId: "00000000-0000-0000-0000-000000000011",
+    });
   });
 
   test("allows admin globally", async () => {
@@ -127,6 +132,10 @@ describe("check-in auth integration", () => {
     });
 
     expect(response.status).toBe(200);
-    expect(validateCheckin).toHaveBeenCalled();
+    expect(validateCheckin).toHaveBeenCalledWith({
+      ticketId: TICKET_ID,
+      eventId: EVENT_ID,
+      checkerId: "00000000-0000-0000-0000-000000000099",
+    });
   });
 });

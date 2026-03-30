@@ -1,6 +1,7 @@
 export interface ValidateCheckinInput {
   ticketId: string;
   eventId: string;
+  checkerId: string;
 }
 
 export interface ValidateCheckinAuditMetadata {

@@ -15,7 +15,6 @@ export type ValidateCheckinUseCase = (
 
 export interface ValidateCheckinUseCaseDependencies {
   now: () => Date;
-  checkerId: string;
   ticketRepository: Pick<TicketRepository, "markAsUsedIfActive"> & {
     findById(ticketId: string): Promise<{
       id: string;
@@ -32,12 +31,11 @@ export interface ValidateCheckinUseCaseDependencies {
 
 const createAuditMetadata = (
   input: ValidateCheckinInput,
-  checkerId: string,
   validatedAt: Date,
 ) => ({
   ticketId: input.ticketId,
   eventId: input.eventId,
-  checkerId,
+  checkerId: input.checkerId,
   validatedAt: validatedAt.toISOString(),
 });
 
@@ -61,7 +59,7 @@ export const createValidateCheckinUseCase = (
 ): ValidateCheckinUseCase => {
   return async (input: ValidateCheckinInput): Promise<ValidateCheckinResult> => {
     const checkedInAt = dependencies.now();
-    const audit = createAuditMetadata(input, dependencies.checkerId, checkedInAt);
+    const audit = createAuditMetadata(input, checkedInAt);
 
     const ticket = await dependencies.ticketRepository.findById(input.ticketId);
     if (!ticket) {
