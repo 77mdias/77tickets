@@ -1,5 +1,6 @@
 export type AppErrorCode =
   | "validation"
+  | "unauthenticated"
   | "authorization"
   | "not-found"
   | "conflict"

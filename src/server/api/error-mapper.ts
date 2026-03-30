@@ -7,6 +7,7 @@ import {
 
 const HTTP_STATUS_BY_ERROR_CODE: Record<AppErrorCode, number> = {
   validation: 400,
+  unauthenticated: 401,
   authorization: 403,
   "not-found": 404,
   conflict: 409,

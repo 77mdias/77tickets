@@ -42,6 +42,11 @@ export const createNotFoundError = (
   options: Omit<AppErrorOptions, "cause"> = {},
 ): AppError => new AppError("not-found", message, options);
 
+export const createUnauthenticatedError = (
+  message: string,
+  options: Omit<AppErrorOptions, "cause"> = {},
+): AppError => new AppError("unauthenticated", message, options);
+
 export const createAuthorizationError = (
   message: string,
   options: Omit<AppErrorOptions, "cause"> = {},
