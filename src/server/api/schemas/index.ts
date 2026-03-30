@@ -4,3 +4,5 @@ export * from "./publish-event.schema";
 export * from "./update-coupon.schema";
 export * from "./update-event.schema";
 export * from "./validate-checkin.schema";
+export * from "./list-events.schema";
+export * from "./get-event.schema";

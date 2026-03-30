@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 
 import type { Db } from "../../infrastructure/db/client";
-import { tickets } from "../../infrastructure/db/schema";
+import { orders, tickets } from "../../infrastructure/db/schema";
 import type { EntityId } from "../common.repository.contracts";
 import type {
   NewTicketData,
@@ -45,6 +45,33 @@ export class DrizzleTicketRepository implements TicketRepository {
       .where(eq(tickets.orderId, orderId));
 
     return rows.map(toTicketRecord);
+  }
+
+  async listByCustomerId(customerId: EntityId): Promise<TicketRecord[]> {
+    const rows = await this.db
+      .select({
+        id: tickets.id,
+        eventId: tickets.eventId,
+        orderId: tickets.orderId,
+        lotId: tickets.lotId,
+        code: tickets.code,
+        status: tickets.status,
+        checkedInAt: tickets.checkedInAt,
+      })
+      .from(tickets)
+      .innerJoin(orders, eq(orders.id, tickets.orderId))
+      .where(eq(orders.customerId, customerId))
+      .orderBy(tickets.code);
+
+    return rows.map((row) => ({
+      id: row.id,
+      eventId: row.eventId,
+      orderId: row.orderId,
+      lotId: row.lotId,
+      code: row.code,
+      status: row.status,
+      checkedInAt: row.checkedInAt,
+    }));
   }
 
   async markAsUsedIfActive(

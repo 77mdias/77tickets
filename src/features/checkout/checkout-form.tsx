@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import {
   buildCheckoutPayload,
@@ -8,26 +9,36 @@ import {
   type CheckoutFormValues,
 } from "./checkout-client";
 
-interface CheckoutSuccessState {
-  orderId: string;
-  status: string;
-}
-
 type CheckoutViewState =
   | { kind: "idle" }
   | { kind: "submitting" }
-  | { kind: "success"; data: CheckoutSuccessState }
   | { kind: "error"; message: string };
 
-const INITIAL_VALUES: CheckoutFormValues = {
+const DEFAULT_VALUES: CheckoutFormValues = {
   eventId: "",
   lotId: "",
   quantity: "1",
   couponCode: "",
 };
 
-export function CheckoutForm() {
-  const [values, setValues] = useState<CheckoutFormValues>(INITIAL_VALUES);
+export interface CheckoutFormProps {
+  initialEventId?: string;
+  initialLotId?: string;
+  initialQuantity?: string;
+}
+
+export function CheckoutForm({
+  initialEventId = "",
+  initialLotId = "",
+  initialQuantity = "1",
+}: CheckoutFormProps) {
+  const router = useRouter();
+  const [values, setValues] = useState<CheckoutFormValues>({
+    ...DEFAULT_VALUES,
+    eventId: initialEventId,
+    lotId: initialLotId,
+    quantity: initialQuantity,
+  });
   const [viewState, setViewState] = useState<CheckoutViewState>({ kind: "idle" });
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -53,15 +64,8 @@ export function CheckoutForm() {
         return;
       }
 
-      const data = (payload as { data?: { orderId?: string; status?: string } }).data;
-
-      setViewState({
-        kind: "success",
-        data: {
-          orderId: data?.orderId ?? "unknown",
-          status: data?.status ?? "unknown",
-        },
-      });
+      router.push("/meus-ingressos");
+      router.refresh();
     } catch {
       setViewState({
         kind: "error",
@@ -74,8 +78,8 @@ export function CheckoutForm() {
     <section className="w-full max-w-2xl rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
       <h1 className="text-2xl font-semibold text-zinc-900">Checkout</h1>
       <p className="mt-1 text-sm text-zinc-600">
-        Minimal form connected to <code>/api/orders</code>. Pricing and stock validation stay on
-        the server.
+        Formulário conectado ao <code>/api/orders</code>. Preço, estoque e identidade do comprador
+        são sempre validados no servidor.
       </p>
 
       <form className="mt-6 grid gap-4" onSubmit={onSubmit}>
@@ -135,12 +139,6 @@ export function CheckoutForm() {
           {viewState.kind === "submitting" ? "Submitting..." : "Submit order"}
         </button>
       </form>
-
-      {viewState.kind === "success" ? (
-        <div className="mt-6 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
-          Order created: <strong>{viewState.data.orderId}</strong> ({viewState.data.status})
-        </div>
-      ) : null}
 
       {viewState.kind === "error" ? (
         <div className="mt-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">

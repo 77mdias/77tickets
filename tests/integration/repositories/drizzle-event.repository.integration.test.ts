@@ -61,6 +61,64 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
       expect(result).toBeNull();
     });
 
+    test("listPublished returns only published events that are upcoming or in progress", async () => {
+      await cleanDatabase(db);
+
+      await createEventFixture(db, {
+        slug: "pub-upcoming",
+        status: "published",
+        startsAt: new Date("2099-06-01T10:00:00.000Z"),
+        endsAt: new Date("2099-06-01T20:00:00.000Z"),
+      });
+      await createEventFixture(db, {
+        slug: "pub-ended",
+        status: "published",
+        startsAt: new Date("2020-06-01T10:00:00.000Z"),
+        endsAt: new Date("2020-06-01T20:00:00.000Z"),
+      });
+      await createEventFixture(db, {
+        slug: "draft-upcoming",
+        status: "draft",
+        startsAt: new Date("2099-08-01T10:00:00.000Z"),
+        endsAt: new Date("2099-08-01T20:00:00.000Z"),
+      });
+
+      const repo = new DrizzleEventRepository(db);
+      const results = await repo.listPublished();
+
+      expect(results.map((event) => event.slug)).toEqual(["pub-upcoming"]);
+      expect(results.every((event) => event.status === "published")).toBe(true);
+    });
+
+    test("listPublished supports limit and offset pagination", async () => {
+      await cleanDatabase(db);
+
+      await createEventFixture(db, {
+        slug: "pub-page-1",
+        status: "published",
+        startsAt: new Date("2099-06-01T10:00:00.000Z"),
+        endsAt: new Date("2099-06-01T20:00:00.000Z"),
+      });
+      await createEventFixture(db, {
+        slug: "pub-page-2",
+        status: "published",
+        startsAt: new Date("2099-07-01T10:00:00.000Z"),
+        endsAt: new Date("2099-07-01T20:00:00.000Z"),
+      });
+      await createEventFixture(db, {
+        slug: "pub-page-3",
+        status: "published",
+        startsAt: new Date("2099-08-01T10:00:00.000Z"),
+        endsAt: new Date("2099-08-01T20:00:00.000Z"),
+      });
+
+      const repo = new DrizzleEventRepository(db);
+      const page = await repo.listPublished({ limit: 1, offset: 1 });
+
+      expect(page).toHaveLength(1);
+      expect(page[0].slug).toBe("pub-page-2");
+    });
+
     test("listByOrganizer returns all events for the organizer", async () => {
       await cleanDatabase(db);
 

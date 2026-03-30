@@ -155,6 +155,54 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
       expect(updated!.order.status).toBe("paid");
     });
 
+    test("listByCustomerId returns only orders from the requested customer with their items", async () => {
+      await cleanDatabase(db);
+
+      const event = await createEventFixture(db, { status: "published" });
+      const lot = await createLotFixture(db, event.id);
+
+      const customerA = "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5";
+      const customerB = "5c95fe31-36f0-4a53-bbf3-5ca3cfe36df9";
+
+      const repo = new DrizzleOrderRepository(db);
+
+      await repo.create(
+        {
+          id: "00000000-0000-0000-0000-000000000206",
+          customerId: customerA,
+          eventId: event.id,
+          status: "pending",
+          subtotalInCents: 10000,
+          discountInCents: 0,
+          totalInCents: 10000,
+          createdAt: new Date("2027-06-01T10:00:00.000Z"),
+        },
+        [{ lotId: lot.id, quantity: 1, unitPriceInCents: 10000 }],
+      );
+
+      await repo.create(
+        {
+          id: "00000000-0000-0000-0000-000000000207",
+          customerId: customerB,
+          eventId: event.id,
+          status: "pending",
+          subtotalInCents: 20000,
+          discountInCents: 0,
+          totalInCents: 20000,
+          createdAt: new Date("2027-06-02T10:00:00.000Z"),
+        },
+        [{ lotId: lot.id, quantity: 2, unitPriceInCents: 10000 }],
+      );
+
+      const customerOrders = await repo.listByCustomerId(customerA);
+
+      expect(customerOrders).toHaveLength(1);
+      expect(customerOrders[0].order.customerId).toBe(customerA);
+      expect(customerOrders[0].items).toEqual([
+        { lotId: lot.id, quantity: 1, unitPriceInCents: 10000 },
+      ]);
+    });
+
     test("create maps order item FK violations to PersistenceError", async () => {
       await cleanDatabase(db);
 

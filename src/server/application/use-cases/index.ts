@@ -4,3 +4,6 @@ export * from "./publish-event.use-case";
 export * from "./update-event-status.use-case";
 export * from "./create-coupon.use-case";
 export * from "./update-coupon.use-case";
+export * from "./list-published-events.use-case";
+export * from "./get-customer-orders.use-case";
+export * from "./get-event-detail.use-case";

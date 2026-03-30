@@ -89,6 +89,47 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
       expect(results.every((t) => t.orderId === order1.id)).toBe(true);
     });
 
+    test("listByCustomerId returns only tickets owned by the requested customer", async () => {
+      await cleanDatabase(db);
+
+      const event = await createEventFixture(db, { status: "published" });
+      const lot = await createLotFixture(db, event.id);
+
+      const orderCustomerA = await createOrderFixture(db, event.id, {
+        customerId: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",
+        status: "paid",
+      });
+      const orderCustomerB = await createOrderFixture(db, event.id, {
+        customerId: "5c95fe31-36f0-4a53-bbf3-5ca3cfe36df9",
+        status: "paid",
+      });
+
+      await createTicketFixture(
+        db,
+        { eventId: event.id, orderId: orderCustomerA.id, lotId: lot.id },
+        { code: "CUST-A-TKT-001" },
+      );
+      await createTicketFixture(
+        db,
+        { eventId: event.id, orderId: orderCustomerA.id, lotId: lot.id },
+        { code: "CUST-A-TKT-002" },
+      );
+      await createTicketFixture(
+        db,
+        { eventId: event.id, orderId: orderCustomerB.id, lotId: lot.id },
+        { code: "CUST-B-TKT-001" },
+      );
+
+      const repo = new DrizzleTicketRepository(db);
+      const results = await repo.listByCustomerId("57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5");
+
+      expect(results).toHaveLength(2);
+      expect(results.map((ticket) => ticket.code)).toEqual([
+        "CUST-A-TKT-001",
+        "CUST-A-TKT-002",
+      ]);
+    });
+
     test("markAsUsedIfActive sets status to used and records checkedInAt", async () => {
       await cleanDatabase(db);
 

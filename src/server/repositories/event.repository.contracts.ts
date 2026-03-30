@@ -19,6 +19,7 @@ export interface EventRecord {
 export interface EventRepository {
   findById(eventId: EntityId): Promise<EventRecord | null>;
   findPublishedBySlug(slug: string): Promise<EventRecord | null>;
+  listPublished(options?: { limit?: number; offset?: number }): Promise<EventRecord[]>;
   listByOrganizer(organizerId: EntityId): Promise<EventRecord[]>;
   save(event: EventRecord): Promise<void>;
 }

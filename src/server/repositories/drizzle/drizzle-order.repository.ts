@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { asc, eq, inArray } from "drizzle-orm";
 
 import type { Db } from "../../infrastructure/db/client";
 import { orderItems, orders, tickets } from "../../infrastructure/db/schema";
@@ -91,6 +91,38 @@ export class DrizzleOrderRepository implements OrderRepository {
       order: toOrderRecord(orderRow),
       items: itemRows.map(toOrderItemRecord),
     };
+  }
+
+  async listByCustomerId(customerId: EntityId): Promise<OrderWithItemsRecord[]> {
+    const orderRows = await this.db
+      .select()
+      .from(orders)
+      .where(eq(orders.customerId, customerId))
+      .orderBy(asc(orders.createdAt), asc(orders.id));
+
+    if (orderRows.length === 0) {
+      return [];
+    }
+
+    const orderIds = orderRows.map((order) => order.id);
+    const itemRows = await this.db
+      .select()
+      .from(orderItems)
+      .where(inArray(orderItems.orderId, orderIds))
+      .orderBy(asc(orderItems.orderId), asc(orderItems.id));
+
+    const itemsByOrderId = new Map<string, OrderItemRecord[]>();
+
+    for (const itemRow of itemRows) {
+      const items = itemsByOrderId.get(itemRow.orderId) ?? [];
+      items.push(toOrderItemRecord(itemRow));
+      itemsByOrderId.set(itemRow.orderId, items);
+    }
+
+    return orderRows.map((orderRow) => ({
+      order: toOrderRecord(orderRow),
+      items: itemsByOrderId.get(orderRow.id) ?? [],
+    }));
   }
 
   async updateStatus(orderId: EntityId, status: OrderStatus): Promise<void> {

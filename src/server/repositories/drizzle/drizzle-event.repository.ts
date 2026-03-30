@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, asc, eq, gte, isNull, or } from "drizzle-orm";
 
 import type { Db } from "../../infrastructure/db/client";
 import { events } from "../../infrastructure/db/schema";
@@ -27,6 +27,36 @@ export class DrizzleEventRepository implements EventRepository {
       .limit(1);
 
     return row ? toEventRecord(row) : null;
+  }
+
+  async listPublished(options?: {
+    limit?: number;
+    offset?: number;
+  }): Promise<EventRecord[]> {
+    const now = new Date();
+    let query = this.db
+      .select()
+      .from(events)
+      .where(
+        and(
+          eq(events.status, "published"),
+          or(isNull(events.endsAt), gte(events.endsAt, now)),
+        ),
+      )
+      .orderBy(asc(events.startsAt), asc(events.id))
+      .$dynamic();
+
+    if (typeof options?.limit === "number") {
+      query = query.limit(options.limit);
+    }
+
+    if (typeof options?.offset === "number") {
+      query = query.offset(options.offset);
+    }
+
+    const rows = await query;
+
+    return rows.map(toEventRecord);
   }
 
   async listByOrganizer(organizerId: EntityId): Promise<EventRecord[]> {

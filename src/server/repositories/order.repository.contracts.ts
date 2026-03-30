@@ -33,6 +33,7 @@ export interface OrderWithItemsRecord {
 
 export interface OrderRepository {
   findById(orderId: EntityId): Promise<OrderWithItemsRecord | null>;
+  listByCustomerId(customerId: EntityId): Promise<OrderWithItemsRecord[]>;
   create(
     order: OrderRecord,
     items: OrderItemRecord[],

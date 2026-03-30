@@ -23,6 +23,7 @@ export interface NewTicketData {
 export interface TicketRepository {
   findByCode(code: string): Promise<TicketRecord | null>;
   listByOrderId(orderId: EntityId): Promise<TicketRecord[]>;
+  listByCustomerId(customerId: EntityId): Promise<TicketRecord[]>;
   createMany(tickets: NewTicketData[]): Promise<TicketRecord[]>;
   markAsUsedIfActive(ticketId: EntityId, checkedInAt: Date): Promise<boolean>;
 }
