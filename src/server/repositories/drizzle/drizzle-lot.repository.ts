@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { eq, inArray, sql } from "drizzle-orm";
 
 import type { Db } from "../../infrastructure/db/client";
 import { lots } from "../../infrastructure/db/schema";
@@ -17,6 +17,19 @@ export class DrizzleLotRepository implements LotRepository {
       .limit(1);
 
     return row ? toLotRecord(row) : null;
+  }
+
+  async findByIds(lotIds: EntityId[]): Promise<LotRecord[]> {
+    if (lotIds.length === 0) {
+      return [];
+    }
+
+    const rows = await this.db
+      .select()
+      .from(lots)
+      .where(inArray(lots.id, lotIds));
+
+    return rows.map(toLotRecord);
   }
 
   async findByEventId(eventId: EntityId): Promise<LotRecord[]> {
@@ -66,14 +79,19 @@ export class DrizzleLotRepository implements LotRepository {
   async decrementAvailableQuantity(
     lotId: EntityId,
     quantity: number,
-  ): Promise<void> {
+  ): Promise<boolean> {
     try {
-      await this.db
+      const result = await this.db
         .update(lots)
         .set({
           availableQuantity: sql`${lots.availableQuantity} - ${quantity}`,
         })
-        .where(eq(lots.id, lotId));
+        .where(
+          sql`${lots.id} = ${lotId} AND ${lots.availableQuantity} >= ${quantity}`,
+        );
+
+      const rowCount = (result as { rowCount?: number | null }).rowCount ?? 0;
+      return rowCount > 0;
     } catch (error) {
       throw mapPersistenceError(error, "decrement lot available quantity");
     }

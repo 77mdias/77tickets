@@ -18,7 +18,8 @@ export interface LotRecord {
 
 export interface LotRepository {
   findById(lotId: EntityId): Promise<LotRecord | null>;
+  findByIds(lotIds: EntityId[]): Promise<LotRecord[]>;
   findByEventId(eventId: EntityId): Promise<LotRecord[]>;
   save(lot: LotRecord): Promise<void>;
-  decrementAvailableQuantity(lotId: EntityId, quantity: number): Promise<void>;
+  decrementAvailableQuantity(lotId: EntityId, quantity: number): Promise<boolean>;
 }

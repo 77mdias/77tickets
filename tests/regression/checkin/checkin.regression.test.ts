@@ -82,6 +82,28 @@ function countOutcomes(results: ValidateCheckinResult[]) {
 }
 
 describe("SEC-002 regression coverage: check-in", () => {
+  test("rejects check-in when ticket belongs to a different event", async () => {
+    const DIFFERENT_EVENT_ID = "event-regression-different-001";
+
+    // ticket.eventId is EVENT_ID; input uses DIFFERENT_EVENT_ID → event_mismatch
+    const dependencies = createCheckinDependencies();
+    const validateCheckin = createValidateCheckinUseCase(dependencies);
+
+    const result = await validateCheckin({
+      ticketId: TICKET_ID,
+      eventId: DIFFERENT_EVENT_ID,
+      checkerId: CHECKER_ID,
+    });
+
+    expect(result).toMatchObject({
+      outcome: "rejected",
+      reason: "event_mismatch",
+      ticketId: TICKET_ID,
+      eventId: DIFFERENT_EVENT_ID,
+      checkerId: CHECKER_ID,
+    });
+  });
+
   test("allows only one successful check-in when two attempts happen concurrently", async () => {
     const dependencies = createCheckinDependencies();
     const validateCheckin = createValidateCheckinUseCase(dependencies);

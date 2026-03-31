@@ -21,7 +21,7 @@ export interface CreateOrderUseCaseDependencies {
   generateOrderId: () => string;
   generateTicketCode?: () => string;
   orderRepository: Pick<OrderRepository, "create">;
-  lotRepository: Pick<LotRepository, "findById">;
+  lotRepository: Pick<LotRepository, "findByIds" | "decrementAvailableQuantity">;
   couponRepository: Pick<CouponRepository, "findByCodeForEvent" | "incrementRedemptionCount">;
   observability?: CreateOrderUseCaseObservability;
 }
@@ -103,11 +103,12 @@ const trackUseCaseExecution = async (
 export const createCreateOrderUseCase = (dependencies: CreateOrderUseCaseDependencies) => {
   const generateTicketCode = dependencies.generateTicketCode ?? fallbackGenerateTicketCode;
 
-  const resolveItem = async (
+  const resolveItem = (
     input: CreateOrderInput,
     item: CreateOrderInput["items"][number],
-  ): Promise<ResolvedOrderItem> => {
-    const lot = await dependencies.lotRepository.findById(item.lotId);
+    lotsById: Map<string, LotRecord>,
+  ): ResolvedOrderItem => {
+    const lot = lotsById.get(item.lotId);
 
     if (!lot) {
       throw createOrderConflictError("lot_not_found");
@@ -139,7 +140,11 @@ export const createCreateOrderUseCase = (dependencies: CreateOrderUseCaseDepende
 
   return async (input: CreateOrderInput): Promise<CreateOrderResult> => {
     try {
-      const items = await Promise.all(input.items.map((item) => resolveItem(input, item)));
+      const lotIds = input.items.map((item) => item.lotId);
+      const lotRecords = await dependencies.lotRepository.findByIds(lotIds);
+      const lotsById = new Map(lotRecords.map((lot) => [lot.id, lot]));
+
+      const items = input.items.map((item) => resolveItem(input, item, lotsById));
 
       const subtotalInCents = items.reduce(
         (subtotal, item) => subtotal + calculateSubtotal(item),
@@ -204,6 +209,17 @@ export const createCreateOrderUseCase = (dependencies: CreateOrderUseCaseDepende
         })),
         createTicketsForItems(items, input.eventId, generateTicketCode),
       );
+
+      for (const item of items) {
+        const decremented = await dependencies.lotRepository.decrementAvailableQuantity(
+          item.lotId,
+          item.quantity,
+        );
+
+        if (!decremented) {
+          throw createConflictError("Insufficient stock", { details: { reason: "insufficient_stock" } });
+        }
+      }
 
       if (couponIdToRedeem !== null) {
         await dependencies.couponRepository.incrementRedemptionCount(couponIdToRedeem);

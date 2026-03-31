@@ -1,5 +1,18 @@
 import { expect, test, vi } from "vitest";
 
+type LotData = {
+  id: string;
+  eventId: string;
+  title: string;
+  priceInCents: number;
+  totalQuantity: number;
+  availableQuantity: number;
+  maxPerOrder: number;
+  saleStartsAt: Date | null;
+  saleEndsAt: Date | null;
+  status: "active" | "paused" | "sold_out" | "closed";
+};
+
 type CreateOrderUseCaseFactory = (dependencies: {
   now: () => Date;
   generateOrderId: () => string;
@@ -8,18 +21,8 @@ type CreateOrderUseCaseFactory = (dependencies: {
     create: (...args: unknown[]) => Promise<unknown>;
   };
   lotRepository: {
-    findById: (lotId: string) => Promise<{
-      id: string;
-      eventId: string;
-      title: string;
-      priceInCents: number;
-      totalQuantity: number;
-      availableQuantity: number;
-      maxPerOrder: number;
-      saleStartsAt: Date | null;
-      saleEndsAt: Date | null;
-      status: "active" | "paused" | "sold_out" | "closed";
-    } | null>;
+    findByIds: (lotIds: string[]) => Promise<LotData[]>;
+    decrementAvailableQuantity: (lotId: string, quantity: number) => Promise<boolean>;
   };
   couponRepository: {
     findByCodeForEvent: (code: string, eventId: string) => Promise<{
@@ -66,6 +69,16 @@ async function loadCreateOrderFactory(): Promise<CreateOrderUseCaseFactory> {
   return createCreateOrderUseCase as CreateOrderUseCaseFactory;
 }
 
+function makeLotRepository(lot: LotData): {
+  findByIds: (lotIds: string[]) => Promise<LotData[]>;
+  decrementAvailableQuantity: (lotId: string, quantity: number) => Promise<boolean>;
+} {
+  return {
+    findByIds: async (lotIds) => lotIds.includes(lot.id) ? [lot] : [],
+    decrementAvailableQuantity: async () => true,
+  };
+}
+
 test("ORD-002 RED: calculates totals from server lot price and ignores manipulated client price", async () => {
   const createCreateOrderUseCase = await loadCreateOrderFactory();
 
@@ -75,25 +88,25 @@ test("ORD-002 RED: calculates totals from server lot price and ignores manipulat
     .mockReturnValueOnce("TKT-UNIT-001")
     .mockReturnValueOnce("TKT-UNIT-002");
 
+  const lot: LotData = {
+    id: LOT_ID,
+    eventId: EVENT_ID,
+    title: "VIP",
+    priceInCents: 10000,
+    totalQuantity: 100,
+    availableQuantity: 100,
+    maxPerOrder: 4,
+    saleStartsAt: new Date("2026-01-01T00:00:00.000Z"),
+    saleEndsAt: new Date("2026-12-31T23:59:59.000Z"),
+    status: "active",
+  };
+
   const useCase = createCreateOrderUseCase({
     now: () => FIXED_NOW,
     generateOrderId: () => "order-red-001",
     generateTicketCode,
     orderRepository: { create: orderRepositoryCreate },
-    lotRepository: {
-      findById: async () => ({
-        id: LOT_ID,
-        eventId: EVENT_ID,
-        title: "VIP",
-        priceInCents: 10000,
-        totalQuantity: 100,
-        availableQuantity: 100,
-        maxPerOrder: 4,
-        saleStartsAt: new Date("2026-01-01T00:00:00.000Z"),
-        saleEndsAt: new Date("2026-12-31T23:59:59.000Z"),
-        status: "active",
-      }),
-    },
+    lotRepository: makeLotRepository(lot),
     couponRepository: {
       findByCodeForEvent: async () => null,
       incrementRedemptionCount: async () => undefined,
@@ -146,26 +159,26 @@ test("ORD-002 RED: calculates totals from server lot price and ignores manipulat
 test("ORD-002 RED: rejects purchase when lot has insufficient stock", async () => {
   const createCreateOrderUseCase = await loadCreateOrderFactory();
 
+  const lot: LotData = {
+    id: LOT_ID,
+    eventId: EVENT_ID,
+    title: "General",
+    priceInCents: 5000,
+    totalQuantity: 100,
+    availableQuantity: 1,
+    maxPerOrder: 5,
+    saleStartsAt: new Date("2026-01-01T00:00:00.000Z"),
+    saleEndsAt: new Date("2026-12-31T23:59:59.000Z"),
+    status: "active",
+  };
+
   const useCase = createCreateOrderUseCase({
     now: () => FIXED_NOW,
     generateOrderId: () => "order-red-002",
     orderRepository: {
       create: async () => ({ id: "order-red-002" }),
     },
-    lotRepository: {
-      findById: async () => ({
-        id: LOT_ID,
-        eventId: EVENT_ID,
-        title: "General",
-        priceInCents: 5000,
-        totalQuantity: 100,
-        availableQuantity: 1,
-        maxPerOrder: 5,
-        saleStartsAt: new Date("2026-01-01T00:00:00.000Z"),
-        saleEndsAt: new Date("2026-12-31T23:59:59.000Z"),
-        status: "active",
-      }),
-    },
+    lotRepository: makeLotRepository(lot),
     couponRepository: {
       findByCodeForEvent: async () => null,
       incrementRedemptionCount: async () => undefined,
@@ -189,26 +202,26 @@ test("ORD-002 RED: rejects purchase when lot has insufficient stock", async () =
 test("ORD-002 RED: rejects purchase when lot is outside sale window", async () => {
   const createCreateOrderUseCase = await loadCreateOrderFactory();
 
+  const lot: LotData = {
+    id: LOT_ID,
+    eventId: EVENT_ID,
+    title: "Early Bird",
+    priceInCents: 8000,
+    totalQuantity: 100,
+    availableQuantity: 50,
+    maxPerOrder: 4,
+    saleStartsAt: new Date("2026-04-01T00:00:00.000Z"),
+    saleEndsAt: new Date("2026-12-31T23:59:59.000Z"),
+    status: "active",
+  };
+
   const useCase = createCreateOrderUseCase({
     now: () => FIXED_NOW,
     generateOrderId: () => "order-red-003",
     orderRepository: {
       create: async () => ({ id: "order-red-003" }),
     },
-    lotRepository: {
-      findById: async () => ({
-        id: LOT_ID,
-        eventId: EVENT_ID,
-        title: "Early Bird",
-        priceInCents: 8000,
-        totalQuantity: 100,
-        availableQuantity: 50,
-        maxPerOrder: 4,
-        saleStartsAt: new Date("2026-04-01T00:00:00.000Z"),
-        saleEndsAt: new Date("2026-12-31T23:59:59.000Z"),
-        status: "active",
-      }),
-    },
+    lotRepository: makeLotRepository(lot),
     couponRepository: {
       findByCodeForEvent: async () => null,
       incrementRedemptionCount: async () => undefined,
@@ -235,24 +248,24 @@ test("ORD-002 RED: applies valid coupon discount in order total", async () => {
   const orderRepositoryCreate = vi.fn(async (...args: unknown[]) => args[0]);
   const couponIncrement = vi.fn(async () => undefined);
 
+  const lot: LotData = {
+    id: LOT_ID,
+    eventId: EVENT_ID,
+    title: "VIP",
+    priceInCents: 10000,
+    totalQuantity: 100,
+    availableQuantity: 100,
+    maxPerOrder: 4,
+    saleStartsAt: new Date("2026-01-01T00:00:00.000Z"),
+    saleEndsAt: new Date("2026-12-31T23:59:59.000Z"),
+    status: "active",
+  };
+
   const useCase = createCreateOrderUseCase({
     now: () => FIXED_NOW,
     generateOrderId: () => "order-red-004",
     orderRepository: { create: orderRepositoryCreate },
-    lotRepository: {
-      findById: async () => ({
-        id: LOT_ID,
-        eventId: EVENT_ID,
-        title: "VIP",
-        priceInCents: 10000,
-        totalQuantity: 100,
-        availableQuantity: 100,
-        maxPerOrder: 4,
-        saleStartsAt: new Date("2026-01-01T00:00:00.000Z"),
-        saleEndsAt: new Date("2026-12-31T23:59:59.000Z"),
-        status: "active",
-      }),
-    },
+    lotRepository: makeLotRepository(lot),
     couponRepository: {
       findByCodeForEvent: async () => ({
         id: COUPON_ID,
@@ -288,26 +301,26 @@ test("ORD-002 RED: applies valid coupon discount in order total", async () => {
 test("ORD-002 RED: rejects coupon when coupon is invalid for event/time window", async () => {
   const createCreateOrderUseCase = await loadCreateOrderFactory();
 
+  const lot: LotData = {
+    id: LOT_ID,
+    eventId: EVENT_ID,
+    title: "General",
+    priceInCents: 5000,
+    totalQuantity: 100,
+    availableQuantity: 100,
+    maxPerOrder: 5,
+    saleStartsAt: new Date("2026-01-01T00:00:00.000Z"),
+    saleEndsAt: new Date("2026-12-31T23:59:59.000Z"),
+    status: "active",
+  };
+
   const useCase = createCreateOrderUseCase({
     now: () => FIXED_NOW,
     generateOrderId: () => "order-red-005",
     orderRepository: {
       create: async () => ({ id: "order-red-005" }),
     },
-    lotRepository: {
-      findById: async () => ({
-        id: LOT_ID,
-        eventId: EVENT_ID,
-        title: "General",
-        priceInCents: 5000,
-        totalQuantity: 100,
-        availableQuantity: 100,
-        maxPerOrder: 5,
-        saleStartsAt: new Date("2026-01-01T00:00:00.000Z"),
-        saleEndsAt: new Date("2026-12-31T23:59:59.000Z"),
-        status: "active",
-      }),
-    },
+    lotRepository: makeLotRepository(lot),
     couponRepository: {
       findByCodeForEvent: async () => ({
         id: COUPON_ID,
@@ -344,26 +357,26 @@ test("UX-002 RED: tracks use-case success metrics without sensitive data", async
 
   const telemetryCalls: Array<Record<string, unknown>> = [];
 
+  const lot: LotData = {
+    id: LOT_ID,
+    eventId: EVENT_ID,
+    title: "General",
+    priceInCents: 5000,
+    totalQuantity: 100,
+    availableQuantity: 100,
+    maxPerOrder: 5,
+    saleStartsAt: new Date("2026-01-01T00:00:00.000Z"),
+    saleEndsAt: new Date("2026-12-31T23:59:59.000Z"),
+    status: "active",
+  };
+
   const useCase = createCreateOrderUseCase({
     now: () => FIXED_NOW,
     generateOrderId: () => "order-ux-002-success",
     orderRepository: {
       create: async () => ({ id: "order-ux-002-success" }),
     },
-    lotRepository: {
-      findById: async () => ({
-        id: LOT_ID,
-        eventId: EVENT_ID,
-        title: "General",
-        priceInCents: 5000,
-        totalQuantity: 100,
-        availableQuantity: 100,
-        maxPerOrder: 5,
-        saleStartsAt: new Date("2026-01-01T00:00:00.000Z"),
-        saleEndsAt: new Date("2026-12-31T23:59:59.000Z"),
-        status: "active",
-      }),
-    },
+    lotRepository: makeLotRepository(lot),
     couponRepository: {
       findByCodeForEvent: async () => null,
       incrementRedemptionCount: async () => undefined,
@@ -398,26 +411,26 @@ test("UX-002 RED: tracks use-case failures with categorized error", async () => 
 
   const telemetryCalls: Array<Record<string, unknown>> = [];
 
+  const lot: LotData = {
+    id: LOT_ID,
+    eventId: EVENT_ID,
+    title: "General",
+    priceInCents: 5000,
+    totalQuantity: 100,
+    availableQuantity: 1,
+    maxPerOrder: 5,
+    saleStartsAt: new Date("2026-01-01T00:00:00.000Z"),
+    saleEndsAt: new Date("2026-12-31T23:59:59.000Z"),
+    status: "active",
+  };
+
   const useCase = createCreateOrderUseCase({
     now: () => FIXED_NOW,
     generateOrderId: () => "order-ux-002-failure",
     orderRepository: {
       create: async () => ({ id: "order-ux-002-failure" }),
     },
-    lotRepository: {
-      findById: async () => ({
-        id: LOT_ID,
-        eventId: EVENT_ID,
-        title: "General",
-        priceInCents: 5000,
-        totalQuantity: 100,
-        availableQuantity: 1,
-        maxPerOrder: 5,
-        saleStartsAt: new Date("2026-01-01T00:00:00.000Z"),
-        saleEndsAt: new Date("2026-12-31T23:59:59.000Z"),
-        status: "active",
-      }),
-    },
+    lotRepository: makeLotRepository(lot),
     couponRepository: {
       findByCodeForEvent: async () => null,
       incrementRedemptionCount: async () => undefined,

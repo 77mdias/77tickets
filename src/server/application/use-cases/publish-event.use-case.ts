@@ -5,10 +5,21 @@ import type { LotRepository } from "../../repositories";
 
 export type PublishEventUseCase = (input: PublishEventInput) => Promise<PublishEventResult>;
 
+export interface PublishEventUseCaseEventPublishedEntry {
+  eventId: string;
+  organizerId: string;
+  timestamp: string;
+}
+
+export interface PublishEventUseCaseObservability {
+  logEventPublished(entry: PublishEventUseCaseEventPublishedEntry): void | Promise<void>;
+}
+
 export interface PublishEventUseCaseDependencies {
   organizerId: string;
   eventRepository: Pick<EventRepository, "findById" | "save">;
   lotRepository: Pick<LotRepository, "findByEventId">;
+  observability?: PublishEventUseCaseObservability;
 }
 
 const createPublishConflictError = (reason: string) =>
@@ -18,7 +29,7 @@ export function createPublishEventUseCase(
   dependencies: PublishEventUseCaseDependencies,
 ): PublishEventUseCase {
   return async function publishEvent(input: PublishEventInput): Promise<PublishEventResult> {
-    const { organizerId, eventRepository, lotRepository } = dependencies;
+    const { organizerId, eventRepository, lotRepository, observability } = dependencies;
     const { eventId } = input;
 
     const event = await eventRepository.findById(eventId);
@@ -53,6 +64,18 @@ export function createPublishEventUseCase(
     }
 
     await eventRepository.save({ ...event, status: "published" });
+
+    if (observability) {
+      try {
+        await observability.logEventPublished({
+          eventId,
+          organizerId,
+          timestamp: new Date().toISOString(),
+        });
+      } catch {
+        // best-effort: logging must not break the flow
+      }
+    }
 
     return { eventId, status: "published" };
   };

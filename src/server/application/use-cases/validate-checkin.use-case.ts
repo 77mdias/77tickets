@@ -13,6 +13,18 @@ export type ValidateCheckinUseCase = (
   input: ValidateCheckinInput,
 ) => Promise<ValidateCheckinResult>;
 
+export interface ValidateCheckinUseCaseCheckinValidatedEntry {
+  ticketId: string;
+  eventId: string;
+  checkerId: string;
+  outcome: string;
+  timestamp: string;
+}
+
+export interface ValidateCheckinUseCaseObservability {
+  logCheckinValidated(entry: ValidateCheckinUseCaseCheckinValidatedEntry): void | Promise<void>;
+}
+
 export interface ValidateCheckinUseCaseDependencies {
   now: () => Date;
   ticketRepository: Pick<TicketRepository, "markAsUsedIfActive"> & {
@@ -27,6 +39,7 @@ export interface ValidateCheckinUseCaseDependencies {
     } | null>;
   };
   orderRepository: Pick<OrderRepository, "findById">;
+  observability?: ValidateCheckinUseCaseObservability;
 }
 
 const createAuditMetadata = (
@@ -60,40 +73,48 @@ export const createValidateCheckinUseCase = (
   return async (input: ValidateCheckinInput): Promise<ValidateCheckinResult> => {
     const checkedInAt = dependencies.now();
     const audit = createAuditMetadata(input, checkedInAt);
+    const { observability } = dependencies;
+
+    const logOutcome = async (result: ValidateCheckinResult): Promise<void> => {
+      if (!observability) return;
+      try {
+        await observability.logCheckinValidated({
+          ticketId: input.ticketId,
+          eventId: input.eventId,
+          checkerId: input.checkerId,
+          outcome: result.outcome,
+          timestamp: checkedInAt.toISOString(),
+        });
+      } catch {
+        // best-effort: logging must not break the flow
+      }
+    };
 
     const ticket = await dependencies.ticketRepository.findById(input.ticketId);
     if (!ticket) {
-      return {
-        ...audit,
-        outcome: "rejected",
-        reason: "ticket_not_found",
-      };
+      const result = { ...audit, outcome: "rejected" as const, reason: "ticket_not_found" as const };
+      await logOutcome(result);
+      return result;
     }
 
     if (ticket.eventId !== input.eventId) {
-      return {
-        ...audit,
-        outcome: "rejected",
-        reason: "event_mismatch",
-      };
+      const result = { ...audit, outcome: "rejected" as const, reason: "event_mismatch" as const };
+      await logOutcome(result);
+      return result;
     }
 
     const ticketRejectionReason = mapTicketStatusToRejection(ticket.status);
     if (ticketRejectionReason !== null) {
-      return {
-        ...audit,
-        outcome: "rejected",
-        reason: ticketRejectionReason,
-      };
+      const result = { ...audit, outcome: "rejected" as const, reason: ticketRejectionReason };
+      await logOutcome(result);
+      return result;
     }
 
     const order = await dependencies.orderRepository.findById(ticket.orderId);
     if (!order || !isOrderEligibleForCheckin(order.order.status)) {
-      return {
-        ...audit,
-        outcome: "rejected",
-        reason: "order_not_eligible",
-      };
+      const result = { ...audit, outcome: "rejected" as const, reason: "order_not_eligible" as const };
+      await logOutcome(result);
+      return result;
     }
 
     const markedAsUsed = await dependencies.ticketRepository.markAsUsedIfActive(
@@ -101,16 +122,13 @@ export const createValidateCheckinUseCase = (
       checkedInAt,
     );
     if (!markedAsUsed) {
-      return {
-        ...audit,
-        outcome: "rejected",
-        reason: "ticket_used",
-      };
+      const result = { ...audit, outcome: "rejected" as const, reason: "ticket_used" as const };
+      await logOutcome(result);
+      return result;
     }
 
-    return {
-      ...audit,
-      outcome: "approved",
-    };
+    const result = { ...audit, outcome: "approved" as const };
+    await logOutcome(result);
+    return result;
   };
 };
