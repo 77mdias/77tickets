@@ -59,10 +59,10 @@
   **Arquivos/áreas afetadas:** `tests/regression/`
 
   **Critérios de aceitação:**
-  - [ ] Fluxo de auth cobre: sessão inválida, role incorreto, expiração.
-  - [ ] Fluxo de compra cobre: estoque insuficiente, lote expirado, cupom inválido.
-  - [ ] Fluxo de checkin cobre: ticket duplicado, ticket de outro evento.
-  - [ ] Gate de regressão passa no CI antes de qualquer merge.
+  - [x] Fluxo de auth cobre: sessão inválida, role incorreto, expiração.
+  - [x] Fluxo de compra cobre: estoque insuficiente, lote expirado, cupom inválido.
+  - [x] Fluxo de checkin cobre: ticket duplicado, ticket de outro evento.
+  - [x] Gate de regressão passa no CI antes de qualquer merge.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 5h
@@ -82,9 +82,9 @@
   **Arquivos/áreas afetadas:** `tests/integration/api/`
 
   **Critérios de aceitação:**
-  - [ ] Todos os endpoints têm pelo menos 2 cenários negativos de autorização.
-  - [ ] Cross-organizer sempre bloqueado.
-  - [ ] Customer não acessa rotas de organizer/admin.
+  - [x] Todos os endpoints têm pelo menos 2 cenários negativos de autorização.
+  - [x] Cross-organizer sempre bloqueado.
+  - [x] Customer não acessa rotas de organizer/admin.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 3h
@@ -105,9 +105,9 @@
   **Arquivos/áreas afetadas:** `tests/integration/`
 
   **Critérios de aceitação:**
-  - [ ] Estoque nunca fica negativo sob concorrência.
-  - [ ] Último pedido recebe erro `INSUFFICIENT_STOCK`.
-  - [ ] Teste reproduzível e determinístico.
+  - [x] Estoque nunca fica negativo sob concorrência.
+  - [x] Último pedido recebe erro `INSUFFICIENT_STOCK`.
+  - [x] Teste reproduzível e determinístico.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 4h
@@ -135,9 +135,9 @@
   **Arquivos/áreas afetadas:** `src/server/infrastructure/observability/`, use-cases críticos
 
   **Critérios de aceitação:**
-  - [ ] Os 3 eventos críticos logados com campos padronizados.
-  - [ ] Log disponível em output do servidor.
-  - [ ] Sem dados sensíveis (senhas, tokens completos) no log.
+  - [x] Os 3 eventos críticos logados com campos padronizados.
+  - [x] Log disponível em output do servidor.
+  - [x] Sem dados sensíveis (senhas, tokens completos) no log.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 4h
@@ -159,9 +159,9 @@
   **Arquivos/áreas afetadas:** `src/server/api/error-mapper.ts`, todos os handlers
 
   **Critérios de aceitação:**
-  - [ ] Shape de erro idêntico em todos os endpoints.
-  - [ ] Erros de domínio mapeados corretamente.
-  - [ ] Erros de infra não vazam detalhes técnicos para o cliente.
+  - [x] Shape de erro idêntico em todos os endpoints.
+  - [x] Erros de domínio mapeados corretamente.
+  - [x] Erros de infra não vazam detalhes técnicos para o cliente.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 3h
@@ -186,9 +186,9 @@
   **Arquivos/áreas afetadas:** `src/server/repositories/drizzle/`
 
   **Critérios de aceitação:**
-  - [ ] `createOrder` sem N+1 (tickets e items em batch).
-  - [ ] `listPublishedEvents` com query única.
-  - [ ] `listEventOrders` com JOIN em vez de loop.
+  - [x] `createOrder` sem N+1 (tickets e items em batch).
+  - [x] `listPublishedEvents` com query única.
+  - [x] `listEventOrders` com JOIN em vez de loop.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 4h
@@ -209,8 +209,8 @@
   **Arquivos/áreas afetadas:** use-cases de listagem, handlers, tipos de resposta
 
   **Critérios de aceitação:**
-  - [ ] Sem campos desnecessários em endpoints de listagem.
-  - [ ] Tipos de resposta explicitamente definidos e separados do `Record` completo.
+  - [x] Sem campos desnecessários em endpoints de listagem.
+  - [x] Tipos de resposta explicitamente definidos e separados do `Record` completo.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 3h
@@ -232,8 +232,8 @@
   **Arquivos/áreas afetadas:** `src/server/infrastructure/db/client.ts`
 
   **Critérios de aceitação:**
-  - [ ] Configuração documentada e validada para Workers.
-  - [ ] Sem uso de APIs Node.js não compatíveis com Workers no caminho crítico.
+  - [x] Configuração documentada e validada para Workers.
+  - [x] Sem uso de APIs Node.js não compatíveis com Workers no caminho crítico.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 2h
@@ -258,9 +258,9 @@
   **Arquivos/áreas afetadas:** `src/app/api/`, middleware de edge
 
   **Critérios de aceitação:**
-  - [ ] Rate limiting ativo nos endpoints críticos.
-  - [ ] `429` retornado corretamente com header `Retry-After`.
-  - [ ] Sem impacto em testes existentes (excluir testes do rate limiting).
+  - [x] Rate limiting ativo nos endpoints críticos.
+  - [x] `429` retornado corretamente com header `Retry-After`.
+  - [x] Sem impacto em testes existentes (excluir testes do rate limiting).
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 3h
@@ -281,9 +281,9 @@
   **Arquivos/áreas afetadas:** `docs/infrastructure/runbooks/`
 
   **Critérios de aceitação:**
-  - [ ] 3 runbooks criados com estrutura consistente.
-  - [ ] Sintomas mapeados aos erros de domínio conhecidos.
-  - [ ] Ações de recuperação concretas e verificáveis.
+  - [x] 3 runbooks criados com estrutura consistente.
+  - [x] Sintomas mapeados aos erros de domínio conhecidos.
+  - [x] Ações de recuperação concretas e verificáveis.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 3h
