@@ -1,10 +1,10 @@
-import { createPublishEventHandler } from "@/src/server/api/events/publish-event.handler";
-import { createPublishEventRouteAdapter } from "@/src/server/api/events/events.route-adapter";
-import { getDatabaseUrlOrThrow } from "@/src/server/api/orders/create-order.route-adapter";
-import { getSession } from "@/src/server/infrastructure/auth";
-import { createPublishEventUseCase } from "@/src/server/application/use-cases";
-import { createDb } from "@/src/server/infrastructure/db/client";
-import { DrizzleEventRepository, DrizzleLotRepository } from "@/src/server/repositories/drizzle";
+import { createPublishEventHandler } from "@/server/api/events/publish-event.handler";
+import { createPublishEventRouteAdapter } from "@/server/api/events/events.route-adapter";
+import { getDatabaseUrlOrThrow } from "@/server/api/orders/create-order.route-adapter";
+import { getSession } from "@/server/infrastructure/auth";
+import { createPublishEventUseCase } from "@/server/application/use-cases";
+import { createDb } from "@/server/infrastructure/db/client";
+import { DrizzleEventRepository, DrizzleLotRepository } from "@/server/repositories/drizzle";
 
 type PostPublishRouteHandler = (request: Request) => Promise<Response>;
 

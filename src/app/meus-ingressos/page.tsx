@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { TicketQr } from "@/src/features/tickets/ticket-qr";
-import { getServerBaseUrl, getServerCookieHeader } from "@/src/lib/server-api";
+import { TicketQr } from "@/features/tickets/ticket-qr";
+import { getServerBaseUrl, getServerCookieHeader } from "@/lib/server-api";
 
 interface CustomerTicket {
   id: string;

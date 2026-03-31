@@ -1,5 +1,5 @@
-import { createUnauthenticatedError } from "@/src/server/application/errors";
-import type { UserRole } from "@/src/server/application/security";
+import { createUnauthenticatedError } from "@/server/application/errors";
+import type { UserRole } from "@/server/application/security";
 
 export interface SessionContext {
   userId: string;

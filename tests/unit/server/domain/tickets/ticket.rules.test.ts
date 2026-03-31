@@ -4,9 +4,9 @@ import {
   isOrderValidForTicket,
   isTicketActive,
   isTicketValidForCheckin,
-} from "@/src/server/domain/tickets/ticket.rules";
+} from "@/server/domain/tickets/ticket.rules";
 
-import type { Ticket } from "@/src/server/domain/tickets";
+import type { Ticket } from "@/server/domain/tickets";
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 

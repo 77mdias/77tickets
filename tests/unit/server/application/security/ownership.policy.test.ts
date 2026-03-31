@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 
-import { AppError } from "@/src/server/application/errors";
-import { assertEventManagementAccess } from "@/src/server/application/security";
+import { AppError } from "@/server/application/errors";
+import { assertEventManagementAccess } from "@/server/application/security";
 
 const ORGANIZER_A = "00000000-0000-0000-0000-000000000001";
 const ORGANIZER_B = "00000000-0000-0000-0000-000000000002";

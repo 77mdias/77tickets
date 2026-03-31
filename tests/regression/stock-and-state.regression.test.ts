@@ -1,9 +1,9 @@
 import { describe, expect, test } from "vitest";
 
-import { validateLotForPurchase } from "@/src/server/domain/lots/lot.rules";
-import type { Lot } from "@/src/server/domain/lots";
-import { isTicketValidForCheckin } from "@/src/server/domain/tickets/ticket.rules";
-import type { Ticket } from "@/src/server/domain/tickets";
+import { validateLotForPurchase } from "@/server/domain/lots/lot.rules";
+import type { Lot } from "@/server/domain/lots";
+import { isTicketValidForCheckin } from "@/server/domain/tickets/ticket.rules";
+import type { Ticket } from "@/server/domain/tickets";
 
 function makeLot(overrides: Partial<Lot> = {}): Lot {
   return {

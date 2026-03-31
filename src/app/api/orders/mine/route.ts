@@ -1,10 +1,10 @@
-import { createGetCustomerOrdersHandler } from "@/src/server/api/orders/get-customer-orders.handler";
-import { createGetCustomerOrdersRouteAdapter } from "@/src/server/api/orders/get-customer-orders.route-adapter";
-import { getDatabaseUrlOrThrow } from "@/src/server/api/orders/create-order.route-adapter";
-import { getSession } from "@/src/server/infrastructure/auth";
-import { createGetCustomerOrdersUseCase } from "@/src/server/application/use-cases";
-import { createDb } from "@/src/server/infrastructure/db/client";
-import { DrizzleOrderRepository, DrizzleTicketRepository } from "@/src/server/repositories/drizzle";
+import { createGetCustomerOrdersHandler } from "@/server/api/orders/get-customer-orders.handler";
+import { createGetCustomerOrdersRouteAdapter } from "@/server/api/orders/get-customer-orders.route-adapter";
+import { getDatabaseUrlOrThrow } from "@/server/api/orders/create-order.route-adapter";
+import { getSession } from "@/server/infrastructure/auth";
+import { createGetCustomerOrdersUseCase } from "@/server/application/use-cases";
+import { createDb } from "@/server/infrastructure/db/client";
+import { DrizzleOrderRepository, DrizzleTicketRepository } from "@/server/repositories/drizzle";
 
 type GetCustomerOrdersRouteHandler = (request: Request) => Promise<Response>;
 

@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 
-import type { ValidateCheckinResult } from "@/src/server/application/checkin";
-import { createValidateCheckinUseCase } from "@/src/server/application/use-cases/validate-checkin.use-case";
+import type { ValidateCheckinResult } from "@/server/application/checkin";
+import { createValidateCheckinUseCase } from "@/server/application/use-cases/validate-checkin.use-case";
 
 const FIXED_NOW = new Date("2026-03-29T15:00:00.000Z");
 const CHECKER_ID = "checker-regression-001";

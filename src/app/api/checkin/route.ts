@@ -1,16 +1,16 @@
-import { createValidateCheckinHandler } from "@/src/server/api/checkin/validate-checkin.handler";
+import { createValidateCheckinHandler } from "@/server/api/checkin/validate-checkin.handler";
 import {
   createValidateCheckinRouteAdapter,
   getDatabaseUrlOrThrow,
-} from "@/src/server/api/checkin/validate-checkin.route-adapter";
-import { getSession } from "@/src/server/infrastructure/auth";
-import { createValidateCheckinUseCase } from "@/src/server/application/use-cases";
-import { createDb } from "@/src/server/infrastructure/db/client";
+} from "@/server/api/checkin/validate-checkin.route-adapter";
+import { getSession } from "@/server/infrastructure/auth";
+import { createValidateCheckinUseCase } from "@/server/application/use-cases";
+import { createDb } from "@/server/infrastructure/db/client";
 import {
   DrizzleEventRepository,
   DrizzleOrderRepository,
   DrizzleTicketRepository,
-} from "@/src/server/repositories/drizzle";
+} from "@/server/repositories/drizzle";
 
 type PostCheckinRouteHandler = (request: Request) => Promise<Response>;
 

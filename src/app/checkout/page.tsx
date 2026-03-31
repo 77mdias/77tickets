@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { CheckoutForm } from "@/src/features/checkout/checkout-form";
+import { CheckoutForm } from "@/features/checkout/checkout-form";
 
 export default async function CheckoutPage({
   searchParams,

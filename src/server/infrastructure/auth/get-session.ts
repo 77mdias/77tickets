@@ -1,4 +1,4 @@
-import { createGetSession } from "@/src/server/api/auth/get-session";
+import { createGetSession } from "@/server/api/auth/get-session";
 
 import { auth } from "./auth.config";
 

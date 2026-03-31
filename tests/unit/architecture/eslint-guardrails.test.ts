@@ -38,7 +38,7 @@ describe("architectural boundary guardrails", () => {
 
   test("fails lint when the UI layer imports server code", async () => {
     const result = await lintCode(
-      'import { createCreateOrderHandler } from "@/src/server/api/create-order.handler";\n',
+      'import { createCreateOrderHandler } from "@/server/api/create-order.handler";\n',
       "src/app/bad-page.tsx",
     );
 
@@ -57,7 +57,7 @@ describe("architectural boundary guardrails", () => {
 
   test("allows route adapters in src/app/api to import server layers", async () => {
     const result = await lintCode(
-      'import { createCreateOrderHandler } from "@/src/server/api/create-order.handler";\n',
+      'import { createCreateOrderHandler } from "@/server/api/create-order.handler";\n',
       "src/app/api/orders/route.ts",
     );
 

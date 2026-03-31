@@ -1,13 +1,13 @@
-import { createCreateCouponHandler } from "@/src/server/api/coupons/create-coupon.handler";
-import { createCreateCouponRouteAdapter } from "@/src/server/api/coupons/coupons.route-adapter";
-import { getDatabaseUrlOrThrow } from "@/src/server/api/orders/create-order.route-adapter";
-import { getSession } from "@/src/server/infrastructure/auth";
-import { createCreateCouponUseCase } from "@/src/server/application/use-cases";
-import { createDb } from "@/src/server/infrastructure/db/client";
+import { createCreateCouponHandler } from "@/server/api/coupons/create-coupon.handler";
+import { createCreateCouponRouteAdapter } from "@/server/api/coupons/coupons.route-adapter";
+import { getDatabaseUrlOrThrow } from "@/server/api/orders/create-order.route-adapter";
+import { getSession } from "@/server/infrastructure/auth";
+import { createCreateCouponUseCase } from "@/server/application/use-cases";
+import { createDb } from "@/server/infrastructure/db/client";
 import {
   DrizzleCouponRepository,
   DrizzleEventRepository,
-} from "@/src/server/repositories/drizzle";
+} from "@/server/repositories/drizzle";
 
 type PostCreateCouponRouteHandler = (request: Request) => Promise<Response>;
 

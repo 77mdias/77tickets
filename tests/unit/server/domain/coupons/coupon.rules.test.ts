@@ -6,9 +6,9 @@ import {
   isCouponInValidWindow,
   isCouponWithinRedemptionLimit,
   validateCouponEligibility,
-} from "@/src/server/domain/coupons/coupon.rules";
+} from "@/server/domain/coupons/coupon.rules";
 
-import type { Coupon } from "@/src/server/domain/coupons";
+import type { Coupon } from "@/server/domain/coupons";
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 

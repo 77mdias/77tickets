@@ -3,9 +3,9 @@ import { describe, expect, test } from "vitest";
 import {
   isOrderStatusEligibleForActiveTicket,
   validateOrderTransition,
-} from "@/src/server/domain/orders/order.rules";
-import type { Ticket } from "@/src/server/domain/tickets";
-import { isTicketValidForCheckin } from "@/src/server/domain/tickets/ticket.rules";
+} from "@/server/domain/orders/order.rules";
+import type { Ticket } from "@/server/domain/tickets";
+import { isTicketValidForCheckin } from "@/server/domain/tickets/ticket.rules";
 
 function makeTicket(overrides: Partial<Ticket> = {}): Ticket {
   return {

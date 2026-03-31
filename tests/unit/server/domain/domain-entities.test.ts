@@ -3,11 +3,11 @@ import { resolve } from "node:path";
 
 import { describe, expect, test } from "vitest";
 
-import type { Event, EventLifecycleStatus } from "@/src/server/domain/events";
-import type { Lot, LotStatus } from "@/src/server/domain/lots";
-import type { Order, OrderItem, OrderStatus } from "@/src/server/domain/orders";
-import type { Ticket, TicketStatus } from "@/src/server/domain/tickets";
-import type { Coupon, DiscountType } from "@/src/server/domain/coupons";
+import type { Event, EventLifecycleStatus } from "@/server/domain/events";
+import type { Lot, LotStatus } from "@/server/domain/lots";
+import type { Order, OrderItem, OrderStatus } from "@/server/domain/orders";
+import type { Ticket, TicketStatus } from "@/server/domain/tickets";
+import type { Coupon, DiscountType } from "@/server/domain/coupons";
 
 // ─── Structural: no forbidden imports ────────────────────────────────────────
 

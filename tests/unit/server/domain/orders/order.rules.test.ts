@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 import {
   canTransitionOrder,
   validateOrderTransition,
-} from "@/src/server/domain/orders/order.rules";
+} from "@/server/domain/orders/order.rules";
 
 // ─── canTransitionOrder ───────────────────────────────────────────────────────
 

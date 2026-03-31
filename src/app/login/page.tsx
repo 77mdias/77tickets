@@ -1,4 +1,4 @@
-import { LoginForm } from "@/src/features/auth/login-form";
+import { LoginForm } from "@/features/auth/login-form";
 
 export default async function LoginPage({
   searchParams,

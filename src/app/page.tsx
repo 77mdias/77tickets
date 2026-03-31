@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { getServerBaseUrl } from "@/src/lib/server-api";
+import { getServerBaseUrl } from "@/lib/server-api";
 
 interface EventListItem {
   id: string;

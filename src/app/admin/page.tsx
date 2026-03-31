@@ -1,4 +1,4 @@
-import { AdminManagementForm } from "@/src/features/admin/management-form";
+import { AdminManagementForm } from "@/features/admin/management-form";
 
 export default function AdminPage() {
   return (

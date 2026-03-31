@@ -6,9 +6,9 @@ import {
   isLotInSaleWindow,
   isWithinPerOrderLimit,
   validateLotForPurchase,
-} from "@/src/server/domain/lots/lot.rules";
+} from "@/server/domain/lots/lot.rules";
 
-import type { Lot } from "@/src/server/domain/lots";
+import type { Lot } from "@/server/domain/lots";
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 

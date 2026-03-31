@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { createPublishEventUseCase } from "@/src/server/application/use-cases/publish-event.use-case";
+import { createPublishEventUseCase } from "@/server/application/use-cases/publish-event.use-case";
 
 type EventStatus = "draft" | "published" | "cancelled";
 type LotStatus = "active" | "paused" | "sold_out" | "closed";

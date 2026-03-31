@@ -1,17 +1,17 @@
-import { createCreateOrderHandler } from "@/src/server/api/create-order.handler";
+import { createCreateOrderHandler } from "@/server/api/create-order.handler";
 import {
   createCreateOrderRouteAdapter,
   getDatabaseUrlOrThrow,
-} from "@/src/server/api/orders/create-order.route-adapter";
-import { getSession } from "@/src/server/infrastructure/auth";
-import { createCreateOrderUseCase } from "@/src/server/application/use-cases/create-order.use-case";
-import { createDb } from "@/src/server/infrastructure/db/client";
-import { createConsoleCheckoutObservability } from "@/src/server/infrastructure/observability";
+} from "@/server/api/orders/create-order.route-adapter";
+import { getSession } from "@/server/infrastructure/auth";
+import { createCreateOrderUseCase } from "@/server/application/use-cases/create-order.use-case";
+import { createDb } from "@/server/infrastructure/db/client";
+import { createConsoleCheckoutObservability } from "@/server/infrastructure/observability";
 import {
   DrizzleCouponRepository,
   DrizzleLotRepository,
   DrizzleOrderRepository,
-} from "@/src/server/repositories/drizzle";
+} from "@/server/repositories/drizzle";
 
 type PostOrdersRouteHandler = (request: Request) => Promise<Response>;
 

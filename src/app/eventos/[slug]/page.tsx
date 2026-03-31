@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
-import { LotSelector } from "@/src/features/checkout/lot-selector";
-import { getServerBaseUrl } from "@/src/lib/server-api";
+import { LotSelector } from "@/features/checkout/lot-selector";
+import { getServerBaseUrl } from "@/lib/server-api";
 
 interface EventDetailPayload {
   event: {

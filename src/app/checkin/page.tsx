@@ -1,4 +1,4 @@
-import { CheckinForm } from "@/src/features/checkin/checkin-form";
+import { CheckinForm } from "@/features/checkin/checkin-form";
 
 export default function CheckinPage() {
   return (
