@@ -6,6 +6,22 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 
 ### Added
 
+- Entrega completa da Fase 008 (Admin Dashboard Completeness):
+  - novos métodos de persistência:
+    - `EventRepository.findBySlug` para suporte a geração de slug único server-side;
+    - `LotRepository.save` (upsert para criação/edição de lotes);
+    - `OrderRepository.listByEventId` com itens enriquecidos por `lotTitle`;
+  - novos use-cases:
+    - `createEvent`, `createLot`, `updateLot`, `listEventOrders`;
+  - novos handlers/route adapters e rotas API:
+    - `POST /api/events`
+    - `POST /api/lots`
+    - `PUT /api/lots/:id`
+    - `GET /api/events/:slug/orders`
+  - expansão da UI admin em `/admin` para criar evento, criar/editar lotes e listar pedidos por evento com filtro de status;
+  - novas suítes de teste unit/integration para repositórios, use-cases, schemas e handlers da Fase 008.
+- Criado log de encerramento de governança da fase:
+  - `docs/development/Logs/GOV-005-phase-008.md`.
 - Entrega completa da Fase 007 (Public Customer Experience):
   - novos métodos read-side em repositórios: `EventRepository.listPublished`, `OrderRepository.listByCustomerId`, `TicketRepository.listByCustomerId` + implementações Drizzle;
   - novos use-cases: `listPublishedEvents`, `getEventDetail`, `getCustomerOrders`;
