@@ -61,6 +61,19 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
       expect(result).toBeNull();
     });
 
+    test("findBySlug returns event regardless of lifecycle status", async () => {
+      await cleanDatabase(db);
+
+      const draft = await createEventFixture(db, { slug: "any-status-event", status: "draft" });
+
+      const repo = new DrizzleEventRepository(db);
+      const result = await repo.findBySlug("any-status-event");
+
+      expect(result).not.toBeNull();
+      expect(result!.id).toBe(draft.id);
+      expect(result!.status).toBe("draft");
+    });
+
     test("listPublished returns only published events that are upcoming or in progress", async () => {
       await cleanDatabase(db);
 

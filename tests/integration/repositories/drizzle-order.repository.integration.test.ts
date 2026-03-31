@@ -203,6 +203,57 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
       ]);
     });
 
+    test("listByEventId returns only orders for the requested event and enriches items with lot metadata", async () => {
+      await cleanDatabase(db);
+
+      const eventA = await createEventFixture(db, { status: "published" });
+      const eventB = await createEventFixture(db, { status: "published" });
+      const vipLot = await createLotFixture(db, eventA.id, { title: "VIP" });
+      const generalLot = await createLotFixture(db, eventB.id, { title: "General Admission" });
+
+      const repo = new DrizzleOrderRepository(db);
+
+      await repo.create(
+        {
+          id: "00000000-0000-0000-0000-000000000208",
+          customerId: "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5",
+          eventId: eventA.id,
+          status: "pending",
+          subtotalInCents: 20000,
+          discountInCents: 0,
+          totalInCents: 20000,
+          createdAt: new Date("2027-06-03T10:00:00.000Z"),
+        },
+        [{ lotId: vipLot.id, quantity: 2, unitPriceInCents: 10000 }],
+      );
+
+      await repo.create(
+        {
+          id: "00000000-0000-0000-0000-000000000209",
+          customerId: "5c95fe31-36f0-4a53-bbf3-5ca3cfe36df9",
+          eventId: eventB.id,
+          status: "pending",
+          subtotalInCents: 10000,
+          discountInCents: 0,
+          totalInCents: 10000,
+          createdAt: new Date("2027-06-04T10:00:00.000Z"),
+        },
+        [{ lotId: generalLot.id, quantity: 1, unitPriceInCents: 10000 }],
+      );
+
+      const eventOrders = await repo.listByEventId(eventA.id);
+
+      expect(eventOrders).toHaveLength(1);
+      expect(eventOrders[0].order.eventId).toBe(eventA.id);
+      expect(eventOrders[0].items).toHaveLength(1);
+      expect(eventOrders[0].items[0]).toMatchObject({
+        lotId: vipLot.id,
+        lotTitle: "VIP",
+        quantity: 2,
+        unitPriceInCents: 10000,
+      });
+    });
+
     test("create maps order item FK violations to PersistenceError", async () => {
       await cleanDatabase(db);
 
