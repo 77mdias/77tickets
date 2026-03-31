@@ -1,12 +1,17 @@
-import { describe, expect, test } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 
 import {
+  buildCreateEventPayload,
+  buildCreateLotPayload,
   buildCreateCouponPayload,
+  buildListEventOrdersQuery,
   buildManagementActorHeaders,
   buildPublishEventPayload,
+  buildUpdateLotPayload,
   buildUpdateCouponPayload,
   buildUpdateEventStatusPayload,
   extractManagementErrorMessage,
+  postManagementOperation,
 } from "../../../../src/features/admin/management-client";
 
 describe("buildManagementActorHeaders", () => {
@@ -44,6 +49,96 @@ describe("build event payloads", () => {
     ).toEqual({
       eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
       targetStatus: "cancelled",
+    });
+  });
+
+  test("builds create event payload with trimmed values and normalized dates", () => {
+    expect(
+      buildCreateEventPayload({
+        title: " Summer Fest ",
+        description: "  Annual fundraiser  ",
+        location: "  Main Hall  ",
+        imageUrl: "  https://example.com/poster.png  ",
+        startsAt: "2027-06-01T10:00",
+        endsAt: "2027-06-01T20:00",
+      }),
+    ).toEqual({
+      title: "Summer Fest",
+      description: "Annual fundraiser",
+      location: "Main Hall",
+      imageUrl: "https://example.com/poster.png",
+      startsAt: "2027-06-01T13:00:00.000Z",
+      endsAt: "2027-06-01T23:00:00.000Z",
+    });
+  });
+});
+
+describe("build lot payloads", () => {
+  test("builds create lot payload with trimmed values and nullable end date", () => {
+    expect(
+      buildCreateLotPayload({
+        eventId: " 2f180791-a8f5-4cf8-b703-0f220a44f7c8 ",
+        title: " VIP ",
+        priceInCents: " 15000 ",
+        totalQuantity: " 250 ",
+        maxPerOrder: " 4 ",
+        saleStartsAt: "2027-06-01T10:00",
+        saleEndsAt: " ",
+        status: "active",
+      }),
+    ).toEqual({
+      eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
+      title: "VIP",
+      priceInCents: 15000,
+      totalQuantity: 250,
+      maxPerOrder: 4,
+      saleStartsAt: "2027-06-01T13:00:00.000Z",
+      saleEndsAt: null,
+      status: "active",
+    });
+  });
+
+  test("builds update lot payload with trimmed values and preserved lot id", () => {
+    expect(
+      buildUpdateLotPayload({
+        lotId: " 6c7ac8b8-4a86-4d9c-b1a8-4da5cb5f1ce2 ",
+        title: " General Admission ",
+        priceInCents: " 8000 ",
+        totalQuantity: " 100 ",
+        maxPerOrder: " 2 ",
+        saleStartsAt: "2027-06-01T12:00",
+        saleEndsAt: "2027-06-01T18:00",
+        status: "paused",
+      }),
+    ).toEqual({
+      lotId: "6c7ac8b8-4a86-4d9c-b1a8-4da5cb5f1ce2",
+      title: "General Admission",
+      priceInCents: 8000,
+      totalQuantity: 100,
+      maxPerOrder: 2,
+      saleStartsAt: "2027-06-01T15:00:00.000Z",
+      saleEndsAt: "2027-06-01T21:00:00.000Z",
+      status: "paused",
+    });
+  });
+});
+
+describe("build list orders query", () => {
+  test("omits empty status", () => {
+    expect(
+      buildListEventOrdersQuery({
+        status: " ",
+      }),
+    ).toEqual({});
+  });
+
+  test("includes status when provided", () => {
+    expect(
+      buildListEventOrdersQuery({
+        status: "paid",
+      }),
+    ).toEqual({
+      status: "paid",
     });
   });
 });
@@ -110,5 +205,76 @@ describe("extractManagementErrorMessage", () => {
     expect(extractManagementErrorMessage(null)).toBe(
       "Could not complete administrative operation. Please review your input and try again.",
     );
+  });
+});
+
+describe("postManagementOperation", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  test("sends PUT requests with a JSON body", async () => {
+    const fetchMock = vi.fn(async () => {
+      return new Response(JSON.stringify({ data: { lotId: "lot-1" } }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    });
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await postManagementOperation({
+      endpoint: "/api/lots/lot-1",
+      actor: {
+        actorId: " 00000000-0000-0000-0000-000000000099 ",
+        role: "admin",
+      },
+      method: "PUT",
+      payload: { lotId: "lot-1" },
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith("/api/lots/lot-1", {
+      method: "PUT",
+      headers: {
+        "content-type": "application/json",
+        "x-actor-id": "00000000-0000-0000-0000-000000000099",
+        "x-actor-role": "admin",
+      },
+      body: JSON.stringify({ lotId: "lot-1" }),
+    });
+    expect(result.ok).toBe(true);
+    expect(result.data).toEqual({ lotId: "lot-1" });
+  });
+
+  test("sends GET requests with query parameters and no body", async () => {
+    const fetchMock = vi.fn(async (url: string) => {
+      expect(url).toBe(
+        "/api/events/2f180791-a8f5-4cf8-b703-0f220a44f7c8/orders?status=paid",
+      );
+
+      return new Response(JSON.stringify({ data: { orders: [] } }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    });
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await postManagementOperation({
+      endpoint: "/api/events/2f180791-a8f5-4cf8-b703-0f220a44f7c8/orders",
+      actor: {
+        actorId: "00000000-0000-0000-0000-000000000099",
+        role: "organizer",
+      },
+      method: "GET",
+      query: buildListEventOrdersQuery({
+        status: "paid",
+      }),
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(result.ok).toBe(true);
+    expect(result.data).toEqual({ orders: [] });
   });
 });

@@ -61,6 +61,76 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
       expect(results).toHaveLength(0);
     });
 
+    test("save inserts a new lot", async () => {
+      await cleanDatabase(db);
+
+      const event = await createEventFixture(db);
+      const repo = new DrizzleLotRepository(db);
+      const lotRecord = {
+        id: "00000000-0000-0000-0000-000000000200",
+        eventId: event.id,
+        title: "VIP",
+        priceInCents: 25000,
+        totalQuantity: 20,
+        availableQuantity: 20,
+        maxPerOrder: 2,
+        saleStartsAt: new Date("2027-07-01T10:00:00Z"),
+        saleEndsAt: new Date("2027-07-02T10:00:00Z"),
+        status: "active" as const,
+      };
+
+      await repo.save(lotRecord);
+
+      const saved = await repo.findById(lotRecord.id);
+      expect(saved).not.toBeNull();
+      expect(saved).toMatchObject(lotRecord);
+    });
+
+    test("save updates an existing lot", async () => {
+      await cleanDatabase(db);
+
+      const event = await createEventFixture(db);
+      const existing = await createLotFixture(db, event.id, {
+        id: "00000000-0000-0000-0000-000000000201",
+        title: "Original",
+        priceInCents: 10000,
+        totalQuantity: 100,
+        availableQuantity: 100,
+        maxPerOrder: 4,
+        saleStartsAt: new Date("2027-07-01T10:00:00Z"),
+        saleEndsAt: new Date("2027-07-02T10:00:00Z"),
+        status: "active",
+      });
+
+      const repo = new DrizzleLotRepository(db);
+      await repo.save({
+        ...existing,
+        title: "Updated",
+        priceInCents: 15000,
+        totalQuantity: 80,
+        availableQuantity: 75,
+        maxPerOrder: 3,
+        saleStartsAt: new Date("2027-08-01T10:00:00Z"),
+        saleEndsAt: null,
+        status: "paused",
+      });
+
+      const saved = await repo.findById(existing.id);
+      expect(saved).not.toBeNull();
+      expect(saved).toMatchObject({
+        id: existing.id,
+        eventId: event.id,
+        title: "Updated",
+        priceInCents: 15000,
+        totalQuantity: 80,
+        availableQuantity: 75,
+        maxPerOrder: 3,
+        saleStartsAt: new Date("2027-08-01T10:00:00Z"),
+        saleEndsAt: null,
+        status: "paused",
+      });
+    });
+
     test("decrementAvailableQuantity reduces availableQuantity by the given amount", async () => {
       await cleanDatabase(db);
 

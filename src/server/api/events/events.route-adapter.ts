@@ -4,6 +4,10 @@ import {
 } from "../../application/errors";
 import type { SecurityActor } from "../../application/security";
 import type {
+  CreateEventHandlerResponse,
+  CreateEventRequest,
+} from "./create-event.handler";
+import type {
   PublishEventHandlerResponse,
   PublishEventRequest,
 } from "./publish-event.handler";
@@ -34,10 +38,35 @@ export interface PublishEventRouteAdapterDependencies {
   ) => Promise<PublishEventHandlerResponse>;
 }
 
+export interface CreateEventRouteAdapterDependencies {
+  getSession: (request: Request) => Promise<SessionContext>;
+  handleCreateEvent: (
+    request: CreateEventRequest,
+  ) => Promise<CreateEventHandlerResponse>;
+}
+
 export interface UpdateEventRouteAdapterDependencies {
   getSession: (request: Request) => Promise<SessionContext>;
   handleUpdateEvent: (request: UpdateEventRequest) => Promise<UpdateEventHandlerResponse>;
 }
+
+export const createCreateEventRouteAdapter =
+  (dependencies: CreateEventRouteAdapterDependencies) =>
+  async (request: Request): Promise<Response> => {
+    try {
+      const session = await dependencies.getSession(request);
+      const body = await readRequestBody(request);
+      const actor: SecurityActor = {
+        userId: session.userId,
+        role: session.role as SecurityActor["role"],
+      };
+      const response = await dependencies.handleCreateEvent({ actor, body });
+      return toJsonResponse(response.status, response.body);
+    } catch (error) {
+      const mapped = mapAppErrorToResponse(error);
+      return toJsonResponse(mapped.status, mapped.body);
+    }
+  };
 
 export const createPublishEventRouteAdapter =
   (dependencies: PublishEventRouteAdapterDependencies) =>

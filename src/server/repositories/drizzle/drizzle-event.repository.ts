@@ -29,6 +29,16 @@ export class DrizzleEventRepository implements EventRepository {
     return row ? toEventRecord(row) : null;
   }
 
+  async findBySlug(slug: string): Promise<EventRecord | null> {
+    const [row] = await this.db
+      .select()
+      .from(events)
+      .where(eq(events.slug, slug))
+      .limit(1);
+
+    return row ? toEventRecord(row) : null;
+  }
+
   async listPublished(options?: {
     limit?: number;
     offset?: number;

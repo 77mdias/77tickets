@@ -1,15 +1,17 @@
 import { asc, eq, inArray } from "drizzle-orm";
 
 import type { Db } from "../../infrastructure/db/client";
-import { orderItems, orders, tickets } from "../../infrastructure/db/schema";
+import { lots, orderItems, orders, tickets } from "../../infrastructure/db/schema";
 import type { EntityId } from "../common.repository.contracts";
 import type {
   OrderItemRecord,
+  OrderItemWithLotRecord,
   OrderRecord,
   OrderRepository,
   OrderStatus,
   OrderTicketRecord,
   OrderWithItemsRecord,
+  OrderWithItemsAndLotRecord,
 } from "../order.repository.contracts";
 import { mapPersistenceError } from "./map-persistence-error";
 
@@ -122,6 +124,45 @@ export class DrizzleOrderRepository implements OrderRepository {
     return orderRows.map((orderRow) => ({
       order: toOrderRecord(orderRow),
       items: itemsByOrderId.get(orderRow.id) ?? [],
+      }));
+  }
+
+  async listByEventId(eventId: EntityId): Promise<OrderWithItemsAndLotRecord[]> {
+    const orderRows = await this.db
+      .select()
+      .from(orders)
+      .where(eq(orders.eventId, eventId))
+      .orderBy(asc(orders.createdAt), asc(orders.id));
+
+    if (orderRows.length === 0) {
+      return [];
+    }
+
+    const orderIds = orderRows.map((order) => order.id);
+    const itemRows = await this.db
+      .select({
+        orderId: orderItems.orderId,
+        lotId: orderItems.lotId,
+        lotTitle: lots.title,
+        quantity: orderItems.quantity,
+        unitPriceInCents: orderItems.unitPriceInCents,
+      })
+      .from(orderItems)
+      .innerJoin(lots, eq(lots.id, orderItems.lotId))
+      .where(inArray(orderItems.orderId, orderIds))
+      .orderBy(asc(orderItems.orderId), asc(orderItems.id));
+
+    const itemsByOrderId = new Map<string, OrderItemWithLotRecord[]>();
+
+    for (const itemRow of itemRows) {
+      const items = itemsByOrderId.get(itemRow.orderId) ?? [];
+      items.push(toOrderItemWithLotRecord(itemRow));
+      itemsByOrderId.set(itemRow.orderId, items);
+    }
+
+    return orderRows.map((orderRow) => ({
+      order: toOrderRecord(orderRow),
+      items: itemsByOrderId.get(orderRow.id) ?? [],
     }));
   }
 
@@ -155,6 +196,20 @@ function toOrderItemRecord(
 ): OrderItemRecord {
   return {
     lotId: row.lotId,
+    quantity: row.quantity,
+    unitPriceInCents: row.unitPriceInCents,
+  };
+}
+
+function toOrderItemWithLotRecord(row: {
+  lotId: string;
+  lotTitle: string;
+  quantity: number;
+  unitPriceInCents: number;
+}): OrderItemWithLotRecord {
+  return {
+    lotId: row.lotId,
+    lotTitle: row.lotTitle,
     quantity: row.quantity,
     unitPriceInCents: row.unitPriceInCents,
   };

@@ -1,10 +1,10 @@
 # 🚀 Tasks - Fase 008: Admin Dashboard Completeness
 
-**Status:** 🔵 PLANEJADA
-**Última atualização:** 2026-03-29
+**Status:** 🟢 CONCLUÍDA
+**Última atualização:** 2026-03-31
 **Sprint Atual:** Sprint 008
-**Status Geral:** 🔵 0% (0/13 tarefas completas)
-**ETA:** 1–2 sprints
+**Status Geral:** 🟢 100% (13/13 tarefas completas)
+**ETA:** Concluída em 1 sprint
 **Pré-requisito:** Fase 007 (experiência do comprador completa)
 
 ---
@@ -13,17 +13,17 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Criação de Eventos | 2 | 0 | 0 | 2 | 0 |
-| Gestão de Lotes | 5 | 0 | 0 | 5 | 0 |
-| Visão de Pedidos Admin | 3 | 0 | 0 | 3 | 0 |
-| UI Admin | 3 | 0 | 0 | 3 | 0 |
-| **TOTAL** | **13** | **0** | **0** | **13** | **0** |
+| Criação de Eventos | 2 | 2 | 0 | 0 | 0 |
+| Gestão de Lotes | 5 | 5 | 0 | 0 | 0 |
+| Visão de Pedidos Admin | 3 | 3 | 0 | 0 | 0 |
+| UI Admin | 3 | 3 | 0 | 0 | 0 |
+| **TOTAL** | **13** | **13** | **0** | **0** | **0** |
 
 ### 🎯 Principais Indicadores
-- 🔴 Criação de evento: use-case `createEvent` inexistente — admin não consegue criar eventos via aplicação.
-- 🔴 Gestão de lotes: `LotRepository` sem `save()` — bloqueio total para criar/editar lotes.
-- 🔴 Visão de vendas: `OrderRepository` sem `listByEventId()` — organizer não vê pedidos do seu evento.
-- ⚠️ Operações de `publishEvent` e `updateEventStatus` já funcionam (Fase 005) — esta fase completa as operações faltantes.
+- 🟢 Criação de evento concluída com use-case `createEvent` + endpoint `POST /api/events`.
+- 🟢 Gestão de lotes concluída com `LotRepository.save()` (upsert) e endpoints de criação/edição.
+- 🟢 Visão de vendas concluída com `OrderRepository.listByEventId()` e endpoint de listagem por evento.
+- 🟢 Operações de publicação/status e novas operações administrativas consolidadas na UI de gestão.
 
 ---
 
@@ -44,7 +44,7 @@
 #### Objetivo
 Permitir que organizer e admin criem eventos diretamente pela aplicação com validações corretas.
 
-- [ ] **EVT-008** - Use-case `createEvent`
+- [x] **EVT-008** - Use-case `createEvent`
 
   **Descrição curta:**
   - Implementar use-case de criação de evento com validações de campos obrigatórios.
@@ -60,18 +60,18 @@ Permitir que organizer e admin criem eventos diretamente pela aplicação com va
   **Arquivos/áreas afetadas:** `src/server/application/use-cases/`, `src/server/api/schemas/`, `src/server/domain/events/`
 
   **Critérios de aceitação:**
-  - [ ] Evento criado em status `draft`.
-  - [ ] Slug único gerado server-side.
-  - [ ] `organizerId` derivado da sessão.
-  - [ ] Campos obrigatórios validados via Zod.
-  - [ ] Testes unitários (RED → GREEN).
+  - [x] Evento criado em status `draft`.
+  - [x] Slug único gerado server-side.
+  - [x] `organizerId` derivado da sessão.
+  - [x] Campos obrigatórios validados via Zod.
+  - [x] Testes unitários (RED → GREEN).
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 4h
   **Dependências:** Fase 006 (AUTH-002, SCH-004)
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
-- [ ] **EVT-009** - Handler + endpoint `POST /api/events`
+- [x] **EVT-009** - Handler + endpoint `POST /api/events`
 
   **Descrição curta:**
   - Handler thin para criação de evento pelo organizer/admin.
@@ -85,14 +85,14 @@ Permitir que organizer e admin criem eventos diretamente pela aplicação com va
   **Arquivos/áreas afetadas:** `src/server/api/events/`, `src/app/api/events/`
 
   **Critérios de aceitação:**
-  - [ ] `401` sem sessão; `403` para role não autorizado.
-  - [ ] `201` com evento criado em draft.
-  - [ ] Testes de handler e autorização.
+  - [x] `401` sem sessão; `403` para role não autorizado.
+  - [x] `201` com evento criado em draft.
+  - [x] Testes de handler e autorização.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 2h
   **Dependências:** EVT-008
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
 ---
 
@@ -101,7 +101,7 @@ Permitir que organizer e admin criem eventos diretamente pela aplicação com va
 #### Objetivo
 Habilitar criação e edição de lotes de ingresso pelo organizer, respeitando regras de janela de venda e estoque.
 
-- [ ] **LOT-001** - Adicionar `save()` ao `LotRepository`
+- [x] **LOT-001** - Adicionar `save()` ao `LotRepository`
 
   **Descrição curta:**
   - Adicionar método `save(lot: LotRecord)` (upsert) ao contrato e implementação Drizzle.
@@ -114,15 +114,15 @@ Habilitar criação e edição de lotes de ingresso pelo organizer, respeitando 
   **Arquivos/áreas afetadas:** `lot.repository.contracts.ts`, `drizzle-lot.repository.ts`
 
   **Critérios de aceitação:**
-  - [ ] Insert e update funcional via `save()`.
-  - [ ] Testes de integração de repositório.
+  - [x] Insert e update funcional via `save()`.
+  - [x] Testes de integração de repositório.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 2h
   **Dependências:** —
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
-- [ ] **LOT-002** - Use-case `createLot`
+- [x] **LOT-002** - Use-case `createLot`
 
   **Descrição curta:**
   - Implementar use-case de criação de lote com validações de janela de venda, estoque mínimo e `maxPerOrder`.
@@ -136,18 +136,18 @@ Habilitar criação e edição de lotes de ingresso pelo organizer, respeitando 
   **Arquivos/áreas afetadas:** `src/server/application/use-cases/`, `src/server/api/schemas/`, `src/server/domain/lots/`
 
   **Critérios de aceitação:**
-  - [ ] Lote criado vinculado ao evento correto.
-  - [ ] Janela de venda válida (saleStartsAt < saleEndsAt).
-  - [ ] Estoque > 0, `maxPerOrder` > 0.
-  - [ ] Organizer não cria lote em evento de outro organizer.
-  - [ ] Testes unitários (RED → GREEN).
+  - [x] Lote criado vinculado ao evento correto.
+  - [x] Janela de venda válida (saleStartsAt < saleEndsAt).
+  - [x] Estoque > 0, `maxPerOrder` > 0.
+  - [x] Organizer não cria lote em evento de outro organizer.
+  - [x] Testes unitários (RED → GREEN).
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 4h
   **Dependências:** LOT-001, EVT-009
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
-- [ ] **LOT-003** - Handler + endpoint `POST /api/lots`
+- [x] **LOT-003** - Handler + endpoint `POST /api/lots`
 
   **Descrição curta:**
   - Handler thin para criação de lote pelo organizer/admin.
@@ -160,16 +160,16 @@ Habilitar criação e edição de lotes de ingresso pelo organizer, respeitando 
   **Arquivos/áreas afetadas:** `src/server/api/lots/`, `src/app/api/lots/`
 
   **Critérios de aceitação:**
-  - [ ] `401/403` para não autorizados.
-  - [ ] `201` com lote criado.
-  - [ ] Testes de handler e autorização (cross-organizer bloqueado).
+  - [x] `401/403` para não autorizados.
+  - [x] `201` com lote criado.
+  - [x] Testes de handler e autorização (cross-organizer bloqueado).
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 2h
   **Dependências:** LOT-002
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
-- [ ] **LOT-004** - Use-case `updateLot`
+- [x] **LOT-004** - Use-case `updateLot`
 
   **Descrição curta:**
   - Permitir ajuste de `title`, `priceInCents`, `totalQuantity`, `saleStartsAt`, `saleEndsAt`, `maxPerOrder`.
@@ -182,16 +182,16 @@ Habilitar criação e edição de lotes de ingresso pelo organizer, respeitando 
   **Arquivos/áreas afetadas:** `src/server/application/use-cases/`, `src/server/api/schemas/`
 
   **Critérios de aceitação:**
-  - [ ] Campos parciais atualizados corretamente.
-  - [ ] Não é possível reduzir estoque abaixo do já vendido.
-  - [ ] Testes unitários.
+  - [x] Campos parciais atualizados corretamente.
+  - [x] Não é possível reduzir estoque abaixo do já vendido.
+  - [x] Testes unitários.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 3h
   **Dependências:** LOT-002
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
-- [ ] **LOT-005** - Handler + endpoint `PUT /api/lots/:id`
+- [x] **LOT-005** - Handler + endpoint `PUT /api/lots/:id`
 
   **Descrição curta:**
   - Handler thin para atualização de lote pelo organizer/admin.
@@ -203,14 +203,14 @@ Habilitar criação e edição de lotes de ingresso pelo organizer, respeitando 
   **Arquivos/áreas afetadas:** `src/server/api/lots/`, `src/app/api/lots/[id]/`
 
   **Critérios de aceitação:**
-  - [ ] `403` para organizer não-owner.
-  - [ ] `200` com lote atualizado.
-  - [ ] Testes de handler e autorização.
+  - [x] `403` para organizer não-owner.
+  - [x] `200` com lote atualizado.
+  - [x] Testes de handler e autorização.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 2h
   **Dependências:** LOT-004
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
 ---
 
@@ -219,7 +219,7 @@ Habilitar criação e edição de lotes de ingresso pelo organizer, respeitando 
 #### Objetivo
 Permitir que organizer visualize os pedidos do seu evento com status e itens, suprindo RF-010 do PRD.
 
-- [ ] **ORD-008** - Adicionar `listByEventId()` ao `OrderRepository`
+- [x] **ORD-008** - Adicionar `listByEventId()` ao `OrderRepository`
 
   **Descrição curta:**
   - Adicionar método `listByEventId(eventId)` ao contrato e implementação Drizzle.
@@ -232,15 +232,15 @@ Permitir que organizer visualize os pedidos do seu evento com status e itens, su
   **Arquivos/áreas afetadas:** `order.repository.contracts.ts`, `drizzle-order.repository.ts`
 
   **Critérios de aceitação:**
-  - [ ] Retorna pedidos com items e informações de lote.
-  - [ ] Testes de integração.
+  - [x] Retorna pedidos com items e informações de lote.
+  - [x] Testes de integração.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 2h
   **Dependências:** —
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
-- [ ] **ORD-009** - Use-case `listEventOrders`
+- [x] **ORD-009** - Use-case `listEventOrders`
 
   **Descrição curta:**
   - Use-case para organizer/admin listar pedidos de um evento.
@@ -253,60 +253,60 @@ Permitir que organizer visualize os pedidos do seu evento com status e itens, su
   **Arquivos/áreas afetadas:** `src/server/application/use-cases/`
 
   **Critérios de aceitação:**
-  - [ ] Organizer não acessa pedidos de evento de outro organizer.
-  - [ ] Admin acessa qualquer evento.
-  - [ ] Testes unitários (RED → GREEN).
+  - [x] Organizer não acessa pedidos de evento de outro organizer.
+  - [x] Admin acessa qualquer evento.
+  - [x] Testes unitários (RED → GREEN).
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 2h
   **Dependências:** ORD-008
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
-- [ ] **ORD-010** - Handler + endpoint `GET /api/events/:id/orders`
+- [x] **ORD-010** - Handler + endpoint `GET /api/events/:id/orders`
 
   **Descrição curta:**
   - Handler thin para listagem de pedidos de um evento pelo organizer/admin.
 
   **Implementação sugerida:**
   - `src/server/api/orders/list-event-orders.handler.ts`
-  - `src/app/api/events/[id]/orders/route.ts`
+  - `src/app/api/events/[slug]/orders/route.ts`
 
-  **Arquivos/áreas afetadas:** `src/server/api/orders/`, `src/app/api/events/[id]/orders/`
+  **Arquivos/áreas afetadas:** `src/server/api/orders/`, `src/app/api/events/[slug]/orders/`
 
   **Critérios de aceitação:**
-  - [ ] `401/403` para não autorizados.
-  - [ ] Retorna pedidos com status e itens.
-  - [ ] Testes de handler e autorização.
+  - [x] `401/403` para não autorizados.
+  - [x] Retorna pedidos com status e itens.
+  - [x] Testes de handler e autorização.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 2h
   **Dependências:** ORD-009
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
 ---
 
 ### 📦 UI Admin — Páginas de gestão
 
-- [ ] **UX-008** - Página admin: criar/editar evento
+- [x] **UX-008** - Página admin: criar/editar evento
 
   **Descrição curta:**
-  - Formulário completo para criação e edição de evento.
+  - Formulário completo para criação de evento e gestão de status/publicação.
   - Campos: título, descrição, localização, data de início/fim, imagem.
-  - Integrar com `POST /api/events` e `PUT /api/events/:id`.
+  - Integrar com `POST /api/events`, `POST /api/events/publish` e `POST /api/events/update-status`.
 
   **Arquivos/áreas afetadas:** `src/features/admin/`, `src/app/admin/`
 
   **Critérios de aceitação:**
-  - [ ] Formulário conectado à API com feedback de sucesso/erro.
-  - [ ] Validação client-side básica (campos obrigatórios).
-  - [ ] Sem regra de negócio no componente UI.
+  - [x] Formulário conectado à API com feedback de sucesso/erro.
+  - [x] Validação client-side básica (campos obrigatórios).
+  - [x] Sem regra de negócio no componente UI.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 4h
   **Dependências:** EVT-009
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
-- [ ] **UX-009** - Página admin: criar/editar lotes de um evento
+- [x] **UX-009** - Página admin: criar/editar lotes de um evento
 
   **Descrição curta:**
   - Formulário para criação e edição de lotes vinculados ao evento.
@@ -315,16 +315,16 @@ Permitir que organizer visualize os pedidos do seu evento com status e itens, su
   **Arquivos/áreas afetadas:** `src/features/admin/`, `src/app/admin/`
 
   **Critérios de aceitação:**
-  - [ ] Lista de lotes existentes exibida.
-  - [ ] Formulário de criação/edição conectado à API.
-  - [ ] Sem regra de negócio no componente UI.
+  - [x] Lista de lotes existentes exibida.
+  - [x] Formulário de criação/edição conectado à API.
+  - [x] Sem regra de negócio no componente UI.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 4h
   **Dependências:** LOT-003
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
-- [ ] **UX-010** - Página admin: visualizar pedidos do evento
+- [x] **UX-010** - Página admin: visualizar pedidos do evento
 
   **Descrição curta:**
   - Tabela de pedidos com: data, status, total, items.
@@ -333,23 +333,23 @@ Permitir que organizer visualize os pedidos do seu evento com status e itens, su
   **Arquivos/áreas afetadas:** `src/features/admin/`, `src/app/admin/`
 
   **Critérios de aceitação:**
-  - [ ] Pedidos listados com status e itens.
-  - [ ] Filtro por status (pendente/pago/cancelado).
-  - [ ] Sem regra de negócio no componente UI.
+  - [x] Pedidos listados com status e itens.
+  - [x] Filtro por status (pendente/pago/cancelado).
+  - [x] Sem regra de negócio no componente UI.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 3h
   **Dependências:** ORD-010
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
 ---
 
 ## ✅ Critérios de Encerramento da Fase
 
-- [ ] Organizer consegue criar evento + lotes + publicar + ver pedidos.
-- [ ] Admin consegue operar em qualquer evento.
-- [ ] Ownership enforcement em todas as operações (cross-organizer bloqueado).
-- [ ] `npm run test` passando (unit + regression + integration).
-- [ ] `npm run lint:architecture` sem violações.
-- [ ] GOV doc de encerramento criado.
-- [ ] CHANGELOG atualizado.
+- [x] Organizer consegue criar evento + lotes + publicar + ver pedidos.
+- [x] Admin consegue operar em qualquer evento.
+- [x] Ownership enforcement em todas as operações (cross-organizer bloqueado).
+- [x] `npm run test` passando (unit + regression + integration).
+- [x] `npm run lint:architecture` sem violações.
+- [x] GOV doc de encerramento criado.
+- [x] CHANGELOG atualizado.

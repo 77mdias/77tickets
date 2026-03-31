@@ -28,6 +28,41 @@ export class DrizzleLotRepository implements LotRepository {
     return rows.map(toLotRecord);
   }
 
+  async save(lot: LotRecord): Promise<void> {
+    try {
+      await this.db
+        .insert(lots)
+        .values({
+          id: lot.id,
+          eventId: lot.eventId,
+          title: lot.title,
+          priceInCents: lot.priceInCents,
+          totalQuantity: lot.totalQuantity,
+          availableQuantity: lot.availableQuantity,
+          maxPerOrder: lot.maxPerOrder,
+          saleStartsAt: lot.saleStartsAt,
+          saleEndsAt: lot.saleEndsAt,
+          status: lot.status,
+        })
+        .onConflictDoUpdate({
+          target: lots.id,
+          set: {
+            eventId: lot.eventId,
+            title: lot.title,
+            priceInCents: lot.priceInCents,
+            totalQuantity: lot.totalQuantity,
+            availableQuantity: lot.availableQuantity,
+            maxPerOrder: lot.maxPerOrder,
+            saleStartsAt: lot.saleStartsAt,
+            saleEndsAt: lot.saleEndsAt,
+            status: lot.status,
+          },
+        });
+    } catch (error) {
+      throw mapPersistenceError(error, "save lot");
+    }
+  }
+
   async decrementAvailableQuantity(
     lotId: EntityId,
     quantity: number,
