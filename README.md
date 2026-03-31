@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TicketFlow
+
+TicketFlow is a ticketing platform demo with production-oriented architecture boundaries.
+
+## Stack
+
+- Runtime: Vinext
+- Deployment target (demo): Cloudflare Workers
+- Database: Neon PostgreSQL
+- ORM: Drizzle ORM
+- Validation: Zod
+- UI: Tailwind CSS + shadcn/ui
+- Testing: Vitest (unit, regression, integration)
+
+## Architecture
+
+Core flow:
+
+`UI -> handler/route adapter -> use-case -> repository -> database`
+
+Design goal: keep domain/application logic portable for future migration to `Next.js + NestJS`.
+
+## Agent OS Guidance
+
+Rules are layered:
+
+1. user instruction
+2. root `AGENTS.md`
+3. local `AGENTS.md` files in scoped directories
+4. repo skills in `.agents-os/SKILLS`
+5. superpowers/process helpers
+
+Start here:
+- [`AGENTS.md`](./AGENTS.md)
+- [`src/server/AGENTS.md`](./src/server/AGENTS.md)
+- [`src/app/AGENTS.md`](./src/app/AGENTS.md)
+- [`tests/AGENTS.md`](./tests/AGENTS.md)
+- [`docs/development/agent-os-migration-summary.md`](./docs/development/agent-os-migration-summary.md)
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Build and run:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+npm run start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Quality Commands
 
-## Learn More
+```bash
+npm run lint
+npm run lint:architecture
+npm run test
+npm run test:unit
+npm run test:regression
+npm run test:integration
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Database Commands
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run db:generate
+npm run db:migrate
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> For integration tests, configure `TEST_DATABASE_URL` (recommended: dedicated Neon branch/database).

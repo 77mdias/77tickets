@@ -4,8 +4,13 @@ Este diretório centraliza a documentação operacional de desenvolvimento do pr
 
 ## Fonte de Verdade
 
-A referência principal de arquitetura e regras é o arquivo [`AGENTS.md`](../../AGENTS.md).
-Quando houver conflito, siga `AGENTS.md`.
+A autoridade de regras agora é em camadas:
+
+1. instrução direta do usuário
+2. [`AGENTS.md`](../../AGENTS.md) (global)
+3. `AGENTS.md` locais por diretório (ex.: `src/server`, `src/app`, `tests`)
+4. skills em `.agents-os/SKILLS` (workflow helper)
+5. superpowers/process helpers
 
 ## Estrutura
 

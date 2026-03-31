@@ -43,5 +43,12 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-#docs
-.agents-os
+# agent os helper layer (versioned subset only)
+.agents-os/*
+!.agents-os/AGENTS.md
+!.agents-os/SKILLS/
+!.agents-os/SKILLS/*.md
+!.agents-os/SUBAGENTS/
+!.agents-os/SUBAGENTS/*.md
+!.agents-os/RULES/
+!.agents-os/RULES/README.md
