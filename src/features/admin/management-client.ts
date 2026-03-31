@@ -14,6 +14,41 @@ export interface UpdateEventStatusFormValues {
   targetStatus: "draft" | "published" | "cancelled";
 }
 
+export interface CreateEventFormValues {
+  title: string;
+  description: string;
+  location: string;
+  imageUrl: string;
+  startsAt: string;
+  endsAt: string;
+}
+
+export interface CreateLotFormValues {
+  eventId: string;
+  title: string;
+  priceInCents: string;
+  totalQuantity: string;
+  maxPerOrder: string;
+  saleStartsAt: string;
+  saleEndsAt: string;
+  status: "active" | "paused" | "sold_out" | "closed";
+}
+
+export interface UpdateLotFormValues {
+  lotId: string;
+  title: string;
+  priceInCents: string;
+  totalQuantity: string;
+  maxPerOrder: string;
+  saleStartsAt: string;
+  saleEndsAt: string;
+  status: "active" | "paused" | "sold_out" | "closed";
+}
+
+export interface ListEventOrdersQueryValues {
+  status?: "pending" | "paid" | "expired" | "cancelled" | "";
+}
+
 export type CouponDiscountType = "fixed" | "percentage";
 
 export interface CouponFormValuesBase {
@@ -58,14 +93,21 @@ const toIsoDateString = (value: string): string => {
   return parsed.toISOString();
 };
 
-const toNullablePositiveInt = (value: string): number | null => {
+const toNullableIsoDateString = (value: string): string | null => {
   const trimmed = value.trim();
   if (!trimmed) {
     return null;
   }
 
-  return Number(trimmed);
+  return toIsoDateString(trimmed);
 };
+
+const toNullableTrimmedString = (value: string): string | null => {
+  const trimmed = value.trim();
+  return trimmed ? trimmed : null;
+};
+
+const toNumber = (value: string): number => Number(value.trim());
 
 export const buildManagementActorHeaders = (
   actor: ManagementActorValues,
@@ -83,6 +125,36 @@ export const buildUpdateEventStatusPayload = (values: UpdateEventStatusFormValue
   eventId: values.eventId.trim(),
   targetStatus: values.targetStatus,
 });
+
+export const buildCreateEventPayload = (values: CreateEventFormValues) => ({
+  title: values.title.trim(),
+  description: toNullableTrimmedString(values.description),
+  location: toNullableTrimmedString(values.location),
+  imageUrl: toNullableTrimmedString(values.imageUrl),
+  startsAt: toIsoDateString(values.startsAt),
+  endsAt: toIsoDateString(values.endsAt),
+});
+
+export const buildCreateLotPayload = (values: CreateLotFormValues) => ({
+  eventId: values.eventId.trim(),
+  ...buildLotPayloadCore(values),
+});
+
+export const buildUpdateLotPayload = (values: UpdateLotFormValues) => ({
+  lotId: values.lotId.trim(),
+  ...buildLotPayloadCore(values),
+});
+
+export const buildListEventOrdersQuery = (values: ListEventOrdersQueryValues) => {
+  const query: { status?: ListEventOrdersQueryValues["status"] } = {};
+
+  const status = values.status?.trim();
+  if (status) {
+    query.status = status as NonNullable<ListEventOrdersQueryValues["status"]>;
+  }
+
+  return query;
+};
 
 const buildCouponPayloadBase = (values: CouponFormValuesBase) => ({
   code: values.code.trim(),
@@ -108,6 +180,29 @@ export const buildUpdateCouponPayload = (values: UpdateCouponFormValues) => ({
   ...buildCouponPayloadBase(values),
 });
 
+const buildLotPayloadCore = (
+  values:
+    | CreateLotFormValues
+    | UpdateLotFormValues,
+) => ({
+  title: values.title.trim(),
+  priceInCents: toNumber(values.priceInCents),
+  totalQuantity: toNumber(values.totalQuantity),
+  maxPerOrder: toNumber(values.maxPerOrder),
+  saleStartsAt: toIsoDateString(values.saleStartsAt),
+  saleEndsAt: toNullableIsoDateString(values.saleEndsAt),
+  status: values.status,
+});
+
+const toNullablePositiveInt = (value: string): number | null => {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  return Number(trimmed);
+};
+
 export const extractManagementErrorMessage = (payload: unknown): string => {
   if (typeof payload !== "object" || payload === null) {
     return FALLBACK_ERROR_MESSAGE;
@@ -127,7 +222,26 @@ const formatSuccessMessage = (payload: unknown): string => {
     return "Administrative operation completed successfully.";
   }
 
+  const orders = (payload as { orders?: unknown }).orders;
+  if (Array.isArray(orders)) {
+    return `Loaded ${orders.length} orders.`;
+  }
+
   const eventId = (payload as { eventId?: unknown }).eventId;
+  const title = (payload as { title?: unknown }).title;
+  if (typeof eventId === "string" && typeof title === "string" && title.trim()) {
+    return `Event ${title} (${eventId}) saved successfully.`;
+  }
+
+  const lotId = (payload as { lotId?: unknown }).lotId;
+  if (typeof lotId === "string") {
+    if (typeof title === "string" && title.trim()) {
+      return `Lot ${title} (${lotId}) saved successfully.`;
+    }
+
+    return `Lot ${lotId} saved successfully.`;
+  }
+
   const status = (payload as { status?: unknown }).status;
 
   if (typeof eventId === "string" && typeof status === "string") {
@@ -156,16 +270,47 @@ const readJsonSafely = async (response: Response): Promise<unknown> => {
   }
 };
 
+const appendQuery = (
+  endpoint: string,
+  query?: Record<string, string | number | boolean | null | undefined>,
+): string => {
+  if (!query) {
+    return endpoint;
+  }
+
+  const searchParams = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(query)) {
+    if (value === undefined || value === null || value === "") {
+      continue;
+    }
+
+    searchParams.set(key, String(value));
+  }
+
+  const serialized = searchParams.toString();
+  if (!serialized) {
+    return endpoint;
+  }
+
+  return endpoint.includes("?") ? `${endpoint}&${serialized}` : `${endpoint}?${serialized}`;
+};
+
 export const postManagementOperation = async <TPayload>(input: {
   endpoint: string;
   actor: ManagementActorValues;
-  payload: TPayload;
+  method?: "GET" | "POST" | "PUT";
+  payload?: TPayload;
+  query?: Record<string, string | number | boolean | null | undefined>;
 }): Promise<ManagementOperationResult> => {
   try {
-    const response = await fetch(input.endpoint, {
-      method: "POST",
+    const method = input.method ?? "POST";
+    const response = await fetch(appendQuery(input.endpoint, input.query), {
+      method,
       headers: buildManagementActorHeaders(input.actor),
-      body: JSON.stringify(input.payload),
+      ...(method === "GET" || input.payload === undefined
+        ? {}
+        : { body: JSON.stringify(input.payload) }),
     });
 
     const parsed = await readJsonSafely(response);
