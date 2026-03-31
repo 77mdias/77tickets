@@ -6,6 +6,20 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 
 ### Added
 
+- Entrega completa da Fase 009 (Hardening):
+  - **Correção crítica:** `create-order.use-case.ts` agora chama `decrementAvailableQuantity` após criar pedido, com guard atômico SQL (`WHERE available_quantity >= quantity`) prevenindo estoque negativo sob concorrência;
+  - Novo método `LotRepository.findByIds` (batch lookup com `inArray`) eliminando N+1 em `createOrder`;
+  - Módulo `audit-trail.ts` com `logOrderCreated`, `logCheckinValidated`, `logEventPublished` injetados nas 3 use-cases críticas;
+  - Rate limiter middleware Workers-compatible (`src/server/api/middleware/rate-limiter.ts`) com limites pré-configurados para orders, auth e checkin;
+  - 3 runbooks operacionais: `checkout-failure.md`, `checkin-failure.md`, `auth-failure.md`;
+  - Regression gate expandido: auth session expiry, purchase lot/coupon failures, checkin event_mismatch;
+  - 15 novos testes snapshot de error shape — todos 13 handlers auditados e conformes;
+  - RBAC auth tests para lots (10 testes) e list-event-orders (5 testes);
+  - 12 testes de payload minimization verificando ausência de campos desnecessários em endpoints de listagem;
+  - Stress test de concorrência (HDN-010) com 2 testes unitários simulando race condition no decremento de estoque;
+  - DB client documentado com JSDoc explicando decisão de Pool WebSocket vs HTTP mode para Workers.
+- Criado log de encerramento de governança da fase:
+  - `docs/development/Logs/GOV-006-phase-009.md`.
 - Entrega completa da Fase 008 (Admin Dashboard Completeness):
   - novos métodos de persistência:
     - `EventRepository.findBySlug` para suporte a geração de slug único server-side;

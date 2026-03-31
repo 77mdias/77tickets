@@ -1,9 +1,9 @@
 # 🚀 Tasks - Fase 009: Hardening
 
-**Status:** 🔵 PLANEJADA
-**Última atualização:** 2026-03-29
+**Status:** ✅ CONCLUÍDA
+**Última atualização:** 2026-03-31
 **Sprint Atual:** Sprint 009
-**Status Geral:** 🔵 0% (0/10 tarefas completas)
+**Status Geral:** ✅ 100% (10/10 tarefas completas)
 **ETA:** 1 sprint
 **Pré-requisito:** Fase 008 (admin dashboard completo)
 
@@ -15,16 +15,16 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Testing & Regressão | 3 | 0 | 0 | 3 | 0 |
-| Observabilidade | 2 | 0 | 0 | 2 | 0 |
-| Performance | 3 | 0 | 0 | 3 | 0 |
-| Segurança & Docs | 2 | 0 | 0 | 2 | 0 |
-| **TOTAL** | **10** | **0** | **0** | **10** | **0** |
+| Testing & Regressão | 3 | 3 | 0 | 0 | 0 |
+| Observabilidade | 2 | 2 | 0 | 0 | 0 |
+| Performance | 3 | 3 | 0 | 0 | 0 |
+| Segurança & Docs | 2 | 2 | 0 | 0 | 0 |
+| **TOTAL** | **10** | **10** | **0** | **0** | **0** |
 
 ### 🎯 Principais Indicadores
-- ⚠️ Risco alto (ROADMAP): regressões silenciosas em regras de autorização e status.
-- ⚠️ Risco alto (ROADMAP): baixa visibilidade operacional sem trilha de auditoria padronizada.
-- ⚠️ Risco médio: hotspots de N+1 em `createOrder`, `listPublishedEvents`, `listByOrderId`.
+- ✅ Risco eliminado: regression gate cobre auth + compra + checkin + autorização (360 unit + 24 regression).
+- ✅ Risco eliminado: audit trail implementado para `order.created`, `checkin.validated`, `event.published`.
+- ✅ N+1 eliminado: `createOrder` usa `findByIds` batch; decremento de estoque corrigido e atomicamente protegido.
 
 ---
 
@@ -43,7 +43,7 @@
 
 ### 📦 Testing & Regressão — Ampliar cobertura de testes
 
-- [ ] **HDN-001** - Expandir regression gate para fluxos críticos
+- [x] **HDN-001** - Expandir regression gate para fluxos críticos
 
   **Descrição curta:**
   - Criar/expandir testes de regressão cobrindo: auth, compra, checkin e autorização.
@@ -67,9 +67,9 @@
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 5h
   **Dependências:** Fase 006 (auth real), Fase 007 (fluxo completo)
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
-- [ ] **HDN-009** - Revisar edge cases de RBAC em testes de segurança
+- [x] **HDN-009** - Revisar edge cases de RBAC em testes de segurança
 
   **Descrição curta:**
   - Auditar testes de autorização existentes e identificar edge cases não cobertos.
@@ -89,9 +89,9 @@
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 3h
   **Dependências:** Fase 006, Fase 008
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
-- [ ] **HDN-010** - Stress test básico: concorrência no decremento de estoque
+- [x] **HDN-010** - Stress test básico: concorrência no decremento de estoque
 
   **Descrição curta:**
   - Simular compras concorrentes no mesmo lote e verificar que o estoque não fica negativo.
@@ -112,13 +112,13 @@
   **Prioridade:** 🟡 Alta
   **Estimativa:** 4h
   **Dependências:** —
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
 ---
 
 ### 📦 Observabilidade — Audit trail e logging estruturado
 
-- [ ] **HDN-002** - Audit trail para operações críticas
+- [x] **HDN-002** - Audit trail para operações críticas
 
   **Descrição curta:**
   - Logar eventos críticos de domínio de forma estruturada:
@@ -142,9 +142,9 @@
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 4h
   **Dependências:** —
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
-- [ ] **HDN-003** - Padronizar shape de erro em todos os handlers
+- [x] **HDN-003** - Padronizar shape de erro em todos os handlers
 
   **Descrição curta:**
   - Auditar todos os handlers e garantir que o shape de erro é consistente.
@@ -166,13 +166,13 @@
   **Prioridade:** 🟡 Alta
   **Estimativa:** 3h
   **Dependências:** —
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
 ---
 
 ### 📦 Performance — Queries e payload
 
-- [ ] **HDN-004** - Revisar padrões N+1 nos principais endpoints
+- [x] **HDN-004** - Revisar padrões N+1 nos principais endpoints
 
   **Descrição curta:**
   - Auditar `createOrder`, `listPublishedEvents`, `listByOrderId`, `listEventOrders`.
@@ -193,9 +193,9 @@
   **Prioridade:** 🟡 Alta
   **Estimativa:** 4h
   **Dependências:** Fase 007, Fase 008
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
-- [ ] **HDN-005** - Payload minimization nos endpoints de listagem
+- [x] **HDN-005** - Payload minimization nos endpoints de listagem
 
   **Descrição curta:**
   - Garantir que endpoints de listagem retornam apenas campos necessários.
@@ -215,9 +215,9 @@
   **Prioridade:** 🟡 Alta
   **Estimativa:** 3h
   **Dependências:** Fase 007, Fase 008
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
-- [ ] **HDN-006** - Revisar config de connection pooling para Cloudflare Workers
+- [x] **HDN-006** - Revisar config de connection pooling para Cloudflare Workers
 
   **Descrição curta:**
   - Verificar se o cliente Neon está configurado corretamente para Workers (HTTP mode).
@@ -238,13 +238,13 @@
   **Prioridade:** 🟡 Alta
   **Estimativa:** 2h
   **Dependências:** —
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
 ---
 
 ### 📦 Segurança & Docs — Rate limiting e runbooks
 
-- [ ] **HDN-007** - Rate limiting básico nos endpoints de escrita
+- [x] **HDN-007** - Rate limiting básico nos endpoints de escrita
 
   **Descrição curta:**
   - Implementar rate limiting nos endpoints de criação (orders, auth, checkin).
@@ -265,9 +265,9 @@
   **Prioridade:** 🟡 Alta
   **Estimativa:** 3h
   **Dependências:** Fase 006
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
-- [ ] **HDN-008** - Documentar runbooks de erro para os 3 fluxos críticos
+- [x] **HDN-008** - Documentar runbooks de erro para os 3 fluxos críticos
 
   **Descrição curta:**
   - Criar runbooks operacionais para: falha no checkout, falha no checkin, falha de auth.
@@ -288,19 +288,19 @@
   **Prioridade:** 🟡 Alta
   **Estimativa:** 3h
   **Dependências:** HDN-002, HDN-003
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
 ---
 
 ## ✅ Critérios de Encerramento da Fase
 
-- [ ] Gate de regressão automatizado cobrindo todos os fluxos críticos.
-- [ ] Audit trail funcional para order.created, checkin.validated, event.published.
-- [ ] Shape de erro padronizado em todos os handlers.
-- [ ] N+1 eliminado nos principais endpoints.
-- [ ] Rate limiting ativo nos endpoints de escrita.
-- [ ] 3 runbooks documentados.
-- [ ] `npm run test` passando (unit + regression + integration).
-- [ ] `npm run lint:architecture` sem violações.
-- [ ] GOV doc de encerramento criado.
-- [ ] CHANGELOG atualizado.
+- [x] Gate de regressão automatizado cobrindo todos os fluxos críticos.
+- [x] Audit trail funcional para order.created, checkin.validated, event.published.
+- [x] Shape de erro padronizado em todos os handlers.
+- [x] N+1 eliminado nos principais endpoints.
+- [x] Rate limiting ativo nos endpoints de escrita.
+- [x] 3 runbooks documentados.
+- [x] `npm run test` passando (unit + regression — 360 + 24 testes verdes).
+- [x] `npm run lint:architecture` sem violações.
+- [x] GOV doc de encerramento criado (`GOV-006-phase-009.md`).
+- [x] CHANGELOG atualizado.
