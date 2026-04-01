@@ -22,7 +22,7 @@ Padronizar execução de qualidade, segurança e deploy para reduzir regressões
   - production: `push` na `main` e `workflow_dispatch` target `production`
   - valida segredos obrigatórios dentro do job do ambiente (`preview`/`production`)
   - build + migration + deploy + smoke test `/api/events`
-  - publica secrets no Worker via `wrangler-action` para reduzir drift entre GitHub e Cloudflare
+  - smoke usa `NEXT_PUBLIC_APP_URL` do environment para validar disponibilidade real do alvo
   - fallback explícito quando `wrangler.toml` não existe
 
 ## Segredos Requeridos
@@ -41,7 +41,7 @@ Padronizar execução de qualidade, segurança e deploy para reduzir regressões
 ## Hardening de Deploy Cloudflare
 
 - O deploy usa `--keep-vars` para não apagar bindings já existentes no Worker.
-- Mesmo com `--keep-vars`, os segredos críticos são reaplicados no deploy (`DATABASE_URL`, `BETTER_AUTH_SECRET`).
+- Variáveis e secrets de runtime do Worker são gerenciados explicitamente no Cloudflare Dashboard por ambiente.
 - `BETTER_AUTH_URL` e `NEXT_PUBLIC_APP_URL` permanecem como variáveis de runtime no Cloudflare Dashboard (plaintext vars).
 - O workflow falha explicitamente quando qualquer segredo obrigatório estiver ausente no ambiente GitHub correspondente.
 - Use environments do GitHub (`preview` e `production`) para separar credenciais e evitar uso acidental de segredos de produção em preview.

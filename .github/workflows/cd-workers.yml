@@ -123,20 +123,16 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --config dist/server/wrangler.json --name 77tickets-preview --keep-vars
-          secrets: |
-            DATABASE_URL
-            BETTER_AUTH_SECRET
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
-          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
 
       - name: Smoke test /api/events
-        if: ${{ steps.deploy.outputs.deployment-url != '' }}
+        env:
+          BASE_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
         run: |
+          base_url="${BASE_URL%/}"
           curl --fail --show-error --silent --max-time 20 \
-            "${{ steps.deploy.outputs.deployment-url }}/api/events?limit=1" > /dev/null
+            "$base_url/" > /dev/null
+          curl --fail --show-error --silent --max-time 20 \
+            "$base_url/api/events?limit=1" > /dev/null
 
   deploy-production:
     name: Deploy Production
@@ -198,20 +194,16 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --config dist/server/wrangler.json --name 77tickets --keep-vars
-          secrets: |
-            DATABASE_URL
-            BETTER_AUTH_SECRET
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
-          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
 
       - name: Smoke test /api/events
-        if: ${{ steps.deploy.outputs.deployment-url != '' }}
+        env:
+          BASE_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
         run: |
+          base_url="${BASE_URL%/}"
           curl --fail --show-error --silent --max-time 20 \
-            "${{ steps.deploy.outputs.deployment-url }}/api/events?limit=1" > /dev/null
+            "$base_url/" > /dev/null
+          curl --fail --show-error --silent --max-time 20 \
+            "$base_url/api/events?limit=1" > /dev/null
 
   deploy-skipped-no-wrangler:
     name: Deploy skipped (wrangler.toml missing)
