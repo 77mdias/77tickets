@@ -1,5 +1,8 @@
 ## Sprint 011 — CI Foundation + Supply Chain Security
 
+**Status:** ✅ Concluída  
+**Última atualização:** 2026-04-01
+
 ### Objetivo
 
 Criar gate de qualidade e segurança no GitHub para bloquear regressões em PR e reduzir risco de supply chain.
@@ -27,9 +30,9 @@ Criar gate de qualidade e segurança no GitHub para bloquear regressões em PR e
 
 ### Casos de teste planejados
 
-* [ ] Cenário 1: PR executa quality gate e falha em regressão de lint/test/build.
-* [ ] Cenário 2: dependency audit bloqueia apenas severidades `high/critical`.
-* [ ] Cenário 3: integração roda quando `TEST_DATABASE_URL` está configurado e é explicitamente marcada como skipped quando ausente.
+* [x] Cenário 1: PR executa quality gate e falha em regressão de lint/test/build.
+* [x] Cenário 2: dependency audit bloqueia apenas severidades `high/critical`.
+* [x] Cenário 3: integração roda quando `TEST_DATABASE_URL` está configurado e é explicitamente marcada como skipped quando ausente.
 
 ---
 
@@ -52,7 +55,18 @@ Criar gate de qualidade e segurança no GitHub para bloquear regressões em PR e
 
 ## Critérios de Aceite da Sprint
 
-- [ ] Repositório com workflow de CI ativo.
-- [ ] Repositório com workflow de segurança ativo.
-- [ ] Bloqueio de vulnerabilidades `high/critical` documentado.
-- [ ] Execução de integração condicionada por segredo documentada.
+- [x] Repositório com workflow de CI ativo.
+- [x] Repositório com workflow de segurança ativo.
+- [x] Bloqueio de vulnerabilidades `high/critical` documentado.
+- [x] Execução de integração condicionada por segredo documentada.
+
+---
+
+## Evidências de Conclusão
+
+- `.github/workflows/ci.yml` criado e ativo com quality gate + integração condicional por segredo.
+- `.github/workflows/security.yml` criado e ativo com CodeQL + Gitleaks + dependency audit.
+- `scripts/ci/check-bun-audit-high.mjs` criado e integrado ao script `security:audit`.
+- Verificação local em 2026-04-01:
+  - `npm run ci:quality` ✅
+  - `npm run security:audit` ✅

@@ -17,9 +17,9 @@
 | 008 | Sprint 008 | `docs/development/TASKS/PHASE-008-admin-dashboard-completeness.md` | 🟢 Concluída | 13/13 |
 | 009 | Sprint 009 | `docs/development/TASKS/PHASE-009-hardening.md` | 🟢 Concluída | 10/10 |
 | 010 | Sprint 010 | `docs/development/TASKS/PHASE-010-migration-readiness.md` | 🟢 Concluída | 8/8 |
-| 011 | Sprint 011 | `docs/development/SPRINTS/SPRINT-011-ci-foundation-supply-chain-security.md` | 🟢 Concluída | 4/4 |
-| 012 | Sprint 012 | `docs/development/SPRINTS/SPRINT-012-runtime-api-security-hardening.md` | 🟢 Concluída | 4/4 |
-| 013 | Sprint 013 | `docs/development/SPRINTS/SPRINT-013-cd-cloudflare-release-security.md` | 🟡 Em andamento | 3/4 |
+| 011 | Sprint 011 | `docs/development/TASKS/PHASE-011-ci-foundation-supply-chain-security.md` | 🟢 Concluída | 4/4 |
+| 012 | Sprint 012 | `docs/development/TASKS/PHASE-012-runtime-api-security-hardening.md` | 🟢 Concluída | 4/4 |
+| 013 | Sprint 013 | `docs/development/TASKS/PHASE-013-cd-cloudflare-release-security.md` | 🟢 Concluída | 4/4 |
 
 ## Ordem Recomendada de Execução (TDD-first)
 
@@ -36,7 +36,7 @@
 10. Fase 010: migration readiness — auditoria de acoplamentos + MIGRATION-PLAN.md. ✅
 11. Fase 011: CI Foundation + Supply Chain Security. ✅
 12. Fase 012: Runtime/API Security Hardening. ✅
-13. Fase 013: CD Cloudflare + Release Security. 🟡
+13. Fase 013: CD Cloudflare + Release Security. ✅
 
 ## Regras Operacionais
 

@@ -222,6 +222,17 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 
 ### Changed
 
+- Consolidada a trilha documental das Sprints 011-013 com boards operacionais por fase:
+  - `docs/development/TASKS/PHASE-011-ci-foundation-supply-chain-security.md`
+  - `docs/development/TASKS/PHASE-012-runtime-api-security-hardening.md`
+  - `docs/development/TASKS/PHASE-013-cd-cloudflare-release-security.md`
+- Atualizados os arquivos de sprint com status de conclusão, critérios de aceite marcados e evidências:
+  - `docs/development/SPRINTS/SPRINT-011-ci-foundation-supply-chain-security.md`
+  - `docs/development/SPRINTS/SPRINT-012-runtime-api-security-hardening.md`
+  - `docs/development/SPRINTS/SPRINT-013-cd-cloudflare-release-security.md`
+- Sincronizados índices de execução:
+  - `docs/development/TASKS.md` agora referencia `PHASE-011/012/013` e marca Sprint 013 como concluída (`4/4`);
+  - `docs/development/ROADMAP.md` atualizado para listar as Sprints 011-013 como concluídas.
 - Atualizados `docs/development/TASKS/PHASE-010-migration-readiness.md` e `docs/development/TASKS.md` com conclusão da fase 010 (`8/8`).
 - Ajustes de tipagem para fechar a prova MIG-007:
   - `src/server/application/use-cases/create-coupon.use-case.ts` agora normaliza `maxRedemptions` no retorno para manter contrato de governanca;

@@ -1,5 +1,8 @@
 ## Sprint 013 — CD Cloudflare + Release Security
 
+**Status:** ✅ Concluída  
+**Última atualização:** 2026-04-01
+
 ### Objetivo
 
 Automatizar deploy para Cloudflare Workers com gates de release, ambientes separados e smoke pós-deploy.
@@ -27,10 +30,10 @@ Automatizar deploy para Cloudflare Workers com gates de release, ambientes separ
 
 ### Casos de teste planejados
 
-* [ ] Cenário 1: PR dispara deploy de preview quando configuração está presente.
-* [ ] Cenário 2: push em `main` dispara deploy de produção com ambiente protegido.
-* [ ] Cenário 3: migrations executam antes do deploy com segredo do ambiente.
-* [ ] Cenário 4: smoke pós-deploy falha release em erro de disponibilidade.
+* [x] Cenário 1: PR dispara deploy de preview quando configuração está presente.
+* [x] Cenário 2: push em `main` dispara deploy de produção com ambiente protegido.
+* [x] Cenário 3: migrations executam antes do deploy com segredo do ambiente.
+* [x] Cenário 4: smoke pós-deploy falha release em erro de disponibilidade.
 
 ---
 
@@ -54,7 +57,17 @@ Automatizar deploy para Cloudflare Workers com gates de release, ambientes separ
 
 ## Critérios de Aceite da Sprint
 
-- [ ] Pipeline de CD versionado e funcional.
-- [ ] Estratégia preview/prod explicitada e protegida por ambiente.
-- [ ] Smoke pós-deploy implementado.
-- [ ] Plano de fallback/skip documentado quando config de deploy estiver ausente.
+- [x] Pipeline de CD versionado e funcional.
+- [x] Estratégia preview/prod explicitada e protegida por ambiente.
+- [x] Smoke pós-deploy implementado.
+- [x] Plano de fallback/skip documentado quando config de deploy estiver ausente.
+
+---
+
+## Evidências de Conclusão
+
+- `.github/workflows/cd-workers.yml` criado com `preflight`, preview, production e `workflow_dispatch`.
+- Deploy protegido por ambientes `preview` e `production` com validação explícita de segredos obrigatórios.
+- Migrações `bun run db:migrate` executadas antes do deploy em ambos ambientes.
+- Smoke pós-deploy com `curl --fail` em `/` e `/api/events?limit=1`.
+- Fallback `deploy-skipped-no-wrangler` implementado e documentado em `docs/infrastructure/ci-cd-workflow.md`.

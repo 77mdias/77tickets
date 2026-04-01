@@ -1,5 +1,8 @@
 ## Sprint 012 — Runtime/API Security Hardening
 
+**Status:** ✅ Concluída  
+**Última atualização:** 2026-04-01
+
 ### Objetivo
 
 Endurecer os endpoints críticos com rate limiting efetivo, headers de segurança e contratos de erro estáveis para `429`.
@@ -27,10 +30,10 @@ Endurecer os endpoints críticos com rate limiting efetivo, headers de seguranç
 
 ### Casos de teste planejados
 
-* [ ] Cenário 1: exceder limite em `POST /api/orders` retorna `429` + headers.
-* [ ] Cenário 2: exceder limite em `POST /api/checkin` retorna `429` + headers.
-* [ ] Cenário 3: exceder limite em `POST /api/auth/*` retorna `429` + headers.
-* [ ] Cenário 4: erros continuam padronizados em `{ error: { code, message, details? } }`.
+* [x] Cenário 1: exceder limite em `POST /api/orders` retorna `429` + headers.
+* [x] Cenário 2: exceder limite em `POST /api/checkin` retorna `429` + headers.
+* [x] Cenário 3: exceder limite em `POST /api/auth/*` retorna `429` + headers.
+* [x] Cenário 4: erros continuam padronizados em `{ error: { code, message, details? } }`.
 
 ---
 
@@ -53,7 +56,17 @@ Endurecer os endpoints críticos com rate limiting efetivo, headers de seguranç
 
 ## Critérios de Aceite da Sprint
 
-- [ ] Rotas críticas protegidas com rate limiting.
-- [ ] Contrato `429` padronizado e testado.
-- [ ] Headers de segurança e rate limit presentes quando aplicável.
-- [ ] Sem regressão de contratos existentes.
+- [x] Rotas críticas protegidas com rate limiting.
+- [x] Contrato `429` padronizado e testado.
+- [x] Headers de segurança e rate limit presentes quando aplicável.
+- [x] Sem regressão de contratos existentes.
+
+---
+
+## Evidências de Conclusão
+
+- Erro `rate_limited` implementado e mapeado para `429`.
+- Keying/enforcement implementado em `src/server/api/middleware/rate-limit-request.ts`.
+- Rate limiting aplicado em `POST /api/orders`, `POST /api/checkin` e `POST /api/auth/*`.
+- Headers de segurança/rate-limit padronizados em `src/server/api/security-response.ts`.
+- Testes dedicados de middleware, mapeamento de erro e adapters de rota cobrindo bloqueio por limite.
