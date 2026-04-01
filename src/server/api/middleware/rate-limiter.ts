@@ -10,6 +10,11 @@ export interface RateLimiterConfig {
   windowMs: number; // window in milliseconds
 }
 
+export interface RateLimiterResult {
+  allowed: boolean;
+  retryAfterSeconds: number;
+}
+
 export interface RateLimitStore {
   get(key: string): { count: number; resetAt: number } | undefined;
   set(key: string, value: { count: number; resetAt: number }): void;
@@ -26,7 +31,7 @@ export function createInMemoryRateLimitStore(): RateLimitStore {
 export function createRateLimiter(config: RateLimiterConfig, store?: RateLimitStore) {
   const _store = store ?? createInMemoryRateLimitStore();
 
-  return function checkRateLimit(clientKey: string): { allowed: boolean; retryAfterSeconds: number } {
+  return function checkRateLimit(clientKey: string): RateLimiterResult {
     const now = Date.now();
     const existing = _store.get(clientKey);
 

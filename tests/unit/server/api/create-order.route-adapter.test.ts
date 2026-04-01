@@ -85,4 +85,41 @@ describe("createCreateOrderRouteAdapter", () => {
       error: { code: "unauthenticated" },
     });
   });
+
+  test("returns 429 when rate limit is exceeded", async () => {
+    const getSession = vi.fn(async () => SESSION_CUSTOMER);
+    const handleCreateOrder = vi.fn(async () => ({
+      status: 200 as const,
+      body: { data: { orderId: "ord_001" } },
+    }));
+
+    const adapter = createCreateOrderRouteAdapter({
+      getSession,
+      handleCreateOrder,
+      checkRateLimit: () => ({ allowed: false, retryAfterSeconds: 42 }),
+      rateLimitMaxRequests: 10,
+    });
+
+    const response = await adapter(
+      new Request("http://localhost/api/orders", {
+        method: "POST",
+        body: JSON.stringify({
+          eventId: "2f180791-a8f5-4cf8-b703-0f220a44f7c8",
+          items: [{ lotId: "4b021be4-4cb2-4f5f-bcf4-f8237bcb4e7e", quantity: 1 }],
+        }),
+        headers: { "content-type": "application/json", "x-forwarded-for": "203.0.113.4" },
+      }),
+    );
+
+    expect(response.status).toBe(429);
+    expect(handleCreateOrder).not.toHaveBeenCalled();
+    expect(response.headers.get("retry-after")).toBe("42");
+    expect(response.headers.get("x-ratelimit-limit")).toBe("10");
+    expect(response.headers.get("x-ratelimit-remaining")).toBe("0");
+    await expect(response.json()).resolves.toMatchObject({
+      error: {
+        code: "rate_limited",
+      },
+    });
+  });
 });

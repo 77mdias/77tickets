@@ -59,8 +59,21 @@ Essas regras existem para preservar o fluxo `UI -> handler -> use-case -> reposi
 | `npm run lint` | Lint completo do repositório |
 | `npm run lint:architecture` | Valida fronteiras arquiteturais |
 | `npm run build` | Valida que a aplicação compila |
+| `npm run ci:quality` | Gate de qualidade usado no workflow de CI |
+| `npm run ci:integration` | Executa testes de integração para CI |
+| `npm run security:audit` | Bloqueia advisories de dependências `high/critical` |
 
 > Para testes de integração, configure `TEST_DATABASE_URL` no `.env` apontando para um banco/branch Neon separado do desenvolvimento. Consulte `docs/development/Logs/INF-002.md` para detalhes do setup.
+
+## CI/CD e Segurança
+
+- Workflows versionados em `.github/workflows/`:
+  - `ci.yml`: quality gate (lint, architecture lint, unit/regression, build) + integração condicional por segredo.
+  - `security.yml`: CodeQL, secret scan e dependency audit com bloqueio em severidade alta/crítica.
+  - `cd-workers.yml`: deploy preview/production para Cloudflare Workers com smoke test e fallback quando `wrangler.toml` não existe.
+- Segredos esperados no GitHub:
+  - `TEST_DATABASE_URL` (integração em CI)
+  - `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `DATABASE_URL` por ambiente (CD)
 
 ## Fluxo Recomendado (Resumo)
 

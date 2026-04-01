@@ -36,6 +36,13 @@ describe("mapAppErrorToResponse", () => {
     expect(result.status).toBe(409);
   });
 
+  test("maps rate_limited error to 429", () => {
+    const error = new AppError("rate_limited", "Too many requests");
+    const result = mapAppErrorToResponse(error);
+    expect(result.status).toBe(429);
+    expect(result.body.error.code).toBe("rate_limited");
+  });
+
   test("maps internal error to 500", () => {
     const error = new AppError("internal", "Internal server error");
     const result = mapAppErrorToResponse(error);

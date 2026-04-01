@@ -10,16 +10,21 @@ import type {
 import { mapAppErrorToResponse } from "../error-mapper";
 import type { SessionContext } from "../auth";
 import type { SecurityActor } from "../../application/security";
+import { enforceRateLimit } from "../middleware";
+import type { RateLimiterResult } from "../middleware/rate-limiter";
+import { toApiJsonResponse } from "../security-response";
 
 export interface CreateOrderRouteAdapterDependencies {
   getSession: (request: Request) => Promise<SessionContext>;
   handleCreateOrder: (request: CreateOrderRequest) => Promise<CreateOrderHandlerResponse>;
+  checkRateLimit?: (clientKey: string) => RateLimiterResult;
+  rateLimitMaxRequests?: number;
 }
 
 const toJsonResponse = (
   status: number,
   payload: { error: AppErrorPayload } | { data: unknown },
-) => Response.json(payload, { status });
+) => toApiJsonResponse(status, payload);
 
 const readRequestBody = async (request: Request): Promise<unknown> => {
   try {
@@ -45,6 +50,17 @@ export const createCreateOrderRouteAdapter = (
   async (request: Request): Promise<Response> => {
     try {
       const session = await dependencies.getSession(request);
+
+      if (dependencies.checkRateLimit) {
+        enforceRateLimit({
+          request,
+          scope: "orders:create",
+          userId: session.userId,
+          maxRequests: dependencies.rateLimitMaxRequests ?? 10,
+          checkRateLimit: dependencies.checkRateLimit,
+        });
+      }
+
       const parsedBody = await readRequestBody(request);
       const body = mergeBodyWithServerCustomerId(parsedBody, session.userId);
 

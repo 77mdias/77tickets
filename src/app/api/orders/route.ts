@@ -3,6 +3,7 @@ import {
   createCreateOrderRouteAdapter,
   getDatabaseUrlOrThrow,
 } from "@/server/api/orders/create-order.route-adapter";
+import { createOrderRateLimiter } from "@/server/api/middleware";
 import { getSession } from "@/server/infrastructure/auth";
 import { createCreateOrderUseCase } from "@/server/application/use-cases/create-order.use-case";
 import { createDb } from "@/server/infrastructure/db/client";
@@ -16,6 +17,7 @@ import {
 type PostOrdersRouteHandler = (request: Request) => Promise<Response>;
 
 let cachedPostOrdersRouteHandler: PostOrdersRouteHandler | null = null;
+const checkRateLimit = createOrderRateLimiter();
 
 const generateUuid = (): string => {
   if (typeof globalThis.crypto?.randomUUID === "function") {
@@ -42,6 +44,8 @@ const buildPostOrdersRouteHandler = (): PostOrdersRouteHandler => {
   return createCreateOrderRouteAdapter({
     getSession,
     handleCreateOrder,
+    checkRateLimit,
+    rateLimitMaxRequests: 10,
   });
 };
 

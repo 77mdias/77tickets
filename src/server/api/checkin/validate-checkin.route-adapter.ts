@@ -10,18 +10,23 @@ import type {
 import { mapAppErrorToResponse } from "../error-mapper";
 import type { SessionContext } from "../auth";
 import type { SecurityActor } from "../../application/security";
+import { enforceRateLimit } from "../middleware";
+import type { RateLimiterResult } from "../middleware/rate-limiter";
+import { toApiJsonResponse } from "../security-response";
 
 export interface ValidateCheckinRouteAdapterDependencies {
   getSession: (request: Request) => Promise<SessionContext>;
   handleValidateCheckin: (
     request: ValidateCheckinRequest,
   ) => Promise<ValidateCheckinHandlerResponse>;
+  checkRateLimit?: (clientKey: string) => RateLimiterResult;
+  rateLimitMaxRequests?: number;
 }
 
 const toJsonResponse = (
   status: number,
   payload: { error: AppErrorPayload } | { data: unknown },
-) => Response.json(payload, { status });
+) => toApiJsonResponse(status, payload);
 
 const readRequestBody = async (request: Request): Promise<unknown> => {
   try {
@@ -37,6 +42,17 @@ export const createValidateCheckinRouteAdapter = (
   async (request: Request): Promise<Response> => {
     try {
       const session = await dependencies.getSession(request);
+
+      if (dependencies.checkRateLimit) {
+        enforceRateLimit({
+          request,
+          scope: "checkin:validate",
+          userId: session.userId,
+          maxRequests: dependencies.rateLimitMaxRequests ?? 60,
+          checkRateLimit: dependencies.checkRateLimit,
+        });
+      }
+
       const body = await readRequestBody(request);
 
       const response = await dependencies.handleValidateCheckin({

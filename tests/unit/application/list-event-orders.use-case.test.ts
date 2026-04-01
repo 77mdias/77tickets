@@ -37,6 +37,7 @@ type ListEventOrdersResult = {
 type ListEventOrdersUseCaseFactory = (dependencies: {
   eventRepository: {
     findById: (eventId: string) => Promise<EventRecord | null>;
+    findBySlug: (slug: string) => Promise<EventRecord | null>;
   };
   orderRepository: {
     listByEventId: (eventId: string) => Promise<
@@ -131,6 +132,7 @@ test("ORD-008 RED: lists event orders for the owning organizer", async () => {
   const listEventOrders = createListEventOrdersUseCase({
     eventRepository: {
       findById: vi.fn(async () => makeEvent()),
+      findBySlug: vi.fn(async () => null),
     },
     orderRepository: {
       listByEventId,
@@ -177,6 +179,7 @@ test("ORD-008 RED: allows admins to list orders for any event", async () => {
   const listEventOrders = createListEventOrdersUseCase({
     eventRepository: {
       findById: vi.fn(async () => makeEvent(OTHER_ORGANIZER_ID)),
+      findBySlug: vi.fn(async () => null),
     },
     orderRepository: {
       listByEventId,
@@ -201,6 +204,7 @@ test("ORD-008 RED: blocks organizers from listing foreign event orders", async (
   const listEventOrders = createListEventOrdersUseCase({
     eventRepository: {
       findById: vi.fn(async () => makeEvent(OTHER_ORGANIZER_ID)),
+      findBySlug: vi.fn(async () => null),
     },
     orderRepository: {
       listByEventId,
@@ -220,4 +224,35 @@ test("ORD-008 RED: blocks organizers from listing foreign event orders", async (
   });
 
   expect(listByEventId).not.toHaveBeenCalled();
+});
+
+test("ORD-010 RED: resolves event by slug when ID lookup misses", async () => {
+  const createListEventOrdersUseCase = await loadListEventOrdersFactory();
+  const listByEventId = vi.fn(async () => []);
+
+  const findById = vi.fn(async () => null);
+  const findBySlug = vi.fn(async () => makeEvent(ORGANIZER_ID));
+
+  const listEventOrders = createListEventOrdersUseCase({
+    eventRepository: {
+      findById,
+      findBySlug,
+    },
+    orderRepository: {
+      listByEventId,
+    },
+  });
+
+  const result = await listEventOrders({
+    eventId: "festival-de-verao-2027",
+    actor: {
+      userId: ORGANIZER_ID,
+      role: "organizer",
+    },
+  });
+
+  expect(findById).toHaveBeenCalledWith("festival-de-verao-2027");
+  expect(findBySlug).toHaveBeenCalledWith("festival-de-verao-2027");
+  expect(listByEventId).toHaveBeenCalledWith(EVENT_ID);
+  expect(result.eventId).toBe(EVENT_ID);
 });

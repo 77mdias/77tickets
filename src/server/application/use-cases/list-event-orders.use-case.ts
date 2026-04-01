@@ -32,7 +32,7 @@ interface EventOrderRepository {
 }
 
 export interface ListEventOrdersUseCaseDependencies {
-  eventRepository: Pick<EventRepository, "findById">;
+  eventRepository: Pick<EventRepository, "findById" | "findBySlug">;
   orderRepository: Pick<OrderRepository, never> & EventOrderRepository;
 }
 
@@ -40,7 +40,9 @@ export const createListEventOrdersUseCase = (
   dependencies: ListEventOrdersUseCaseDependencies,
 ): ListEventOrdersUseCase => {
   return async (input) => {
-    const event = await dependencies.eventRepository.findById(input.eventId);
+    const event =
+      (await dependencies.eventRepository.findById(input.eventId)) ||
+      (await dependencies.eventRepository.findBySlug(input.eventId));
 
     if (!event) {
       throw createNotFoundError("Event not found");
@@ -51,10 +53,10 @@ export const createListEventOrdersUseCase = (
       eventOrganizerId: event.organizerId,
     });
 
-    const orders = await dependencies.orderRepository.listByEventId(input.eventId);
+    const orders = await dependencies.orderRepository.listByEventId(event.id);
 
     return {
-      eventId: input.eventId,
+      eventId: event.id,
       orders: orders.map(({ order, items }) => ({
         orderId: order.id,
         customerId: order.customerId,

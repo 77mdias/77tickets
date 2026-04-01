@@ -1,6 +1,6 @@
 # TicketFlow Roadmap
 
-> Última atualização: 2026-03-29
+> Última atualização: 2026-04-01
 > Baseado em: [`AGENTS.md`](../../AGENTS.md)
 
 ## Objetivo
@@ -216,10 +216,13 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 3. Sprint 003: Create Order Flow (Server-First). ✅
 4. Sprint 004: Ticket Validation + Check-in + RBAC. ✅
 5. Sprint 005: Organizer/Admin Operations + Event Publication. ✅
+6. Sprint 006: Auth Integration & Schema Completion. ✅
+7. Sprint 007: Public Customer Experience. ✅
+8. Sprint 008: Admin Dashboard Completeness. ✅
+9. Sprint 009: Hardening. ✅
+10. Sprint 010: Migration Readiness. ✅
 
 ### Sprints Planejadas
-6. Sprint 006: Auth Integration & Schema Completion. 🔵
-7. Sprint 007: Public Customer Experience. 🔵
-8. Sprint 008: Admin Dashboard Completeness. 🔵
-9. Sprint 009: Hardening. 🔵
-10. Sprint 010: Migration Readiness. 🔵
+11. Sprint 011: CI Foundation + Supply Chain Security. 🔵
+12. Sprint 012: Runtime/API Security Hardening. 🔵
+13. Sprint 013: CD Cloudflare + Release Security. 🔵

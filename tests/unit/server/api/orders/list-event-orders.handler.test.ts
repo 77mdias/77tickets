@@ -19,13 +19,43 @@ test("returns 400 validation error for invalid params", async () => {
       userId: ORGANIZER_ID,
     },
     params: {
-      eventId: "invalid-uuid",
+      eventId: "",
     },
   });
 
   expect(response.status).toBe(400);
   expect(response.body.error.code).toBe("validation");
   expect(listEventOrders).not.toHaveBeenCalled();
+});
+
+test("accepts event slug as identifier", async () => {
+  const listEventOrders = vi.fn(async () => ({
+    eventId: EVENT_ID,
+    orders: [],
+  }));
+
+  const handler = createListEventOrdersHandler({
+    listEventOrders,
+  });
+
+  const response = await handler({
+    actor: {
+      role: "admin",
+      userId: "00000000-0000-0000-0000-000000000099",
+    },
+    params: {
+      eventId: "festival-de-verao-2027",
+    },
+  });
+
+  expect(response.status).toBe(200);
+  expect(listEventOrders).toHaveBeenCalledWith({
+    eventId: "festival-de-verao-2027",
+    actor: {
+      role: "admin",
+      userId: "00000000-0000-0000-0000-000000000099",
+    },
+  });
 });
 
 test("delegates parsed input and actor context to listEventOrders use-case", async () => {

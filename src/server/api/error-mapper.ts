@@ -11,6 +11,7 @@ const HTTP_STATUS_BY_ERROR_CODE: Record<AppErrorCode, number> = {
   authorization: 403,
   "not-found": 404,
   conflict: 409,
+  rate_limited: 429,
   internal: 500,
 };
 

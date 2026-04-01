@@ -29,6 +29,7 @@ const createEventRepository = (organizerId: string | null = ORGANIZER_A) => ({
       endsAt: null,
     };
   }),
+  findBySlug: vi.fn(async () => null),
 });
 
 const createOrderRepository = () => ({

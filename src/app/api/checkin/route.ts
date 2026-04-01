@@ -3,6 +3,7 @@ import {
   createValidateCheckinRouteAdapter,
   getDatabaseUrlOrThrow,
 } from "@/server/api/checkin/validate-checkin.route-adapter";
+import { checkinRateLimiter } from "@/server/api/middleware";
 import { getSession } from "@/server/infrastructure/auth";
 import { createValidateCheckinUseCase } from "@/server/application/use-cases";
 import { createDb } from "@/server/infrastructure/db/client";
@@ -15,6 +16,7 @@ import {
 type PostCheckinRouteHandler = (request: Request) => Promise<Response>;
 
 let cachedPostCheckinRouteHandler: PostCheckinRouteHandler | null = null;
+const checkRateLimit = checkinRateLimiter();
 
 const buildPostCheckinRouteHandler = (): PostCheckinRouteHandler => {
   const db = createDb(getDatabaseUrlOrThrow());
@@ -33,6 +35,8 @@ const buildPostCheckinRouteHandler = (): PostCheckinRouteHandler => {
       validateCheckin,
       eventRepository,
     }),
+    checkRateLimit,
+    rateLimitMaxRequests: 60,
   });
 };
 

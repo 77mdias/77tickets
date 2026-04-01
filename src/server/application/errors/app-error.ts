@@ -57,6 +57,11 @@ export const createConflictError = (
   options: Omit<AppErrorOptions, "cause"> = {},
 ): AppError => new AppError("conflict", message, options);
 
+export const createRateLimitedError = (
+  message: string,
+  options: Omit<AppErrorOptions, "cause"> = {},
+): AppError => new AppError("rate_limited", message, options);
+
 export const createInternalError = (
   message: string,
   options: AppErrorOptions = {},

@@ -6,6 +6,31 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 
 ### Added
 
+- Nova trilha de sprints pós-fase 010:
+  - `docs/development/SPRINTS/SPRINT-011-ci-foundation-supply-chain-security.md`
+  - `docs/development/SPRINTS/SPRINT-012-runtime-api-security-hardening.md`
+  - `docs/development/SPRINTS/SPRINT-013-cd-cloudflare-release-security.md`
+- Pipeline CI/CD e segurança versionado no repositório:
+  - `.github/workflows/ci.yml` (quality gate + integração condicional por segredo)
+  - `.github/workflows/security.yml` (CodeQL + secret scan + dependency audit)
+  - `.github/workflows/cd-workers.yml` (preview/prod para Cloudflare Workers com smoke test e fallback sem `wrangler.toml`)
+- Script de segurança para bloquear advisories de dependências `high/critical`:
+  - `scripts/ci/check-bun-audit-high.mjs`
+- Novos scripts operacionais no `package.json`:
+  - `ci:quality`, `ci:integration`, `security:audit`
+- Hardening de runtime/API:
+  - novo erro `rate_limited` mapeado para HTTP `429`;
+  - utilitário `src/server/api/middleware/rate-limit-request.ts` para keying (`scope + user + ip`) e enforcement;
+  - rate limiting aplicado em `POST /api/orders`, `POST /api/checkin` e `POST /api/auth/*`;
+  - headers de segurança + headers de rate limit padronizados em respostas API via `src/server/api/security-response.ts`.
+- Correção de inconsistência de identificador no fluxo admin de pedidos por evento:
+  - `listEventOrders` agora resolve evento por `id` e fallback por `slug`, mantendo listagem por `event.id`.
+- Cobertura de testes adicionada para:
+  - mapeamento de `rate_limited`;
+  - throttling em route adapters críticos;
+  - utilitário de rate-limit por request;
+  - aceitação de slug no handler/use-case de listagem de pedidos por evento.
+
 - Entrega completa da Fase 010 (Migration Readiness):
   - inventario de acoplamentos e portabilidade em `docs/development/Logs/MIG-010-audit-inventory.md`;
   - prova tecnica MIG-007 em workspace isolado (`domain + application`) registrada em `docs/development/Logs/MIG-007-portability-proof.md`;

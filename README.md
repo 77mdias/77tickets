@@ -67,7 +67,16 @@ npm run test
 npm run test:unit
 npm run test:regression
 npm run test:integration
+npm run ci:quality
+npm run security:audit
 ```
+
+## CI/CD
+
+- GitHub workflows are versioned under `.github/workflows/`:
+  - `ci.yml` (quality + integration)
+  - `security.yml` (CodeQL + secret scan + dependency audit)
+  - `cd-workers.yml` (Cloudflare Workers preview/production with smoke test)
 
 ## Database Commands
 

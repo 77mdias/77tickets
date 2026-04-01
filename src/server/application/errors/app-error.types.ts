@@ -4,6 +4,7 @@ export type AppErrorCode =
   | "authorization"
   | "not-found"
   | "conflict"
+  | "rate_limited"
   | "internal";
 
 export interface AppErrorPayload {

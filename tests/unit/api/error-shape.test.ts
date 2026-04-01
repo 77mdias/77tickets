@@ -5,6 +5,7 @@ import {
   createConflictError,
   createInternalError,
   createNotFoundError,
+  createRateLimitedError,
   createUnauthenticatedError,
   createValidationError,
 } from "@/server/application/errors";
@@ -74,6 +75,24 @@ describe("error shape standardization", () => {
     expect(response.body.error).toMatchObject({
       code: "internal",
       message: expect.any(String),
+    });
+  });
+
+  test("rate_limited error maps to 429 with standard shape", () => {
+    const response = mapAppErrorToResponse(
+      createRateLimitedError("too many requests", {
+        details: { retryAfterSeconds: 30, limit: 10, remaining: 0 },
+      }),
+    );
+    expect(response.status).toBe(429);
+    expect(response.body.error).toMatchObject({
+      code: "rate_limited",
+      message: expect.any(String),
+      details: {
+        retryAfterSeconds: 30,
+        limit: 10,
+        remaining: 0,
+      },
     });
   });
 
