@@ -9,4 +9,11 @@ const getDatabaseUrl = (): string => {
   return url;
 };
 
-export const db: Db = createDb(getDatabaseUrl());
+let cachedDb: Db | null = null;
+
+export const getDb = (): Db => {
+  if (!cachedDb) {
+    cachedDb = createDb(getDatabaseUrl());
+  }
+  return cachedDb;
+};

@@ -10,6 +10,11 @@ import handler from "vinext/server/app-router-entry";
 
 interface Env {
   ASSETS: Fetcher;
+  DATABASE_URL?: string;
+  TEST_DATABASE_URL?: string;
+  BETTER_AUTH_SECRET?: string;
+  BETTER_AUTH_URL?: string;
+  NEXT_PUBLIC_APP_URL?: string;
   IMAGES: {
     input(stream: ReadableStream): {
       transform(options: Record<string, unknown>): {
@@ -18,6 +23,23 @@ interface Env {
     };
   };
 }
+
+const syncProcessEnvFromBindings = (env: Env): void => {
+  const mappings: Array<[keyof Env, string]> = [
+    ["DATABASE_URL", "DATABASE_URL"],
+    ["TEST_DATABASE_URL", "TEST_DATABASE_URL"],
+    ["BETTER_AUTH_SECRET", "BETTER_AUTH_SECRET"],
+    ["BETTER_AUTH_URL", "BETTER_AUTH_URL"],
+    ["NEXT_PUBLIC_APP_URL", "NEXT_PUBLIC_APP_URL"],
+  ];
+
+  for (const [bindingKey, processKey] of mappings) {
+    const value = env[bindingKey];
+    if (typeof value === "string" && value.length > 0) {
+      process.env[processKey] = value;
+    }
+  }
+};
 
 interface ExecutionContext {
   waitUntil(promise: Promise<unknown>): void;
@@ -32,6 +54,8 @@ interface ExecutionContext {
 
 const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    syncProcessEnvFromBindings(env);
+
     const url = new URL(request.url);
 
     // Image optimization via Cloudflare Images binding.

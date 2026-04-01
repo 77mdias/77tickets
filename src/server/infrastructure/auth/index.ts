@@ -1,3 +1,3 @@
-export { auth } from "./auth.config";
+export { getAuth } from "./auth.config";
 export { authClient } from "./auth.client";
 export { getSession } from "./get-session";

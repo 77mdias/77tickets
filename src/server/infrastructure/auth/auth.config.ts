@@ -4,7 +4,7 @@ import { createAuthMiddleware, APIError } from "better-auth/api";
 import { bearer } from "better-auth/plugins";
 
 import type { Db } from "@/server/infrastructure/db/client";
-import { db as defaultDb } from "@/server/infrastructure/db";
+import { getDb } from "@/server/infrastructure/db";
 import * as schema from "@/server/infrastructure/db/schema";
 
 const ALLOWED_SIGNUP_ROLES = ["customer", "organizer"] as const;
@@ -56,4 +56,13 @@ export const createAuth = (db: Db) =>
     },
   });
 
-export const auth = createAuth(defaultDb);
+type AuthInstance = ReturnType<typeof createAuth>;
+
+let cachedAuth: AuthInstance | null = null;
+
+export const getAuth = (): AuthInstance => {
+  if (!cachedAuth) {
+    cachedAuth = createAuth(getDb());
+  }
+  return cachedAuth;
+};

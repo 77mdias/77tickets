@@ -1,13 +1,20 @@
-import { auth } from "@/server/infrastructure/auth/auth.config";
+import { getAuth } from "@/server/infrastructure/auth/auth.config";
 import { authLoginRateLimiter, buildRateLimitClientKey } from "@/server/api/middleware";
 import { toApiJsonResponse, withApiSecurityHeaders } from "@/server/api/security-response";
 import { toNextJsHandler } from "better-auth/next-js";
 
-const handlers = toNextJsHandler(auth);
+let cachedHandlers: ReturnType<typeof toNextJsHandler> | null = null;
+const getHandlers = (): ReturnType<typeof toNextJsHandler> => {
+  if (!cachedHandlers) {
+    cachedHandlers = toNextJsHandler(getAuth());
+  }
+  return cachedHandlers;
+};
+
 const checkRateLimit = authLoginRateLimiter();
 
 export const GET = async (request: Request): Promise<Response> => {
-  const response = await handlers.GET(request);
+  const response = await getHandlers().GET(request);
   return withApiSecurityHeaders(response);
 };
 
@@ -31,6 +38,6 @@ export const POST = async (request: Request): Promise<Response> => {
     });
   }
 
-  const response = await handlers.POST(request);
+  const response = await getHandlers().POST(request);
   return withApiSecurityHeaders(response);
 };
