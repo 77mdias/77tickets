@@ -121,7 +121,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy --config wrangler.toml --env preview
+          command: deploy --config dist/server/wrangler.json --name 77tickets-preview --keep-vars
 
       - name: Smoke test /api/events
         if: ${{ steps.deploy.outputs.deployment-url != '' }}
@@ -162,7 +162,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy --config wrangler.toml --env production
+          command: deploy --config dist/server/wrangler.json --name 77tickets --keep-vars
 
       - name: Smoke test /api/events
         if: ${{ steps.deploy.outputs.deployment-url != '' }}

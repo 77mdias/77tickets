@@ -30,6 +30,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.30.3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/qrcode": "^1.5.6",
@@ -56,5 +57,6 @@
   "trustedDependencies": [
     "sharp",
     "unrs-resolver"
-  ]
+  ],
+  "type": "module"
 }

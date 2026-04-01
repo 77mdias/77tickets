@@ -14,6 +14,8 @@ import {
   postManagementOperation,
 } from "../../../../src/features/admin/management-client";
 
+const toExpectedIso = (value: string): string => new Date(value).toISOString();
+
 describe("buildManagementActorHeaders", () => {
   test("builds actor headers with trimmed actor id", () => {
     const headers = buildManagementActorHeaders({
@@ -67,8 +69,8 @@ describe("build event payloads", () => {
       description: "Annual fundraiser",
       location: "Main Hall",
       imageUrl: "https://example.com/poster.png",
-      startsAt: "2027-06-01T13:00:00.000Z",
-      endsAt: "2027-06-01T23:00:00.000Z",
+      startsAt: toExpectedIso("2027-06-01T10:00"),
+      endsAt: toExpectedIso("2027-06-01T20:00"),
     });
   });
 });
@@ -92,7 +94,7 @@ describe("build lot payloads", () => {
       priceInCents: 15000,
       totalQuantity: 250,
       maxPerOrder: 4,
-      saleStartsAt: "2027-06-01T13:00:00.000Z",
+      saleStartsAt: toExpectedIso("2027-06-01T10:00"),
       saleEndsAt: null,
       status: "active",
     });
@@ -116,8 +118,8 @@ describe("build lot payloads", () => {
       priceInCents: 8000,
       totalQuantity: 100,
       maxPerOrder: 2,
-      saleStartsAt: "2027-06-01T15:00:00.000Z",
-      saleEndsAt: "2027-06-01T21:00:00.000Z",
+      saleStartsAt: toExpectedIso("2027-06-01T12:00"),
+      saleEndsAt: toExpectedIso("2027-06-01T18:00"),
       status: "paused",
     });
   });
