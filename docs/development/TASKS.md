@@ -1,6 +1,6 @@
 # TicketFlow Tasks Index
 
-> Última atualização: 2026-03-31
+> Última atualização: 2026-04-01
 > Fonte: `docs/development/SPRINTS/*` e `docs/development/TASKS/*`
 
 ## Visão Geral de Fases
@@ -15,8 +15,8 @@
 | 006 | Sprint 006 | `docs/development/TASKS/PHASE-006-auth-schema-completion.md` | 🟢 Concluída | 10/10 |
 | 007 | Sprint 007 | `docs/development/TASKS/PHASE-007-public-customer-experience.md` | 🟢 Concluída | 13/13 |
 | 008 | Sprint 008 | `docs/development/TASKS/PHASE-008-admin-dashboard-completeness.md` | 🟢 Concluída | 13/13 |
-| 009 | Sprint 009 | `docs/development/TASKS/PHASE-009-hardening.md` | 🔵 Planejada | 0/10 |
-| 010 | Sprint 010 | `docs/development/TASKS/PHASE-010-migration-readiness.md` | 🔵 Planejada | 0/8 |
+| 009 | Sprint 009 | `docs/development/TASKS/PHASE-009-hardening.md` | 🟢 Concluída | 10/10 |
+| 010 | Sprint 010 | `docs/development/TASKS/PHASE-010-migration-readiness.md` | 🟢 Concluída | 8/8 |
 
 ## Ordem Recomendada de Execução (TDD-first)
 
@@ -27,12 +27,10 @@
 4. Fase 004: validação de ticket + check-in + RBAC operacional. ✅
 5. Fase 005: operações organizer/admin + publicação de eventos. ✅
 6. Fase 006: auth real + tabela users + campos de apresentação em events. ✅
-
-### Planejadas
 7. Fase 007: listagem pública, detalhe de evento, meus ingressos, QR code. ✅
 8. Fase 008: criar evento, criar lotes, ver pedidos — admin completo. ✅
-9. Fase 009: hardening — regressões, audit trail, N+1, rate limiting. 🔵
-10. Fase 010: migration readiness — auditoria de acoplamentos + MIGRATION-PLAN.md. 🔵
+9. Fase 009: hardening — regressões, audit trail, N+1, rate limiting. ✅
+10. Fase 010: migration readiness — auditoria de acoplamentos + MIGRATION-PLAN.md. ✅
 
 ## Regras Operacionais
 

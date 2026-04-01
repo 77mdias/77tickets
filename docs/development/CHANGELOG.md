@@ -6,6 +6,14 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 
 ### Added
 
+- Entrega completa da Fase 010 (Migration Readiness):
+  - inventario de acoplamentos e portabilidade em `docs/development/Logs/MIG-010-audit-inventory.md`;
+  - prova tecnica MIG-007 em workspace isolado (`domain + application`) registrada em `docs/development/Logs/MIG-007-portability-proof.md`;
+  - plano incremental de migracao em `docs/development/MIGRATION-PLAN.md`;
+  - draft de mapeamento NestJS por modulos/providers em `docs/development/Logs/MIG-005-nestjs-mapping-draft.md`;
+  - expansao de guardrails arquiteturais para bloquear `next/*` e `vinext/*` em `src/server/domain/**` e `src/server/application/**` com cobertura em `tests/unit/architecture/eslint-guardrails.test.ts`.
+- Criado log de encerramento de governanca da fase:
+  - `docs/development/Logs/GOV-007-phase-010.md`.
 - Entrega completa da Fase 009 (Hardening):
   - **Correção crítica:** `create-order.use-case.ts` agora chama `decrementAvailableQuantity` após criar pedido, com guard atômico SQL (`WHERE available_quantity >= quantity`) prevenindo estoque negativo sob concorrência;
   - Novo método `LotRepository.findByIds` (batch lookup com `inArray`) eliminando N+1 em `createOrder`;
@@ -189,6 +197,10 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 
 ### Changed
 
+- Atualizados `docs/development/TASKS/PHASE-010-migration-readiness.md` e `docs/development/TASKS.md` com conclusão da fase 010 (`8/8`).
+- Ajustes de tipagem para fechar a prova MIG-007:
+  - `src/server/application/use-cases/create-coupon.use-case.ts` agora normaliza `maxRedemptions` no retorno para manter contrato de governanca;
+  - `src/server/application/use-cases/create-order.use-case.ts` inclui `unauthenticated` no union de `errorCode` de telemetria.
 - Atualizada `docs/development/TASKS/PHASE-007-public-customer-experience.md` para status concluído (`13/13`) com critérios de aceite marcados.
 - Atualizada `docs/development/TASKS.md` para refletir Sprint/Fase 007 como concluída (`13/13`).
 - `src/features/checkout/checkout-form.tsx` atualizado para fluxo autenticado e redirecionamento para `/meus-ingressos` após compra.

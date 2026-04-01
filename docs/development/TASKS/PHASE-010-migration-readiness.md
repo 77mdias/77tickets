@@ -1,9 +1,9 @@
 # 🚀 Tasks - Fase 010: Migration Readiness
 
-**Status:** 🔵 PLANEJADA
-**Última atualização:** 2026-03-29
+**Status:** ✅ CONCLUÍDA
+**Última atualização:** 2026-04-01
 **Sprint Atual:** Sprint 010
-**Status Geral:** 🔵 0% (0/8 tarefas completas)
+**Status Geral:** ✅ 100% (8/8 tarefas completas)
 **ETA:** 1 sprint
 **Pré-requisito:** Fase 008 (admin dashboard completo)
 
@@ -16,10 +16,10 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Auditoria de Acoplamentos | 4 | 0 | 0 | 4 | 0 |
-| Prova de Portabilidade | 2 | 0 | 0 | 2 | 0 |
-| Documentação de Migração | 2 | 0 | 0 | 2 | 0 |
-| **TOTAL** | **8** | **0** | **0** | **8** | **0** |
+| Auditoria de Acoplamentos | 4 | 4 | 0 | 0 | 0 |
+| Prova de Portabilidade | 2 | 2 | 0 | 0 | 0 |
+| Documentação de Migração | 2 | 2 | 0 | 0 | 0 |
+| **TOTAL** | **8** | **8** | **0** | **0** | **0** |
 
 ### 🎯 Principais Indicadores
 - ⚠️ Risco médio (ROADMAP): retrabalho na migração se acoplamentos ao Vinext/Workers forem introduzidos sem auditoria.
@@ -44,7 +44,7 @@
 #### Objetivo
 Identificar onde o código de negócio está acoplado ao Vinext ou Workers, catalogar e classificar o esforço de desacoplamento.
 
-- [ ] **MIG-001** - Auditar dependências de Vinext em `src/server/*`
+- [x] **MIG-001** - Auditar dependências de Vinext em `src/server/*`
 
   **Descrição curta:**
   - Varrer todas as importações em `src/server/` procurando APIs específicas do Vinext.
@@ -58,16 +58,16 @@ Identificar onde o código de negócio está acoplado ao Vinext ou Workers, cata
   **Arquivos/áreas afetadas:** Todo `src/server/`
 
   **Critérios de aceitação:**
-  - [ ] Inventário completo de acoplamentos ao Vinext.
-  - [ ] Classificação por severidade de impacto na migração.
-  - [ ] Nenhum acoplamento vermelho nas camadas domain/application.
+  - [x] Inventário completo de acoplamentos ao Vinext.
+  - [x] Classificação por severidade de impacto na migração.
+  - [x] Nenhum acoplamento vermelho nas camadas domain/application.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 3h
   **Dependências:** —
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
-- [ ] **MIG-002** - Auditar dependências de Cloudflare Workers em camadas de negócio
+- [x] **MIG-002** - Auditar dependências de Cloudflare Workers em camadas de negócio
 
   **Descrição curta:**
   - Verificar se APIs específicas de Workers (KV, Durable Objects, env bindings) estão em camadas que não devem tê-las.
@@ -81,16 +81,16 @@ Identificar onde o código de negócio está acoplado ao Vinext ou Workers, cata
   **Arquivos/áreas afetadas:** `src/server/domain/`, `src/server/application/`, `src/server/repositories/`
 
   **Critérios de aceitação:**
-  - [ ] Camadas domain/application sem APIs de Workers.
-  - [ ] APIs de Workers isoladas apenas em `infrastructure/`.
-  - [ ] Inventário atualizado com achados de Workers.
+  - [x] Camadas domain/application sem APIs de Workers.
+  - [x] APIs de Workers isoladas apenas em `infrastructure/`.
+  - [x] Inventário atualizado com achados de Workers.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 2h
   **Dependências:** MIG-001
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
-- [ ] **MIG-003** - Mapear módulos `domain` e `application` como portáveis
+- [x] **MIG-003** - Mapear módulos `domain` e `application` como portáveis
 
   **Descrição curta:**
   - Para cada arquivo em `src/server/domain/` e `src/server/application/use-cases/`, confirmar ausência de importações de framework.
@@ -104,16 +104,16 @@ Identificar onde o código de negócio está acoplado ao Vinext ou Workers, cata
   **Arquivos/áreas afetadas:** `src/server/domain/`, `src/server/application/`
 
   **Critérios de aceitação:**
-  - [ ] Lista de módulos confirmados portáveis documentada.
-  - [ ] Nenhuma importação de framework em domain/application.
-  - [ ] Exceções (se houver) documentadas com plano de resolução.
+  - [x] Lista de módulos confirmados portáveis documentada.
+  - [x] Nenhuma importação de framework em domain/application.
+  - [x] Exceções (se houver) documentadas com plano de resolução.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 2h
   **Dependências:** MIG-001, MIG-002
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
-- [ ] **MIG-004** - Mapear repositórios como portáveis com troca de adapter
+- [x] **MIG-004** - Mapear repositórios como portáveis com troca de adapter
 
   **Descrição curta:**
   - Confirmar que os contratos de repositório (`*.repository.contracts.ts`) são framework-agnostic.
@@ -128,20 +128,20 @@ Identificar onde o código de negócio está acoplado ao Vinext ou Workers, cata
   **Arquivos/áreas afetadas:** `src/server/repositories/`
 
   **Critérios de aceitação:**
-  - [ ] Contratos de repositório confirmados como portáveis.
-  - [ ] Mapa de esforço de adaptação para NestJS documentado.
-  - [ ] Nenhum contrato com dependência de framework.
+  - [x] Contratos de repositório confirmados como portáveis.
+  - [x] Mapa de esforço de adaptação para NestJS documentado.
+  - [x] Nenhum contrato com dependência de framework.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 2h
   **Dependências:** MIG-002
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
 ---
 
 ### 📦 Prova de Portabilidade — Validar empiricamente
 
-- [ ] **MIG-005** - Definir contratos de interface para NestJS (module boundaries)
+- [x] **MIG-005** - Definir contratos de interface para NestJS (module boundaries)
 
   **Descrição curta:**
   - Projetar como os módulos `domain`, `application` e `repositories` seriam estruturados em NestJS.
@@ -156,15 +156,15 @@ Identificar onde o código de negócio está acoplado ao Vinext ou Workers, cata
   **Arquivos/áreas afetadas:** `docs/development/MIGRATION-PLAN.md`
 
   **Critérios de aceitação:**
-  - [ ] Mapeamento completo domain/application/repositories → NestJS documentado.
-  - [ ] Sem ambiguidades sobre como os contratos seriam injetados.
+  - [x] Mapeamento completo domain/application/repositories → NestJS documentado.
+  - [x] Sem ambiguidades sobre como os contratos seriam injetados.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 3h
   **Dependências:** MIG-003, MIG-004
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
-- [ ] **MIG-007** - Prova prática: mover `domain` + `application` para package isolado
+- [x] **MIG-007** - Prova prática: mover `domain` + `application` para package isolado
 
   **Descrição curta:**
   - Criar branch de prova de conceito onde `domain` e `application` são extraídos para um package separado (sem bundling real, apenas validação de que os imports se resolvem).
@@ -178,20 +178,20 @@ Identificar onde o código de negócio está acoplado ao Vinext ou Workers, cata
   **Arquivos/áreas afetadas:** Branch separada / workspace isolado
 
   **Critérios de aceitação:**
-  - [ ] domain + application compilam isoladamente sem erros.
-  - [ ] Resultado documentado em `MIGRATION-PLAN.md`.
-  - [ ] Branch de prova descartada após validação.
+  - [x] domain + application compilam isoladamente sem erros.
+  - [x] Resultado documentado em `MIGRATION-PLAN.md`.
+  - [x] Branch de prova descartada após validação.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 3h
   **Dependências:** MIG-003
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
 ---
 
 ### 📦 Documentação de Migração — Plano técnico e guardrails
 
-- [ ] **MIG-006** - Criar `MIGRATION-PLAN.md` com etapas incrementais
+- [x] **MIG-006** - Criar `MIGRATION-PLAN.md` com etapas incrementais
 
   **Descrição curta:**
   - Documento técnico com plano de migração incremental para Next.js + NestJS.
@@ -211,17 +211,17 @@ Identificar onde o código de negócio está acoplado ao Vinext ou Workers, cata
   **Arquivos/áreas afetadas:** `docs/development/`
 
   **Critérios de aceitação:**
-  - [ ] Plano cobre todas as camadas.
-  - [ ] Etapas incrementais (não big-bang).
-  - [ ] Marcos verificáveis definidos.
-  - [ ] Riscos mapeados com mitigação.
+  - [x] Plano cobre todas as camadas.
+  - [x] Etapas incrementais (não big-bang).
+  - [x] Marcos verificáveis definidos.
+  - [x] Riscos mapeados com mitigação.
 
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 4h
   **Dependências:** MIG-003, MIG-004, MIG-005
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
-- [ ] **MIG-008** - Validar e expandir ESLint guardrails para novos acoplamentos
+- [x] **MIG-008** - Validar e expandir ESLint guardrails para novos acoplamentos
 
   **Descrição curta:**
   - Revisar as regras ESLint de fronteira arquitetural e expandir para cobrir acoplamentos detectados na auditoria.
@@ -235,23 +235,23 @@ Identificar onde o código de negócio está acoplado ao Vinext ou Workers, cata
   **Arquivos/áreas afetadas:** `eslint.config.mjs`, `tests/unit/architecture/`
 
   **Critérios de aceitação:**
-  - [ ] Guardrails bloqueiam importações de Vinext/Next.js em domain/application.
-  - [ ] Teste arquitetural de ESLint cobre os novos guardrails.
-  - [ ] `lint:architecture` passa sem violações.
+  - [x] Guardrails bloqueiam importações de Vinext/Next.js em domain/application.
+  - [x] Teste arquitetural de ESLint cobre os novos guardrails.
+  - [x] `lint:architecture` passa sem violações.
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 2h
   **Dependências:** MIG-001, MIG-002
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluído
 
 ---
 
 ## ✅ Critérios de Encerramento da Fase
 
-- [ ] Inventário de acoplamentos ao Vinext e Workers documentado.
-- [ ] domain e application layers confirmados portáveis (prova prática).
-- [ ] `MIGRATION-PLAN.md` criado com plano incremental.
-- [ ] Guardrails ESLint expandidos para cobrir acoplamentos detectados.
-- [ ] `npm run lint:architecture` sem violações.
-- [ ] GOV doc de encerramento criado.
-- [ ] CHANGELOG atualizado.
+- [x] Inventário de acoplamentos ao Vinext e Workers documentado.
+- [x] domain e application layers confirmados portáveis (prova prática).
+- [x] `MIGRATION-PLAN.md` criado com plano incremental.
+- [x] Guardrails ESLint expandidos para cobrir acoplamentos detectados.
+- [x] `npm run lint:architecture` sem violações.
+- [x] GOV doc de encerramento criado.
+- [x] CHANGELOG atualizado.

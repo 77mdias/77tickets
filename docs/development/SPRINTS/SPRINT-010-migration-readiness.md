@@ -62,8 +62,8 @@ Sequência recomendada:
 
 ## Critérios de Aceite da Sprint
 
-- [ ] Inventário de acoplamentos documentado.
-- [ ] domain + application confirmados portáveis empiricamente.
-- [ ] `MIGRATION-PLAN.md` criado com plano incremental.
-- [ ] Guardrails ESLint expandidos.
-- [ ] `npm run lint:architecture` verde.
+- [x] Inventário de acoplamentos documentado.
+- [x] domain + application confirmados portáveis empiricamente.
+- [x] `MIGRATION-PLAN.md` criado com plano incremental.
+- [x] Guardrails ESLint expandidos.
+- [x] `npm run lint:architecture` verde.
