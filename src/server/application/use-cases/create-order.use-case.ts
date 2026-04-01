@@ -29,7 +29,14 @@ export interface CreateOrderUseCaseDependencies {
 export interface CreateOrderUseCaseTelemetryEntry {
   event: "checkout.create_order.use_case";
   outcome: "success" | "failure";
-  errorCode: "validation" | "authorization" | "not-found" | "conflict" | "internal" | null;
+  errorCode:
+    | "validation"
+    | "authorization"
+    | "unauthenticated"
+    | "not-found"
+    | "conflict"
+    | "internal"
+    | null;
   errorReason: string | null;
   eventId: string;
   itemsCount: number;

@@ -47,7 +47,7 @@ export const createCreateCouponUseCase = (
       discountType: created.discountType,
       discountInCents: created.discountInCents,
       discountPercentage: created.discountPercentage,
-      maxRedemptions: created.maxRedemptions,
+      maxRedemptions: created.maxRedemptions ?? input.maxRedemptions,
       redemptionCount: created.redemptionCount,
       validFrom: created.validFrom,
       validUntil: created.validUntil,

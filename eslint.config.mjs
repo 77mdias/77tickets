@@ -55,8 +55,16 @@ const eslintConfig = defineConfig([
     rules: {
       "no-restricted-imports": createRestrictedImportsRule([
         {
-          group: ["../api/**", "../infrastructure/**", "@/server/api/**", "@/server/infrastructure/**"],
-          message: "Application code must remain framework-agnostic and cannot depend on API or infrastructure.",
+          group: [
+            "../api/**",
+            "../infrastructure/**",
+            "@/server/api/**",
+            "@/server/infrastructure/**",
+            "next/**",
+            "vinext/**",
+          ],
+          message:
+            "Application code must remain framework-agnostic and cannot depend on API, infrastructure, or runtime frameworks.",
         },
       ]),
     },
@@ -75,8 +83,11 @@ const eslintConfig = defineConfig([
             "@/server/application/**",
             "@/server/repositories/**",
             "@/server/infrastructure/**",
+            "next/**",
+            "vinext/**",
           ],
-          message: "Domain code must stay isolated from adapters, repositories, and framework-facing layers.",
+          message:
+            "Domain code must stay isolated from adapters, repositories, runtime frameworks, and framework-facing layers.",
         },
       ]),
     },

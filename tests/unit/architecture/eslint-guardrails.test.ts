@@ -36,6 +36,46 @@ describe("architectural boundary guardrails", () => {
     expect(result.messages.some((message) => message.ruleId === "no-restricted-imports")).toBe(true);
   });
 
+  test("fails lint when the application layer imports Next.js runtime modules", async () => {
+    const result = await lintCode(
+      'import { revalidatePath } from "next/cache";\n',
+      "src/server/application/bad-use-case.ts",
+    );
+
+    expect(result.errorCount).toBeGreaterThan(0);
+    expect(result.messages.some((message) => message.ruleId === "no-restricted-imports")).toBe(true);
+  });
+
+  test("fails lint when the application layer imports Vinext runtime modules", async () => {
+    const result = await lintCode(
+      'import { defineEventHandler } from "vinext/server";\n',
+      "src/server/application/bad-use-case.ts",
+    );
+
+    expect(result.errorCount).toBeGreaterThan(0);
+    expect(result.messages.some((message) => message.ruleId === "no-restricted-imports")).toBe(true);
+  });
+
+  test("fails lint when the domain layer imports Next.js runtime modules", async () => {
+    const result = await lintCode(
+      'import { redirect } from "next/navigation";\n',
+      "src/server/domain/bad-entity.ts",
+    );
+
+    expect(result.errorCount).toBeGreaterThan(0);
+    expect(result.messages.some((message) => message.ruleId === "no-restricted-imports")).toBe(true);
+  });
+
+  test("fails lint when the domain layer imports Vinext runtime modules", async () => {
+    const result = await lintCode(
+      'import { useRuntimeConfig } from "vinext/runtime";\n',
+      "src/server/domain/bad-entity.ts",
+    );
+
+    expect(result.errorCount).toBeGreaterThan(0);
+    expect(result.messages.some((message) => message.ruleId === "no-restricted-imports")).toBe(true);
+  });
+
   test("fails lint when the UI layer imports server code", async () => {
     const result = await lintCode(
       'import { createCreateOrderHandler } from "@/server/api/create-order.handler";\n',
