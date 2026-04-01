@@ -77,6 +77,8 @@ npm run security:audit
   - `ci.yml` (quality + integration)
   - `security.yml` (CodeQL + secret scan + dependency audit)
   - `cd-workers.yml` (Cloudflare Workers preview/production with smoke test)
+- Cloudflare first deploy runbook:
+  - [`docs/infrastructure/runbooks/cloudflare-first-deploy.md`](./docs/infrastructure/runbooks/cloudflare-first-deploy.md)
 
 ## Database Commands
 

@@ -31,9 +31,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       has_wrangler: ${{ steps.check.outputs.has_wrangler }}
-      has_cf_api_token: ${{ steps.check.outputs.has_cf_api_token }}
-      has_cf_account_id: ${{ steps.check.outputs.has_cf_account_id }}
-      has_database_url: ${{ steps.check.outputs.has_database_url }}
       should_deploy_preview: ${{ steps.check.outputs.should_deploy_preview }}
       should_deploy_production: ${{ steps.check.outputs.should_deploy_production }}
     steps:
@@ -43,33 +40,15 @@ jobs:
       - name: Check preconditions
         id: check
         env:
-          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           EVENT_NAME: ${{ github.event_name }}
           TARGET: ${{ github.event.inputs.target }}
         run: |
           has_wrangler=false
-          has_cf_api_token=false
-          has_cf_account_id=false
-          has_database_url=false
           should_deploy_preview=false
           should_deploy_production=false
 
           if [ -f wrangler.toml ]; then
             has_wrangler=true
-          fi
-
-          if [ -n "$CF_API_TOKEN" ]; then
-            has_cf_api_token=true
-          fi
-
-          if [ -n "$CF_ACCOUNT_ID" ]; then
-            has_cf_account_id=true
-          fi
-
-          if [ -n "$DATABASE_URL" ]; then
-            has_database_url=true
           fi
 
           if [ "$EVENT_NAME" = "pull_request" ] || { [ "$EVENT_NAME" = "workflow_dispatch" ] && [ "$TARGET" = "preview" ]; }; then
@@ -81,9 +60,6 @@ jobs:
           fi
 
           echo "has_wrangler=$has_wrangler" >> "$GITHUB_OUTPUT"
-          echo "has_cf_api_token=$has_cf_api_token" >> "$GITHUB_OUTPUT"
-          echo "has_cf_account_id=$has_cf_account_id" >> "$GITHUB_OUTPUT"
-          echo "has_database_url=$has_database_url" >> "$GITHUB_OUTPUT"
           echo "should_deploy_preview=$should_deploy_preview" >> "$GITHUB_OUTPUT"
           echo "should_deploy_production=$should_deploy_production" >> "$GITHUB_OUTPUT"
 
@@ -91,12 +67,33 @@ jobs:
     name: Deploy Preview
     runs-on: ubuntu-latest
     needs: preflight
-    if: ${{ needs.preflight.outputs.should_deploy_preview == 'true' && needs.preflight.outputs.has_wrangler == 'true' && needs.preflight.outputs.has_cf_api_token == 'true' && needs.preflight.outputs.has_cf_account_id == 'true' }}
+    if: ${{ needs.preflight.outputs.should_deploy_preview == 'true' && needs.preflight.outputs.has_wrangler == 'true' }}
     environment: preview
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate required secrets (preview)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+        run: |
+          missing=0
+          for key in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID DATABASE_URL BETTER_AUTH_SECRET BETTER_AUTH_URL NEXT_PUBLIC_APP_URL; do
+            if [ -z "${!key}" ]; then
+              echo "::error::Missing required preview secret: $key"
+              missing=1
+            fi
+          done
+
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -115,7 +112,6 @@ jobs:
         run: bun run build
 
       - name: Run migrations (preview)
-        if: ${{ needs.preflight.outputs.has_database_url == 'true' }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: bun run db:migrate
@@ -127,6 +123,16 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --config dist/server/wrangler.json --name 77tickets-preview --keep-vars
+          secrets: |
+            DATABASE_URL
+            BETTER_AUTH_SECRET
+            BETTER_AUTH_URL
+            NEXT_PUBLIC_APP_URL
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
 
       - name: Smoke test /api/events
         if: ${{ steps.deploy.outputs.deployment-url != '' }}
@@ -138,12 +144,33 @@ jobs:
     name: Deploy Production
     runs-on: ubuntu-latest
     needs: preflight
-    if: ${{ needs.preflight.outputs.should_deploy_production == 'true' && needs.preflight.outputs.has_wrangler == 'true' && needs.preflight.outputs.has_cf_api_token == 'true' && needs.preflight.outputs.has_cf_account_id == 'true' && needs.preflight.outputs.has_database_url == 'true' }}
+    if: ${{ needs.preflight.outputs.should_deploy_production == 'true' && needs.preflight.outputs.has_wrangler == 'true' }}
     environment: production
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate required secrets (production)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+        run: |
+          missing=0
+          for key in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID DATABASE_URL BETTER_AUTH_SECRET BETTER_AUTH_URL NEXT_PUBLIC_APP_URL; do
+            if [ -z "${!key}" ]; then
+              echo "::error::Missing required production secret: $key"
+              missing=1
+            fi
+          done
+
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -173,6 +200,16 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --config dist/server/wrangler.json --name 77tickets --keep-vars
+          secrets: |
+            DATABASE_URL
+            BETTER_AUTH_SECRET
+            BETTER_AUTH_URL
+            NEXT_PUBLIC_APP_URL
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
 
       - name: Smoke test /api/events
         if: ${{ steps.deploy.outputs.deployment-url != '' }}
@@ -188,13 +225,3 @@ jobs:
     steps:
       - name: Emit skip reason
         run: echo "Skipping CD workflow because wrangler.toml is not present in this repository yet."
-
-  deploy-skipped-missing-secrets:
-    name: Deploy skipped (missing secrets)
-    runs-on: ubuntu-latest
-    needs: preflight
-    if: ${{ needs.preflight.outputs.has_wrangler == 'true' && ((needs.preflight.outputs.should_deploy_preview == 'true' && (needs.preflight.outputs.has_cf_api_token != 'true' || needs.preflight.outputs.has_cf_account_id != 'true')) || (needs.preflight.outputs.should_deploy_production == 'true' && (needs.preflight.outputs.has_cf_api_token != 'true' || needs.preflight.outputs.has_cf_account_id != 'true' || needs.preflight.outputs.has_database_url != 'true'))) }}
-    steps:
-      - name: Emit skip reason
-        run: |
-          echo "Skipping CD workflow because required secrets are not configured for this target."
