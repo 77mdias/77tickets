@@ -41,7 +41,8 @@ Padronizar execução de qualidade, segurança e deploy para reduzir regressões
 ## Hardening de Deploy Cloudflare
 
 - O deploy usa `--keep-vars` para não apagar bindings já existentes no Worker.
-- Mesmo com `--keep-vars`, os segredos críticos são reaplicados no deploy (`DATABASE_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `NEXT_PUBLIC_APP_URL`).
+- Mesmo com `--keep-vars`, os segredos críticos são reaplicados no deploy (`DATABASE_URL`, `BETTER_AUTH_SECRET`).
+- `BETTER_AUTH_URL` e `NEXT_PUBLIC_APP_URL` permanecem como variáveis de runtime no Cloudflare Dashboard (plaintext vars).
 - O workflow falha explicitamente quando qualquer segredo obrigatório estiver ausente no ambiente GitHub correspondente.
 - Use environments do GitHub (`preview` e `production`) para separar credenciais e evitar uso acidental de segredos de produção em preview.
 

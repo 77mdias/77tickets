@@ -39,7 +39,8 @@ Notas:
 4. Salve e faça o deploy.
 
 Importante:
-- O workflow reaplica segredos críticos via Wrangler, mas o dashboard ainda é fonte operacional útil para inspeção e recuperação manual.
+- O workflow reaplica segredos críticos via Wrangler (`DATABASE_URL`, `BETTER_AUTH_SECRET`), mas o dashboard ainda é fonte operacional útil para inspeção e recuperação manual.
+- `BETTER_AUTH_URL` e `NEXT_PUBLIC_APP_URL` devem continuar como variáveis plaintext no Worker.
 
 ## Checklist de validação pós-deploy
 
