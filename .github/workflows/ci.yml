@@ -14,8 +14,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  preflight:
+    name: Preflight
+    runs-on: ubuntu-latest
+    outputs:
+      has_test_database_url: ${{ steps.check.outputs.has_test_database_url }}
+    steps:
+      - name: Check TEST_DATABASE_URL
+        id: check
+        env:
+          TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+        run: |
+          has_test_database_url=false
+          if [ -n "$TEST_DATABASE_URL" ]; then
+            has_test_database_url=true
+          fi
+          echo "has_test_database_url=$has_test_database_url" >> "$GITHUB_OUTPUT"
+
   quality:
     name: Quality Gate
+    needs: preflight
     runs-on: ubuntu-latest
 
     steps:
@@ -35,9 +53,9 @@ jobs:
 
   integration:
     name: Integration Tests
-    needs: quality
+    needs: [preflight, quality]
     runs-on: ubuntu-latest
-    if: ${{ secrets.TEST_DATABASE_URL != '' }}
+    if: ${{ needs.preflight.outputs.has_test_database_url == 'true' }}
     env:
       TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
 
@@ -58,9 +76,9 @@ jobs:
 
   integration-skipped:
     name: Integration Tests (skipped)
-    needs: quality
+    needs: [preflight, quality]
     runs-on: ubuntu-latest
-    if: ${{ secrets.TEST_DATABASE_URL == '' }}
+    if: ${{ needs.preflight.outputs.has_test_database_url != 'true' }}
     steps:
       - name: Emit skip reason
         run: |
