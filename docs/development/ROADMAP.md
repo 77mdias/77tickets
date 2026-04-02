@@ -163,6 +163,98 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 **Saída esperada:**
 - Caminho de migração com baixo retrabalho documentado e validado.
 
+### Fase 10 - Payment Gateway Integration (Status: Planned - High Priority)
+
+> Equivalente ao Sprint 014.
+
+**Objetivo:** fechar o gap crítico de pagamento — pedidos transitam de `pending` para `paid` via Stripe (modo teste) + fallback de simulação para demo.
+
+**Entregas:**
+- Contrato `PaymentProvider` + `StripePaymentProvider` em `src/server/payment/`
+- `ConfirmOrderPaymentUseCase`, `CancelOrderOnPaymentFailureUseCase`, `SimulatePaymentUseCase`
+- `POST /api/webhooks/stripe` com validação HMAC
+- Checkout redireciona para Stripe; `/checkout/success` e `/checkout/cancel`
+
+### Fase 11 - Email Transacional + Ticket Delivery (Status: Planned - High Priority)
+
+> Equivalente ao Sprint 015.
+
+**Objetivo:** comprador recebe confirmação de pedido com QR codes inline e lembrete 24h antes do evento.
+
+**Entregas:**
+- Contrato `EmailProvider` + `ResendEmailProvider` em `src/server/email/`
+- `SendOrderConfirmationEmailUseCase`, `SendEventReminderEmailUseCase`
+- Templates HTML responsivos com QR code base64 inline
+- Cron endpoint `POST /api/cron/event-reminders`
+
+### Fase 12 - Event Discovery + Organizer Analytics (Status: Planned - Medium-High Priority)
+
+> Equivalente ao Sprint 016.
+
+**Objetivo:** comprador encontra eventos por busca/filtros; organizador visualiza métricas de vendas.
+
+**Entregas:**
+- Campo `category` em `events` + índice GIN fulltext (migration Drizzle)
+- `GET /api/events` atualizado com `q`, `date`, `location`, `category`, `cursor`
+- `GetEventAnalyticsUseCase` + `GET /api/events/:slug/analytics`
+- Search bar + filtros na UI; painel "Métricas" no admin
+
+### Fase 13 - UX Polish + Pre-Migration Gate (Status: Planned - Gate)
+
+> Equivalente ao Sprint 017.
+
+**Objetivo:** elevar UX para nível portfolio/produção e passar auditoria formal de migration readiness (gate bloqueante para Fase 14).
+
+**Entregas:**
+- Skeleton screens, error boundaries, toast notifications, loading states
+- Mobile pass (375px), PWA manifest, camera QR scanner no checkin
+- Checklist `migration-portability.md` 100% verde
+- E2E smoke scripts + `docs/development/MIGRATION-GATE.md` aprovado
+
+### Fase 14 - NestJS Backend Extraction (Status: Planned - High Technical Priority)
+
+> Equivalente ao Sprint 018. **Entrada:** Gate da Fase 13 aprovado.
+
+**Objetivo:** extrair backend como serviço NestJS independente em `packages/backend/` sem alterar domain/application.
+
+**Entregas:**
+- `packages/backend/` com NestJS bootstrapped (porta 3001)
+- Domain + application copiados sem alteração, `tsc --noEmit` verde em isolamento
+- 7 controllers NestJS (events, lots, orders, checkin, coupons, webhooks, cron)
+- Guards: `SessionGuard`, `RolesGuard`, `OwnershipGuard`
+- `DatabaseModule`, `EmailModule`, `PaymentModule` como NestJS DI providers
+- Deploy no Railway com health check
+
+### Fase 15 - Next.js Frontend Migration (Status: Planned - High Technical Priority)
+
+> Equivalente ao Sprint 019.
+
+**Objetivo:** migrar frontend de Vinext para Next.js 15 App Router em `packages/web/`.
+
+**Entregas:**
+- `packages/web/` com Next.js 15 + Tailwind 4 + shadcn/ui
+- 9 rotas migradas: `/`, `/eventos/[slug]`, `/checkout/*`, `/meus-ingressos`, `/admin`, `/checkin`, `/login`
+- `lib/api-client.ts` apontando para Railway NestJS
+- Server Actions para mutações (createOrder, checkinTicket, createEvent, createLot)
+- Better Auth com Next.js (cookies HttpOnly) + middleware de proteção
+- Deploy no Vercel com E2E smoke tests passando
+
+### Fase 16 - Production Hardening + Launch (Status: Planned - High Technical Priority)
+
+> Equivalente ao Sprint 020.
+
+**Objetivo:** observabilidade, performance, staging e go-live oficial.
+
+**Entregas:**
+- Sentry em NestJS e Next.js (error tracking + tracing)
+- Winston structured logging com request-id correlation
+- `GET /api/health` com DB check; Lighthouse CI no pipeline
+- Staging environment (Railway staging + Vercel preview + Neon branch)
+- 4 runbooks atualizados + `payment-failure.md`
+- `MIGRATION-COMPLETE.md`, `GO-LIVE-CHECKLIST.md`, CHANGELOG versionado
+
+---
+
 ## Backlog Prioritário (Pós-Fase 005 — Atualizado 2026-03-29)
 
 > Backlog revisado após review completa do gap PRD vs. código. Novas fases adicionadas.
@@ -224,3 +316,14 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 11. Sprint 011: CI Foundation + Supply Chain Security. ✅
 12. Sprint 012: Runtime/API Security Hardening. ✅
 13. Sprint 013: CD Cloudflare + Release Security. ✅
+
+### Sprints Planejadas — Fase de Produto
+14. Sprint 014: Payment Gateway Integration.
+15. Sprint 015: Email Transacional + Ticket Delivery.
+16. Sprint 016: Event Discovery + Organizer Analytics.
+17. Sprint 017: UX Polish + Pre-Migration Gate. ⚠️ Gate para migração.
+
+### Sprints Planejadas — Fase de Migração
+18. Sprint 018: NestJS Backend Extraction. ⚠️ Requer gate Sprint 017.
+19. Sprint 019: Next.js Frontend Migration.
+20. Sprint 020: Production Hardening + Launch.

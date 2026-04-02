@@ -20,7 +20,13 @@
 | 011 | Sprint 011 | `docs/development/TASKS/PHASE-011-ci-foundation-supply-chain-security.md` | 🟢 Concluída | 4/4 |
 | 012 | Sprint 012 | `docs/development/TASKS/PHASE-012-runtime-api-security-hardening.md` | 🟢 Concluída | 4/4 |
 | 013 | Sprint 013 | `docs/development/TASKS/PHASE-013-cd-cloudflare-release-security.md` | 🟢 Concluída | 4/4 |
-| 014 | Sprint 014 | `docs/development/TASKS/PHASE-014-payment-gateway.md` | 🟢 Concluída | 15/15 |
+| 014 | Sprint 014 | `docs/development/TASKS/PHASE-014-payment-gateway.md` | ⏳ Planejada | 0/15 |
+| 015 | Sprint 015 | `docs/development/TASKS/PHASE-015-email-notifications.md` | ⏳ Planejada | 0/11 |
+| 016 | Sprint 016 | `docs/development/TASKS/PHASE-016-discovery-analytics.md` | ⏳ Planejada | 0/18 |
+| 017 | Sprint 017 | `docs/development/TASKS/PHASE-017-ux-gate.md` | ⏳ Planejada | 0/15 |
+| 018 | Sprint 018 | `docs/development/TASKS/PHASE-018-nestjs-migration.md` | ⏳ Planejada | 0/20 |
+| 019 | Sprint 019 | `docs/development/TASKS/PHASE-019-nextjs-migration.md` | ⏳ Planejada | 0/19 |
+| 020 | Sprint 020 | `docs/development/TASKS/PHASE-020-production-hardening.md` | ⏳ Planejada | 0/15 |
 
 ## Ordem Recomendada de Execução (TDD-first)
 
@@ -38,7 +44,17 @@
 11. Fase 011: CI Foundation + Supply Chain Security. ✅
 12. Fase 012: Runtime/API Security Hardening. ✅
 13. Fase 013: CD Cloudflare + Release Security. ✅
-14. Fase 014: Payment Gateway Integration. ✅
+
+### Planejadas — Fase de Produto (014–017)
+14. Fase 014: Payment Gateway Integration — Stripe + webhook + SimulatePayment.
+15. Fase 015: Email Transacional + Ticket Delivery — Resend + templates QR + cron reminder.
+16. Fase 016: Event Discovery + Organizer Analytics — busca fulltext + cursor pagination + métricas.
+17. Fase 017: UX Polish + Pre-Migration Gate — skeletons, error boundaries, QR scanner, gate formal.
+
+### Planejadas — Fase de Migração (018–020)
+18. Fase 018: NestJS Backend Extraction — packages/backend/, controllers, guards, DI, Railway. ⚠️ Requer gate Sprint 017.
+19. Fase 019: Next.js Frontend Migration — packages/web/, pages, Server Actions, Vercel.
+20. Fase 020: Production Hardening + Launch — Sentry, structured logging, Core Web Vitals, go-live.
 
 ## Regras Operacionais
 
