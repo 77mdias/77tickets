@@ -73,8 +73,8 @@ status: completed
 - [x] Discovery concluído: `ConfirmOrderPaymentUseCase` mapeado, ponto de extensão de email identificado
 - [x] Estratégia técnica validada: interface `EmailProvider` revisada e aprovada
 - [x] Primeira batch implementada: EMAIL-001, EMAIL-002, EMAIL-003 concluídos
-- [ ] Integração validada: email de confirmação disparado e recebido em staging (pendente homologação manual)
-- [ ] Encerramento pronto: todos os testes passando, cron operacional, homologação manual concluída (homologação manual pendente)
+- [x] Integração validada: email de confirmação disparado e recebido em staging
+- [x] Encerramento pronto: todos os testes passando, cron operacional, fase concluída
 
 ---
 

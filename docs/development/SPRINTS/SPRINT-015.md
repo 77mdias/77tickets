@@ -3,7 +3,7 @@ title: Sprint 015 — Email Transacional + Entrega de Ticket
 type: sprint
 mode: sprint
 approach: tdd-first
-status: planned
+status: done
 ---
 
 # Sprint 015 — Email Transacional + Entrega de Ticket
@@ -19,7 +19,7 @@ Entregar fluxo completo de notificação pós-compra: comprador recebe email de 
 - **Tipo da sprint:** feature
 - **Modo principal do Agent OS:** backend
 - **Fase relacionada:** Fase 015 — Email Transacional + Ticket Delivery
-- **Status:** 🟢 Planejada
+- **Status:** ✅ Concluída
 - **Prioridade:** 🟡 Alta
 - **Owner principal:** @jeandias
 - **Dependências externas:** Sprint 014 ✅ (pagamento confirmado necessário para disparar email de ingresso)
@@ -41,12 +41,12 @@ Entregar fluxo completo de notificação pós-compra: comprador recebe email de 
 
 ## 4. Critérios de Sucesso
 
-- [ ] Email de confirmação disparado após `ConfirmOrderPaymentUseCase` com QR codes inline (base64) de cada ticket
-- [ ] Email de lembrete 24h antes do `event.startsAt` via cron endpoint `POST /api/cron/event-reminders`
-- [ ] Contrato `EmailProvider` em `src/server/email/` — zero acoplamento Resend no domain/application
-- [ ] Templates HTML responsivos testados em mobile (375px) e desktop
-- [ ] Retry com exponential backoff em caso de falha de envio (máximo 3 tentativas)
-- [ ] Testes: unit (use-cases com EmailProvider mockado), integration (handler → provider mockado), regression (não envia para pedidos cancelados/expirados)
+- [x] Email de confirmação disparado após `ConfirmOrderPaymentUseCase` com QR codes inline (base64) de cada ticket
+- [x] Email de lembrete 24h antes do `event.startsAt` via cron endpoint `POST /api/cron/event-reminders`
+- [x] Contrato `EmailProvider` em `src/server/email/` — zero acoplamento Resend no domain/application
+- [x] Templates HTML responsivos testados em mobile (375px) e desktop
+- [x] Retry com exponential backoff em caso de falha de envio (máximo 3 tentativas)
+- [x] Testes: unit (use-cases com EmailProvider mockado), integration (handler → provider mockado), regression (não envia para pedidos cancelados/expirados)
 
 ---
 
@@ -54,9 +54,9 @@ Entregar fluxo completo de notificação pós-compra: comprador recebe email de 
 
 ### Dependências de entrada
 - [x] Sprint 014 concluída com `ConfirmOrderPaymentUseCase` funcional e transição de status `paid` validada
-- [ ] Contrato `EmailProvider` definido antes de qualquer use-case de email
-- [ ] `RESEND_API_KEY` e `EMAIL_FROM` configurados no ambiente antes do deploy
-- [ ] Cron endpoint registrado no `wrangler.toml` como Cloudflare Scheduled Event
+- [x] Contrato `EmailProvider` definido antes de qualquer use-case de email
+- [x] `RESEND_API_KEY` e `EMAIL_FROM` configurados no ambiente antes do deploy
+- [x] Cron endpoint registrado no `wrangler.toml` como Cloudflare Scheduled Event
 
 ### Ordem macro recomendada
 1. Discovery: mapear fluxo de `ConfirmOrderPaymentUseCase` e pontos de extensão
@@ -86,13 +86,13 @@ Entregar fluxo completo de notificação pós-compra: comprador recebe email de 
 Mapear o fluxo atual de `ConfirmOrderPaymentUseCase`, identificar o ponto de extensão para envio de email e confirmar que nenhum acoplamento de infraestrutura existe no domain/application.
 
 ### Checklist
-- [ ] Analisar `ConfirmOrderPaymentUseCase` e identificar onde o email deve ser disparado (após transição para `paid`)
-- [ ] Verificar se existe algum mecanismo de event/hook disponível ou se o use-case chama diretamente
-- [ ] Mapear repositórios usados em pedidos e tickets para entender como buscar tickets por `orderId`
-- [ ] Identificar como QR codes são gerados atualmente (se há utilitário existente ou se precisa criar)
-- [ ] Confirmar padrão arquitetural em `src/server/payment/` para replicar em `src/server/email/`
-- [ ] Confirmar restrições de arquitetura: `EmailProvider` deve ser framework-agnostic
-- [ ] Levantar edge cases: pedido com múltiplos tickets, evento cancelado após compra, falha de rede no Resend
+- [x] Analisar `ConfirmOrderPaymentUseCase` e identificar onde o email deve ser disparado (após transição para `paid`)
+- [x] Verificar se existe algum mecanismo de event/hook disponível ou se o use-case chama diretamente
+- [x] Mapear repositórios usados em pedidos e tickets para entender como buscar tickets por `orderId`
+- [x] Identificar como QR codes são gerados atualmente (se há utilitário existente ou se precisa criar)
+- [x] Confirmar padrão arquitetural em `src/server/payment/` para replicar em `src/server/email/`
+- [x] Confirmar restrições de arquitetura: `EmailProvider` deve ser framework-agnostic
+- [x] Levantar edge cases: pedido com múltiplos tickets, evento cancelado após compra, falha de rede no Resend
 
 ### Saída esperada
 - Ponto de extensão para email confirmado (chamada direta do use-case ou hook pós-transação)
@@ -108,21 +108,21 @@ Mapear o fluxo atual de `ConfirmOrderPaymentUseCase`, identificar o ponto de ext
 Transformar os requisitos de notificação por email em comportamentos verificáveis e definir a estratégia de testes antes de qualquer implementação.
 
 ### Checklist
-- [ ] Definir interface `EmailProvider` com métodos `sendOrderConfirmation` e `sendEventReminder`
-- [ ] Definir shape de dados passados para cada método (order, tickets, event)
-- [ ] Definir critérios de aceite testáveis para `SendOrderConfirmationEmailUseCase`
-- [ ] Definir critérios de aceite testáveis para `SendEventReminderEmailUseCase`
-- [ ] Listar cenários de sucesso, falha e regressão para cada use-case
-- [ ] Confirmar que verificação `order.status === 'paid'` ocorre antes do envio (regra de negócio crítica no backend)
-- [ ] Confirmar que cron endpoint é protegido por `CRON_SECRET` header
+- [x] Definir interface `EmailProvider` com métodos `sendOrderConfirmation` e `sendEventReminder`
+- [x] Definir shape de dados passados para cada método (order, tickets, event)
+- [x] Definir critérios de aceite testáveis para `SendOrderConfirmationEmailUseCase`
+- [x] Definir critérios de aceite testáveis para `SendEventReminderEmailUseCase`
+- [x] Listar cenários de sucesso, falha e regressão para cada use-case
+- [x] Confirmar que verificação `order.status === 'paid'` ocorre antes do envio (regra de negócio crítica no backend)
+- [x] Confirmar que cron endpoint é protegido por `CRON_SECRET` header
 
 ### Casos de teste planejados
-- [ ] Cenário 1: `SendOrderConfirmationEmailUseCase` chama `EmailProvider.sendOrderConfirmation` com dados corretos após order `paid`
-- [ ] Cenário 2: Email NÃO é enviado quando `order.status !== 'paid'` (cancelado, expirado, pendente)
-- [ ] Cenário 3: Cron endpoint com `event.startsAt` em exatamente 24h dispara `SendEventReminderEmailUseCase` para todos os compradores com `paid` orders
-- [ ] Cenário 4: Cron endpoint sem eventos elegíveis retorna 200 sem erro e sem envios
-- [ ] Edge case 1: Falha no Resend (HTTP 500) não quebra fluxo de pagamento (fire-and-forget com retry)
-- [ ] Regressão 1: Email de confirmação inclui QR codes de TODOS os tickets do pedido, não apenas o primeiro
+- [x] Cenário 1: `SendOrderConfirmationEmailUseCase` chama `EmailProvider.sendOrderConfirmation` com dados corretos após order `paid`
+- [x] Cenário 2: Email NÃO é enviado quando `order.status !== 'paid'` (cancelado, expirado, pendente)
+- [x] Cenário 3: Cron endpoint com `event.startsAt` em exatamente 24h dispara `SendEventReminderEmailUseCase` para todos os compradores com `paid` orders
+- [x] Cenário 4: Cron endpoint sem eventos elegíveis retorna 200 sem erro e sem envios
+- [x] Edge case 1: Falha no Resend (HTTP 500) não quebra fluxo de pagamento (fire-and-forget com retry)
+- [x] Regressão 1: Email de confirmação inclui QR codes de TODOS os tickets do pedido, não apenas o primeiro
 
 ### Matriz de testes
 | Tipo | Escopo | Obrigatório? | Observações |
@@ -141,20 +141,20 @@ Transformar os requisitos de notificação por email em comportamentos verificá
 Criar testes RED que representem corretamente o comportamento esperado de cada use-case de email antes de qualquer implementação de produção.
 
 ### Checklist
-- [ ] Escrever testes unitários para `SendOrderConfirmationEmailUseCase` antes de criar o arquivo de implementação
-- [ ] Escrever testes de regressão para validar que `order.status !== 'paid'` bloqueia envio
-- [ ] Garantir que testes falhem pelo motivo correto: `EmailProvider` inexistente ou use-case sem lógica de guard
-- [ ] Validar cobertura do fluxo crítico: order paid → email disparado com todos os tickets
-- [ ] Escrever teste de integração para handler de confirmação de pagamento disparando email
-- [ ] Garantir que falha do `EmailProvider` (mock que lança) não propaga para o caller
+- [x] Escrever testes unitários para `SendOrderConfirmationEmailUseCase` antes de criar o arquivo de implementação
+- [x] Escrever testes de regressão para validar que `order.status !== 'paid'` bloqueia envio
+- [x] Garantir que testes falhem pelo motivo correto: `EmailProvider` inexistente ou use-case sem lógica de guard
+- [x] Validar cobertura do fluxo crítico: order paid → email disparado com todos os tickets
+- [x] Escrever teste de integração para handler de confirmação de pagamento disparando email
+- [x] Garantir que falha do `EmailProvider` (mock que lança) não propaga para o caller
 
 ### Testes a implementar primeiro
-- [ ] Teste unitário: `SendOrderConfirmationEmailUseCase` chama provider com payload correto quando order.status === 'paid'
-- [ ] Teste unitário: `SendOrderConfirmationEmailUseCase` lança AppError ou ignora silenciosamente quando order.status !== 'paid'
-- [ ] Teste de integração: `POST /api/orders/:id/confirm-payment` — após transição paid, `EmailProvider.sendOrderConfirmation` é chamado
-- [ ] Teste de regressão: order com status `cancelled` não dispara email mesmo se use-case for chamado
-- [ ] Teste de edge case: `SendOrderConfirmationEmailUseCase` inclui QR code de todos os N tickets do pedido
-- [ ] Teste de contrato/API: `POST /api/cron/event-reminders` retorna 401 sem `CRON_SECRET` header válido
+- [x] Teste unitário: `SendOrderConfirmationEmailUseCase` chama provider com payload correto quando order.status === 'paid'
+- [x] Teste unitário: `SendOrderConfirmationEmailUseCase` lança AppError ou ignora silenciosamente quando order.status !== 'paid'
+- [x] Teste de integração: `POST /api/orders/:id/confirm-payment` — após transição paid, `EmailProvider.sendOrderConfirmation` é chamado
+- [x] Teste de regressão: order com status `cancelled` não dispara email mesmo se use-case for chamado
+- [x] Teste de edge case: `SendOrderConfirmationEmailUseCase` inclui QR code de todos os N tickets do pedido
+- [x] Teste de contrato/API: `POST /api/cron/event-reminders` retorna 401 sem `CRON_SECRET` header válido
 
 ### Evidência RED
 - **Comando executado:** `npm run test:unit -- --testPathPattern=send-order-confirmation-email`
@@ -169,14 +169,14 @@ Criar testes RED que representem corretamente o comportamento esperado de cada u
 Implementar o mínimo necessário para fazer os testes passarem, respeitando a separação entre contrato (`EmailProvider`) e implementação (`ResendEmailProvider`), e mantendo use-cases framework-agnostic.
 
 ### Checklist
-- [ ] Criar `src/server/email/email.provider.ts` com interface `EmailProvider`
-- [ ] Criar `src/server/email/resend.email-provider.ts` implementando `EmailProvider` com retry (3 tentativas, exponential backoff)
-- [ ] Criar `src/server/application/use-cases/send-order-confirmation-email.use-case.ts`
-- [ ] Criar `src/server/application/use-cases/send-event-reminder-email.use-case.ts`
-- [ ] Criar templates HTML em `src/server/email/templates/`
-- [ ] Criar cron endpoint `src/app/api/cron/event-reminders/route.ts` protegido por `CRON_SECRET`
-- [ ] Integrar `SendOrderConfirmationEmailUseCase` ao fluxo de `ConfirmOrderPaymentUseCase`
-- [ ] Configurar `RESEND_API_KEY` e `EMAIL_FROM` no `.env.example` e wrangler.toml
+- [x] Criar `src/server/email/email.provider.ts` com interface `EmailProvider`
+- [x] Criar `src/server/email/resend.email-provider.ts` implementando `EmailProvider` com retry (3 tentativas, exponential backoff)
+- [x] Criar `src/server/application/use-cases/send-order-confirmation-email.use-case.ts`
+- [x] Criar `src/server/application/use-cases/send-event-reminder-email.use-case.ts`
+- [x] Criar templates HTML em `src/server/email/templates/`
+- [x] Criar cron endpoint `src/app/api/cron/event-reminders/route.ts` protegido por `CRON_SECRET`
+- [x] Integrar `SendOrderConfirmationEmailUseCase` ao fluxo de `ConfirmOrderPaymentUseCase`
+- [x] Configurar `RESEND_API_KEY` e `EMAIL_FROM` no `.env.example` e wrangler.toml
 
 ### Regras obrigatórias
 - `EmailProvider` não deve ter dependência de Vinext, Cloudflare Workers ou Next.js
@@ -201,12 +201,12 @@ Implementar o mínimo necessário para fazer os testes passarem, respeitando a s
 Após testes verdes, melhorar legibilidade e coesão dos templates HTML, lógica de retry e responsabilidades dos use-cases sem alterar comportamento validado.
 
 ### Checklist
-- [ ] Extrair lógica de geração de QR base64 para utilitário dedicado se usada em múltiplos lugares
-- [ ] Garantir que templates HTML usam helper de formatação de data/hora consistente com o restante do projeto
-- [ ] Validar que `ResendEmailProvider` encapsula toda lógica de retry sem expor detalhes ao use-case
-- [ ] Remover qualquer duplicação entre templates de confirmação e lembrete
-- [ ] Garantir que todos os testes continuem verdes após refatoração
-- [ ] Verificar que `EmailProvider` e use-cases não têm imports de `@cloudflare/workers-types` ou `next/`
+- [x] Extrair lógica de geração de QR base64 para utilitário dedicado se usada em múltiplos lugares
+- [x] Garantir que templates HTML usam helper de formatação de data/hora consistente com o restante do projeto
+- [x] Validar que `ResendEmailProvider` encapsula toda lógica de retry sem expor detalhes ao use-case
+- [x] Remover qualquer duplicação entre templates de confirmação e lembrete
+- [x] Garantir que todos os testes continuem verdes após refatoração
+- [x] Verificar que `EmailProvider` e use-cases não têm imports de `@cloudflare/workers-types` ou `next/`
 
 ### Saída esperada
 - Módulo `src/server/email/` coeso e portável
@@ -218,12 +218,12 @@ Após testes verdes, melhorar legibilidade e coesão dos templates HTML, lógica
 ## 11. Etapa 6 — Validação, QA e Rollout
 
 ### Testes obrigatórios finais
-- [ ] Executar `npm run test:unit` — todos os testes de use-cases de email passando
-- [ ] Executar `npm run test:integration` — handler de confirmação de pagamento dispara email
-- [ ] Executar checklist manual de homologação: comprar ingresso em staging e validar recebimento do email
-- [ ] Executar `npm run lint:architecture` — sem violação de boundaries
-- [ ] Executar `npm run build` — build limpo sem erros de TypeScript
-- [ ] Validar rendering do email em mobile (375px) e desktop via Resend preview ou cliente de email
+- [x] Executar `npm run test:unit` — todos os testes de use-cases de email passando
+- [x] Executar `npm run test:integration` — handler de confirmação de pagamento dispara email
+- [x] Executar checklist manual de homologação: comprar ingresso em staging e validar recebimento do email
+- [x] Executar `npm run lint:architecture` — sem violação de boundaries
+- [x] Executar `npm run build` — build limpo sem erros de TypeScript
+- [x] Validar rendering do email em mobile (375px) e desktop via Resend preview ou cliente de email
 
 ### Comandos finais
 ```bash
@@ -255,22 +255,22 @@ npm run build
 
 ## 12. Checkpoints do Agent OS
 
-- [ ] Checkpoint 1 — Discovery validado: fluxo de `ConfirmOrderPaymentUseCase` mapeado, ponto de extensão de email confirmado
-- [ ] Checkpoint 2 — Estratégia de testes aprovada: interface `EmailProvider` definida, casos de teste listados
-- [ ] Checkpoint 3 — RED tests concluídos: testes unitários e de integração falhando pelo motivo correto
-- [ ] Checkpoint 4 — GREEN alcançado: `EmailProvider`, `ResendEmailProvider`, use-cases e cron endpoint implementados com testes passando
-- [ ] Checkpoint 5 — Refatoração concluída: templates HTML refinados, retry encapsulado, sem importações de framework nos use-cases
-- [ ] Checkpoint 6 — Validação final concluída: homologação manual em staging, build limpo, smoke de email recebido
+- [x] Checkpoint 1 — Discovery validado: fluxo de `ConfirmOrderPaymentUseCase` mapeado, ponto de extensão de email confirmado
+- [x] Checkpoint 2 — Estratégia de testes aprovada: interface `EmailProvider` definida, casos de teste listados
+- [x] Checkpoint 3 — RED tests concluídos: testes unitários e de integração falhando pelo motivo correto
+- [x] Checkpoint 4 — GREEN alcançado: `EmailProvider`, `ResendEmailProvider`, use-cases e cron endpoint implementados com testes passando
+- [x] Checkpoint 5 — Refatoração concluída: templates HTML refinados, retry encapsulado, sem importações de framework nos use-cases
+- [x] Checkpoint 6 — Validação final concluída: homologação manual em staging, build limpo, smoke de email recebido
 
 ### Log resumido dos checkpoints
 | Checkpoint | Responsável | Resultado | Observações |
 |-----------|-------------|-----------|-------------|
-| 1 — Discovery | @jeandias | ⏳ Pendente | |
-| 2 — Estratégia de testes | @jeandias | ⏳ Pendente | |
-| 3 — RED tests | @jeandias | ⏳ Pendente | |
-| 4 — GREEN | @jeandias | ⏳ Pendente | |
-| 5 — Refatoração | @jeandias | ⏳ Pendente | |
-| 6 — Validação final | @jeandias | ⏳ Pendente | |
+| 1 — Discovery | @jeandias | ✅ Concluído | |
+| 2 — Estratégia de testes | @jeandias | ✅ Concluído | |
+| 3 — RED tests | @jeandias | ✅ Concluído | |
+| 4 — GREEN | @jeandias | ✅ Concluído | |
+| 5 — Refatoração | @jeandias | ✅ Concluído | |
+| 6 — Validação final | @jeandias | ✅ Concluído | |
 
 ---
 
@@ -278,11 +278,11 @@ npm run build
 
 | Cenário | Resultado esperado | Evidência | Status |
 | ------- | ------------------ | --------- | ------ |
-| Comprador completa pagamento em staging | Email de confirmação recebido em até 30s com QR codes de todos os tickets | Screenshot do email recebido | ⬜ |
-| Email de confirmação aberto em mobile (375px) | Layout responsivo sem overflow; QR codes visíveis e legíveis | Screenshot em dispositivo móvel | ⬜ |
-| Evento com `startsAt` em 24h — cron trigger manual | Email reminder enviado para todos compradores com paid orders desse evento | Log do cron endpoint + email recebido | ⬜ |
-| Pedido cancelado — `SendOrderConfirmationEmailUseCase` chamado | Email NÃO enviado; use-case retorna sem erro | Log da aplicação sem chamada ao provider | ⬜ |
-| `RESEND_API_KEY` inválida — comprador finaliza compra | Pagamento confirmado normalmente; erro de email logado sem propagar 500 | Log de erro no Resend adapter; order status = paid | ⬜ |
+| Comprador completa pagamento em staging | Email de confirmação recebido em até 30s com QR codes de todos os tickets | Screenshot do email recebido | ✅ |
+| Email de confirmação aberto em mobile (375px) | Layout responsivo sem overflow; QR codes visíveis e legíveis | Screenshot em dispositivo móvel | ✅ |
+| Evento com `startsAt` em 24h — cron trigger manual | Email reminder enviado para todos compradores com paid orders desse evento | Log do cron endpoint + email recebido | ✅ |
+| Pedido cancelado — `SendOrderConfirmationEmailUseCase` chamado | Email NÃO enviado; use-case retorna sem erro | Log da aplicação sem chamada ao provider | ✅ |
+| `RESEND_API_KEY` inválida — comprador finaliza compra | Pagamento confirmado normalmente; erro de email logado sem propagar 500 | Log de erro no Resend adapter; order status = paid | ✅ |
 
 ---
 
@@ -314,15 +314,15 @@ npm run build
 
 ## 15. Critérios de Aceite
 
-- [ ] Todos os cenários críticos foram cobertos por testes (unit, integration, regression)
-- [ ] Os testes foram escritos antes da implementação (TDD)
-- [ ] A implementação atende ao comportamento esperado: email com QR codes após pagamento confirmado
-- [ ] Não houve regressão nos fluxos de pagamento e visualização de tickets
-- [ ] Regra crítica `order.status === 'paid'` protegida no backend antes de disparar email
-- [ ] Checklist de homologação manual executado em staging
-- [ ] Rollback definido (desabilitar `RESEND_API_KEY`) documentado e testado
-- [ ] Documentação mínima atualizada: `PHASE-015-email-notifications.md` com evidências de conclusão
-- [ ] `EmailProvider` portável: sem imports de Vinext, Cloudflare Workers ou Next.js nos use-cases
+- [x] Todos os cenários críticos foram cobertos por testes (unit, integration, regression)
+- [x] Os testes foram escritos antes da implementação (TDD)
+- [x] A implementação atende ao comportamento esperado: email com QR codes após pagamento confirmado
+- [x] Não houve regressão nos fluxos de pagamento e visualização de tickets
+- [x] Regra crítica `order.status === 'paid'` protegida no backend antes de disparar email
+- [x] Checklist de homologação manual executado em staging
+- [x] Rollback definido (desabilitar `RESEND_API_KEY`) documentado e testado
+- [x] Documentação mínima atualizada: `PHASE-015-email-notifications.md` com evidências de conclusão
+- [x] `EmailProvider` portável: sem imports de Vinext, Cloudflare Workers ou Next.js nos use-cases
 
 ---
 
@@ -330,13 +330,13 @@ npm run build
 
 A sprint só pode ser considerada concluída quando:
 
-- [ ] Fluxo de email de confirmação com QR codes entregue e funcionando em staging
-- [ ] Fluxo de lembrete 24h via cron entregue e funcionando em staging
-- [ ] Critérios de aceite atendidos
-- [ ] `npm run test:unit`, `npm run test:integration`, `npm run build` passando
-- [ ] Sem violação arquitetural crítica (EmailProvider portável, Resend isolado no adapter)
-- [ ] Sem blocker aberto
-- [ ] `PHASE-015-email-notifications.md` atualizado com evidências de conclusão
+- [x] Fluxo de email de confirmação com QR codes entregue e funcionando em staging
+- [x] Fluxo de lembrete 24h via cron entregue e funcionando em staging
+- [x] Critérios de aceite atendidos
+- [x] `npm run test:unit`, `npm run test:integration`, `npm run build` passando
+- [x] Sem violação arquitetural crítica (EmailProvider portável, Resend isolado no adapter)
+- [x] Sem blocker aberto
+- [x] `PHASE-015-email-notifications.md` atualizado com evidências de conclusão
 
 ---
 
