@@ -74,6 +74,17 @@ export class DrizzleTicketRepository implements TicketRepository {
     }));
   }
 
+  async activateByOrderId(orderId: EntityId): Promise<void> {
+    try {
+      await this.db
+        .update(tickets)
+        .set({ status: "active", checkedInAt: null })
+        .where(eq(tickets.orderId, orderId));
+    } catch (error) {
+      throw mapPersistenceError(error, "activate tickets by order");
+    }
+  }
+
   async markAsUsedIfActive(
     ticketId: EntityId,
     checkedInAt: Date,

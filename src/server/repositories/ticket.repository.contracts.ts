@@ -25,5 +25,6 @@ export interface TicketRepository {
   listByOrderId(orderId: EntityId): Promise<TicketRecord[]>;
   listByCustomerId(customerId: EntityId): Promise<TicketRecord[]>;
   createMany(tickets: NewTicketData[]): Promise<TicketRecord[]>;
+  activateByOrderId(orderId: EntityId): Promise<void>;
   markAsUsedIfActive(ticketId: EntityId, checkedInAt: Date): Promise<boolean>;
 }

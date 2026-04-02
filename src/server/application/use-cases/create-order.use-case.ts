@@ -22,7 +22,7 @@ export interface CreateOrderUseCaseDependencies {
   generateTicketCode?: () => string;
   orderRepository: Pick<OrderRepository, "create">;
   lotRepository: Pick<LotRepository, "findByIds" | "decrementAvailableQuantity">;
-  couponRepository: Pick<CouponRepository, "findByCodeForEvent" | "incrementRedemptionCount">;
+  couponRepository: Pick<CouponRepository, "findByCodeForEvent">;
   observability?: CreateOrderUseCaseObservability;
 }
 
@@ -203,6 +203,7 @@ export const createCreateOrderUseCase = (dependencies: CreateOrderUseCaseDepende
           id: orderId,
           customerId: input.customerId,
           eventId: input.eventId,
+          couponId: couponIdToRedeem,
           status: "pending",
           subtotalInCents,
           discountInCents,
@@ -226,10 +227,6 @@ export const createCreateOrderUseCase = (dependencies: CreateOrderUseCaseDepende
         if (!decremented) {
           throw createConflictError("Insufficient stock", { details: { reason: "insufficient_stock" } });
         }
-      }
-
-      if (couponIdToRedeem !== null) {
-        await dependencies.couponRepository.incrementRedemptionCount(couponIdToRedeem);
       }
 
       await trackUseCaseExecution(dependencies.observability, {

@@ -14,6 +14,11 @@ export interface CheckoutPayload {
   couponCode?: string;
 }
 
+export interface CheckoutRedirectTarget {
+  checkoutUrl: string;
+  isExternal: boolean;
+}
+
 export const buildCheckoutPayload = (values: CheckoutFormValues): CheckoutPayload => {
   const couponCode = values.couponCode.trim();
 
@@ -43,4 +48,39 @@ export const extractCheckoutErrorMessage = (payload: unknown): string => {
 
   const message = (error as { message?: unknown }).message;
   return typeof message === "string" && message.trim() ? message : fallback;
+};
+
+const getCheckoutUrlCandidate = (payload: unknown): unknown => {
+  if (typeof payload !== "object" || payload === null) {
+    return undefined;
+  }
+
+  const directCheckoutUrl = (payload as { checkoutUrl?: unknown }).checkoutUrl;
+  if (directCheckoutUrl !== undefined) {
+    return directCheckoutUrl;
+  }
+
+  const data = (payload as { data?: { checkoutUrl?: unknown } }).data;
+  return data?.checkoutUrl;
+};
+
+export const extractCheckoutRedirectTarget = (
+  payload: unknown,
+): CheckoutRedirectTarget | null => {
+  const checkoutUrl = getCheckoutUrlCandidate(payload);
+
+  if (typeof checkoutUrl !== "string") {
+    return null;
+  }
+
+  const normalizedCheckoutUrl = checkoutUrl.trim();
+  if (!normalizedCheckoutUrl) {
+    return null;
+  }
+
+  return {
+    checkoutUrl: normalizedCheckoutUrl,
+    isExternal:
+      normalizedCheckoutUrl.startsWith("http://") || normalizedCheckoutUrl.startsWith("https://"),
+  };
 };

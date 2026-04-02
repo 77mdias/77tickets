@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 import {
   buildCheckoutPayload,
   extractCheckoutErrorMessage,
+  extractCheckoutRedirectTarget,
 } from "../../../../src/features/checkout/checkout-client";
 
 describe("buildCheckoutPayload", () => {
@@ -52,5 +53,39 @@ describe("extractCheckoutErrorMessage", () => {
     expect(extractCheckoutErrorMessage(null)).toBe(
       "Could not complete checkout. Please review your input and try again.",
     );
+  });
+});
+
+describe("extractCheckoutRedirectTarget", () => {
+  test("returns an internal redirect target for a relative checkoutUrl in the payload", () => {
+    expect(
+      extractCheckoutRedirectTarget({
+        data: {
+          checkoutUrl: "/checkout/simulate?orderId=order_123",
+        },
+      }),
+    ).toEqual({
+      checkoutUrl: "/checkout/simulate?orderId=order_123",
+      isExternal: false,
+    });
+  });
+
+  test("returns an external redirect target for an absolute checkoutUrl in the payload", () => {
+    expect(
+      extractCheckoutRedirectTarget({
+        data: {
+          checkoutUrl: "https://checkout.stripe.com/c/pay/cs_test_123",
+        },
+      }),
+    ).toEqual({
+      checkoutUrl: "https://checkout.stripe.com/c/pay/cs_test_123",
+      isExternal: true,
+    });
+  });
+
+  test("returns null when checkoutUrl is missing or malformed", () => {
+    expect(extractCheckoutRedirectTarget({ data: { checkoutUrl: 123 } })).toBeNull();
+    expect(extractCheckoutRedirectTarget({ data: {} })).toBeNull();
+    expect(extractCheckoutRedirectTarget(null)).toBeNull();
   });
 });

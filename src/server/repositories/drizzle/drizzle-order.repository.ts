@@ -1,4 +1,4 @@
-import { asc, eq, inArray } from "drizzle-orm";
+import { and, asc, eq, inArray } from "drizzle-orm";
 
 import type { Db } from "../../infrastructure/db/client";
 import { lots, orderItems, orders, tickets } from "../../infrastructure/db/schema";
@@ -31,6 +31,7 @@ export class DrizzleOrderRepository implements OrderRepository {
             id: order.id,
             customerId: order.customerId,
             eventId: order.eventId,
+            couponId: order.couponId ?? null,
             status: order.status,
             subtotalInCents: order.subtotalInCents,
             discountInCents: order.discountInCents,
@@ -176,6 +177,24 @@ export class DrizzleOrderRepository implements OrderRepository {
       throw mapPersistenceError(error, "update order status");
     }
   }
+
+  async updateStatusIfCurrent(
+    orderId: EntityId,
+    currentStatus: OrderStatus,
+    nextStatus: OrderStatus,
+  ): Promise<boolean> {
+    try {
+      const updatedRows = await this.db
+        .update(orders)
+        .set({ status: nextStatus })
+        .where(and(eq(orders.id, orderId), eq(orders.status, currentStatus)))
+        .returning({ id: orders.id });
+
+      return updatedRows.length > 0;
+    } catch (error) {
+      throw mapPersistenceError(error, "update order status with guard");
+    }
+  }
 }
 
 function toOrderRecord(row: typeof orders.$inferSelect): OrderRecord {
@@ -183,6 +202,7 @@ function toOrderRecord(row: typeof orders.$inferSelect): OrderRecord {
     id: row.id,
     customerId: row.customerId,
     eventId: row.eventId,
+    couponId: row.couponId,
     status: row.status,
     subtotalInCents: row.subtotalInCents,
     discountInCents: row.discountInCents,

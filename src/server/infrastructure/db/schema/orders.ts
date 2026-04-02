@@ -3,6 +3,7 @@ import { index, integer, pgEnum, pgTable, timestamp, uuid } from "drizzle-orm/pg
 import { user } from "./users";
 import { events } from "./events";
 import { lots } from "./lots";
+import { coupons } from "./coupons";
 
 export const orderStatusEnum = pgEnum("order_status", [
   "pending",
@@ -21,6 +22,7 @@ export const orders = pgTable(
     eventId: uuid("event_id")
       .notNull()
       .references(() => events.id),
+    couponId: uuid("coupon_id").references(() => coupons.id),
     status: orderStatusEnum("status").notNull().default("pending"),
     subtotalInCents: integer("subtotal_in_cents").notNull(),
     discountInCents: integer("discount_in_cents").notNull().default(0),

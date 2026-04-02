@@ -1,11 +1,15 @@
 import { createCreateOrderHandler } from "@/server/api/create-order.handler";
+import type { CreateOrderHandlerResponse, CreateOrderRequest } from "@/server/api/create-order.handler";
 import {
   createCreateOrderRouteAdapter,
   getDatabaseUrlOrThrow,
 } from "@/server/api/orders/create-order.route-adapter";
 import { createOrderRateLimiter } from "@/server/api/middleware";
 import { getSession } from "@/server/infrastructure/auth";
-import { createCreateOrderUseCase } from "@/server/application/use-cases/create-order.use-case";
+import {
+  createCreateOrderUseCase,
+  createCreateStripeCheckoutSessionUseCase,
+} from "@/server/application/use-cases";
 import { createDb } from "@/server/infrastructure/db/client";
 import { createConsoleCheckoutObservability } from "@/server/infrastructure/observability";
 import {
@@ -13,8 +17,10 @@ import {
   DrizzleLotRepository,
   DrizzleOrderRepository,
 } from "@/server/repositories/drizzle";
+import { createStripePaymentProvider } from "@/server/payment/stripe.payment-provider";
 
 type PostOrdersRouteHandler = (request: Request) => Promise<Response>;
+type PaymentMode = "demo" | "stripe";
 
 let cachedPostOrdersRouteHandler: PostOrdersRouteHandler | null = null;
 const checkRateLimit = createOrderRateLimiter();
@@ -26,20 +32,67 @@ const generateUuid = (): string => {
   throw new Error("crypto.randomUUID is unavailable");
 };
 
+const getPaymentMode = (): PaymentMode => {
+  const normalized = (process.env.PAYMENT_MODE ?? "demo").trim().toLowerCase();
+  return normalized === "stripe" ? "stripe" : "demo";
+};
+
+const buildDemoCheckoutUrl = (orderId: string): string =>
+  `/checkout/simulate?orderId=${encodeURIComponent(orderId)}`;
+
 const buildPostOrdersRouteHandler = (): PostOrdersRouteHandler => {
   const db = createDb(getDatabaseUrlOrThrow());
   const observability = createConsoleCheckoutObservability();
+  const orderRepository = new DrizzleOrderRepository(db);
 
   const createOrder = createCreateOrderUseCase({
     now: () => new Date(),
     generateOrderId: generateUuid,
-    orderRepository: new DrizzleOrderRepository(db),
+    orderRepository,
     lotRepository: new DrizzleLotRepository(db),
     couponRepository: new DrizzleCouponRepository(db),
     observability,
   });
 
-  const handleCreateOrder = createCreateOrderHandler({ createOrder, observability });
+  const paymentMode = getPaymentMode();
+  const createStripeCheckoutSession =
+    paymentMode === "stripe"
+      ? createCreateStripeCheckoutSessionUseCase({
+          orderRepository,
+          paymentProvider: createStripePaymentProvider(),
+        })
+      : null;
+
+  const baseHandleCreateOrder = createCreateOrderHandler({ createOrder, observability });
+  const handleCreateOrder = async (
+    request: CreateOrderRequest,
+  ): Promise<CreateOrderHandlerResponse> => {
+    const response = await baseHandleCreateOrder(request);
+
+    if (response.status !== 200) {
+      return response;
+    }
+
+    const checkoutUrl =
+      paymentMode === "demo"
+        ? buildDemoCheckoutUrl(response.body.data.orderId)
+        : (
+            await createStripeCheckoutSession!({
+              orderId: response.body.data.orderId,
+              customerId: request.actor.userId,
+            })
+          ).checkoutUrl;
+
+    return {
+      status: 200,
+      body: {
+        data: {
+          ...response.body.data,
+          checkoutUrl,
+        },
+      },
+    };
+  };
 
   return createCreateOrderRouteAdapter({
     getSession,

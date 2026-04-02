@@ -6,6 +6,13 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 
 ### Added
 
+- Entrega completa da Fase 014 (Payment Gateway Integration):
+  - `StripePaymentProvider` isolado em `src/server/payment/`;
+  - webhook Stripe com validação HMAC e despacho por tipo de evento;
+  - rota e página de simulação de pagamento no fluxo de checkout;
+  - páginas de retorno `/checkout/success` e `/checkout/cancel` com guidance;
+  - `coupon.redemption_count` agora é confirmado somente após a confirmação do pagamento.
+- Migration `0004` adicionada para suportar o fluxo de pagamento e os novos campos/estados relacionados.
 - Nova trilha de sprints pós-fase 010:
   - `docs/development/SPRINTS/SPRINT-011-ci-foundation-supply-chain-security.md`
   - `docs/development/SPRINTS/SPRINT-012-runtime-api-security-hardening.md`

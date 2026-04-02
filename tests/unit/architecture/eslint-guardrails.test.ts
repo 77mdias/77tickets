@@ -103,4 +103,23 @@ describe("architectural boundary guardrails", () => {
 
     expect(result.errorCount).toBe(0);
   });
+
+  test("fails lint when non-payment server modules import Stripe SDK", async () => {
+    const result = await lintCode(
+      'import Stripe from "stripe";\n',
+      "src/server/application/bad-use-case.ts",
+    );
+
+    expect(result.errorCount).toBeGreaterThan(0);
+    expect(result.messages.some((message) => message.ruleId === "no-restricted-imports")).toBe(true);
+  });
+
+  test("allows Stripe SDK import inside payment provider layer", async () => {
+    const result = await lintCode(
+      'import Stripe from "stripe";\n',
+      "src/server/payment/stripe.payment-provider.ts",
+    );
+
+    expect(result.errorCount).toBe(0);
+  });
 });

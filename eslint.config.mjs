@@ -44,7 +44,13 @@ const eslintConfig = defineConfig([
     rules: {
       "no-restricted-imports": createRestrictedImportsRule([
         {
-          group: ["../repositories/**", "../infrastructure/**", "@/server/repositories/**", "@/server/infrastructure/**"],
+          group: [
+            "../repositories/**",
+            "../infrastructure/**",
+            "@/server/repositories/**",
+            "@/server/infrastructure/**",
+            "stripe",
+          ],
           message: "API handlers must stay thin and cannot import repositories or infrastructure directly.",
         },
       ]),
@@ -62,6 +68,7 @@ const eslintConfig = defineConfig([
             "@/server/infrastructure/**",
             "next/**",
             "vinext/**",
+            "stripe",
           ],
           message:
             "Application code must remain framework-agnostic and cannot depend on API, infrastructure, or runtime frameworks.",
@@ -85,9 +92,21 @@ const eslintConfig = defineConfig([
             "@/server/infrastructure/**",
             "next/**",
             "vinext/**",
+            "stripe",
           ],
           message:
             "Domain code must stay isolated from adapters, repositories, runtime frameworks, and framework-facing layers.",
+        },
+      ]),
+    },
+  },
+  {
+    files: ["src/server/repositories/**/*.{ts,tsx}", "src/server/infrastructure/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": createRestrictedImportsRule([
+        {
+          group: ["stripe"],
+          message: "Stripe SDK must stay isolated to src/server/payment/**.",
         },
       ]),
     },

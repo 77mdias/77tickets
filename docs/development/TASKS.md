@@ -20,6 +20,7 @@
 | 011 | Sprint 011 | `docs/development/TASKS/PHASE-011-ci-foundation-supply-chain-security.md` | 🟢 Concluída | 4/4 |
 | 012 | Sprint 012 | `docs/development/TASKS/PHASE-012-runtime-api-security-hardening.md` | 🟢 Concluída | 4/4 |
 | 013 | Sprint 013 | `docs/development/TASKS/PHASE-013-cd-cloudflare-release-security.md` | 🟢 Concluída | 4/4 |
+| 014 | Sprint 014 | `docs/development/TASKS/PHASE-014-payment-gateway.md` | 🟢 Concluída | 15/15 |
 
 ## Ordem Recomendada de Execução (TDD-first)
 
@@ -37,6 +38,7 @@
 11. Fase 011: CI Foundation + Supply Chain Security. ✅
 12. Fase 012: Runtime/API Security Hardening. ✅
 13. Fase 013: CD Cloudflare + Release Security. ✅
+14. Fase 014: Payment Gateway Integration. ✅
 
 ## Regras Operacionais
 

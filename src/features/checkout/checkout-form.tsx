@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import {
   buildCheckoutPayload,
   extractCheckoutErrorMessage,
+  extractCheckoutRedirectTarget,
   type CheckoutFormValues,
 } from "./checkout-client";
 
@@ -64,7 +65,22 @@ export function CheckoutForm({
         return;
       }
 
-      router.push("/meus-ingressos");
+      const redirectTarget = extractCheckoutRedirectTarget(payload);
+
+      if (!redirectTarget) {
+        setViewState({
+          kind: "error",
+          message: "Could not complete checkout. Please review your input and try again.",
+        });
+        return;
+      }
+
+      if (redirectTarget.isExternal) {
+        window.location.href = redirectTarget.checkoutUrl;
+        return;
+      }
+
+      router.push(redirectTarget.checkoutUrl);
       router.refresh();
     } catch {
       setViewState({

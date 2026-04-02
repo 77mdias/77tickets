@@ -7,6 +7,7 @@ export interface OrderRecord {
   id: EntityId;
   customerId: EntityId;
   eventId: EntityId;
+  couponId?: EntityId | null;
   status: OrderStatus;
   subtotalInCents: number;
   discountInCents: number;
@@ -50,4 +51,9 @@ export interface OrderRepository {
     tickets?: OrderTicketRecord[],
   ): Promise<OrderWithItemsRecord>;
   updateStatus(orderId: EntityId, status: OrderStatus): Promise<void>;
+  updateStatusIfCurrent(
+    orderId: EntityId,
+    currentStatus: OrderStatus,
+    nextStatus: OrderStatus,
+  ): Promise<boolean>;
 }

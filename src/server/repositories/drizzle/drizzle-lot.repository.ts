@@ -96,6 +96,19 @@ export class DrizzleLotRepository implements LotRepository {
       throw mapPersistenceError(error, "decrement lot available quantity");
     }
   }
+
+  async incrementAvailableQuantity(lotId: EntityId, quantity: number): Promise<void> {
+    try {
+      await this.db
+        .update(lots)
+        .set({
+          availableQuantity: sql`${lots.availableQuantity} + ${quantity}`,
+        })
+        .where(eq(lots.id, lotId));
+    } catch (error) {
+      throw mapPersistenceError(error, "increment lot available quantity");
+    }
+  }
 }
 
 function toLotRecord(row: typeof lots.$inferSelect): LotRecord {

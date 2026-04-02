@@ -242,7 +242,7 @@ test("ORD-002 RED: rejects purchase when lot is outside sale window", async () =
   });
 });
 
-test("ORD-002 RED: applies valid coupon discount in order total", async () => {
+test("ORD-002 RED: applies valid coupon discount in order total and defers redemption count until payment", async () => {
   const createCreateOrderUseCase = await loadCreateOrderFactory();
 
   const orderRepositoryCreate = vi.fn(async (...args: unknown[]) => args[0]);
@@ -295,7 +295,7 @@ test("ORD-002 RED: applies valid coupon discount in order total", async () => {
     discountInCents: 4000,
     totalInCents: 16000,
   });
-  expect(couponIncrement).toHaveBeenCalledWith(COUPON_ID);
+  expect(couponIncrement).not.toHaveBeenCalled();
 });
 
 test("ORD-002 RED: rejects coupon when coupon is invalid for event/time window", async () => {
