@@ -1,5 +1,6 @@
 import {
   createConfirmOrderPaymentUseCase,
+  createSendOrderConfirmationEmailUseCase,
   createSimulatePaymentUseCase,
 } from "@/server/application/use-cases";
 import {
@@ -14,9 +15,12 @@ import { getSession } from "@/server/infrastructure/auth";
 import { createDb } from "@/server/infrastructure/db/client";
 import {
   DrizzleCouponRepository,
+  DrizzleEventRepository,
   DrizzleOrderRepository,
   DrizzleTicketRepository,
+  DrizzleUserRepository,
 } from "@/server/repositories/drizzle";
+import { createResendEmailProvider } from "@/server/email";
 
 interface SimulatePaymentRouteParams {
   id?: string;
@@ -51,11 +55,22 @@ const resolveOrderId = async (
 const buildSimulatePaymentRouteHandler = (): SimulatePaymentRouteHandler => {
   const db = createDb(getDatabaseUrlOrThrow());
   const orderRepository = new DrizzleOrderRepository(db);
+  const ticketRepository = new DrizzleTicketRepository(db);
+  const emailProvider = createResendEmailProvider();
+
+  const sendOrderConfirmationEmail = createSendOrderConfirmationEmailUseCase({
+    orderRepository,
+    ticketRepository,
+    eventRepository: new DrizzleEventRepository(db),
+    userRepository: new DrizzleUserRepository(db),
+    emailProvider,
+  });
 
   const confirmOrderPayment = createConfirmOrderPaymentUseCase({
     orderRepository,
-    ticketRepository: new DrizzleTicketRepository(db),
+    ticketRepository,
     couponRepository: new DrizzleCouponRepository(db),
+    sendOrderConfirmationEmail,
   });
 
   const simulatePayment = createSimulatePaymentUseCase({

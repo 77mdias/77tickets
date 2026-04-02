@@ -24,11 +24,21 @@ vi.mock("@/server/repositories/drizzle", () => ({
   },
   DrizzleTicketRepository: class {},
   DrizzleCouponRepository: class {},
+  DrizzleEventRepository: class {},
+  DrizzleUserRepository: class {},
 }));
 
 vi.mock("@/server/application/use-cases", () => ({
   createConfirmOrderPaymentUseCase: () => vi.fn(),
   createSimulatePaymentUseCase: () => mocks.simulatePayment,
+  createSendOrderConfirmationEmailUseCase: () => vi.fn(),
+}));
+
+vi.mock("@/server/email", () => ({
+  createResendEmailProvider: () => ({
+    sendOrderConfirmation: vi.fn(),
+    sendEventReminder: vi.fn(),
+  }),
 }));
 
 describe("POST /api/orders/[id]/simulate-payment", () => {

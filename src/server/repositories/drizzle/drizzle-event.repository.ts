@@ -1,4 +1,4 @@
-import { and, asc, eq, gte, isNull, or } from "drizzle-orm";
+import { and, asc, eq, gte, isNull, lte, or } from "drizzle-orm";
 
 import type { Db } from "../../infrastructure/db/client";
 import { events } from "../../infrastructure/db/schema";
@@ -65,6 +65,22 @@ export class DrizzleEventRepository implements EventRepository {
     }
 
     const rows = await query;
+
+    return rows.map(toEventRecord);
+  }
+
+  async listStartingBetween(windowStart: Date, windowEnd: Date): Promise<EventRecord[]> {
+    const rows = await this.db
+      .select()
+      .from(events)
+      .where(
+        and(
+          eq(events.status, "published"),
+          gte(events.startsAt, windowStart),
+          lte(events.startsAt, windowEnd),
+        ),
+      )
+      .orderBy(asc(events.startsAt), asc(events.id));
 
     return rows.map(toEventRecord);
   }

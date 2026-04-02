@@ -6,6 +6,15 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 
 ### Added
 
+- Entrega técnica da Fase 015 (Email Transacional + Ticket Delivery):
+  - novo módulo `src/server/email/` com contrato `EmailProvider`, templates HTML e adapter `ResendEmailProvider`;
+  - novos use-cases `SendOrderConfirmationEmailUseCase` e `SendEventReminderEmailUseCase`;
+  - integração de envio de confirmação no fluxo `ConfirmOrderPaymentUseCase` com dispatch não bloqueante (fire-and-forget);
+  - novo endpoint `POST /api/cron/event-reminders` com proteção por `CRON_SECRET` e janela de eventos 23h–25h;
+  - novo método de repositório `EventRepository.listStartingBetween(...)` e implementação Drizzle correspondente;
+  - cobertura adicionada em unit/integration/regression para confirmação, lembrete, cron e guard de status non-paid;
+  - configuração/documentação de `RESEND_API_KEY`, `EMAIL_FROM` e `CRON_SECRET` em `.env.example`, `wrangler.toml` e runbook de infraestrutura.
+
 - PM Review e planejamento de Sprints 014–020 (2026-04-01):
   - Design doc PM formal: `docs/superpowers/specs/2026-04-01-pm-roadmap-sprint014-020-design.md`
   - Roadmap de 7 sprints: Feature Phase (014–017) + Migration Phase (018–020)

@@ -15,3 +15,5 @@ export * from "./list-event-orders.use-case";
 export * from "./list-published-events.use-case";
 export * from "./get-customer-orders.use-case";
 export * from "./get-event-detail.use-case";
+export * from "./send-order-confirmation-email.use-case";
+export * from "./send-event-reminder-email.use-case";

@@ -16,6 +16,14 @@ vi.mock("@/server/payment/stripe.payment-provider", () => ({
 vi.mock("@/server/application/use-cases", () => ({
   createConfirmOrderPaymentUseCase: () => mocks.confirmOrderPayment,
   createCancelOrderOnPaymentFailureUseCase: () => mocks.cancelOrderOnPaymentFailure,
+  createSendOrderConfirmationEmailUseCase: () => vi.fn(),
+}));
+
+vi.mock("@/server/email", () => ({
+  createResendEmailProvider: () => ({
+    sendOrderConfirmation: vi.fn(),
+    sendEventReminder: vi.fn(),
+  }),
 }));
 
 beforeEach(() => {

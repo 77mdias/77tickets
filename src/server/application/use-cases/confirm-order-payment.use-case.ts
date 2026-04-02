@@ -13,6 +13,7 @@ export interface ConfirmOrderPaymentUseCaseDependencies {
   orderRepository: Pick<OrderRepository, "findById" | "updateStatusIfCurrent">;
   ticketRepository: Pick<TicketRepository, "activateByOrderId">;
   couponRepository: Pick<CouponRepository, "incrementRedemptionCount">;
+  sendOrderConfirmationEmail?: (input: { orderId: string }) => Promise<void>;
 }
 
 export type ConfirmOrderPaymentUseCase = (
@@ -67,6 +68,12 @@ export const createConfirmOrderPaymentUseCase = (
 
     if (orderWithItems.order.couponId !== null && orderWithItems.order.couponId !== undefined) {
       await dependencies.couponRepository.incrementRedemptionCount(orderWithItems.order.couponId);
+    }
+
+    if (dependencies.sendOrderConfirmationEmail) {
+      void dependencies
+        .sendOrderConfirmationEmail({ orderId: orderWithItems.order.id })
+        .catch(() => undefined);
     }
 
     return { outcome: "confirmed" };

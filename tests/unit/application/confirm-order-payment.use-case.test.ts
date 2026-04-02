@@ -156,3 +156,41 @@ test("PAY-002 RED: is idempotent for already paid orders", async () => {
   expect(activateByOrderId).not.toHaveBeenCalled();
   expect(incrementRedemptionCount).not.toHaveBeenCalled();
 });
+
+test("EMAIL-010: confirmation triggers non-blocking email dispatch after paid transition", async () => {
+  const createUseCase = await loadFactory();
+
+  const sendOrderConfirmationEmail = vi.fn(async () => {
+    throw new Error("email_failed");
+  });
+
+  const useCase = createUseCase({
+    orderRepository: {
+      findById: async () => ({
+        order: {
+          id: "ord_email_001",
+          customerId: "cus_001",
+          eventId: "evt_001",
+          status: "pending",
+          subtotalInCents: 20000,
+          discountInCents: 0,
+          totalInCents: 20000,
+          createdAt: new Date("2026-04-01T12:00:00.000Z"),
+          couponId: null,
+        },
+        items: [{ lotId: "lot_001", quantity: 2, unitPriceInCents: 10000 }],
+      }),
+      updateStatusIfCurrent: async () => true,
+    },
+    ticketRepository: { activateByOrderId: async () => undefined },
+    couponRepository: { incrementRedemptionCount: async () => undefined },
+    sendOrderConfirmationEmail,
+  });
+
+  await expect(useCase({ orderId: "ord_email_001" })).resolves.toEqual({
+    outcome: "confirmed",
+  });
+  expect(sendOrderConfirmationEmail).toHaveBeenCalledWith({
+    orderId: "ord_email_001",
+  });
+});

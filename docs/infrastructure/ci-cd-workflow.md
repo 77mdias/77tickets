@@ -37,6 +37,9 @@ Padronizar execução de qualidade, segurança e deploy para reduzir regressões
 - `BETTER_AUTH_SECRET`
 - `BETTER_AUTH_URL`
 - `NEXT_PUBLIC_APP_URL`
+- `RESEND_API_KEY`
+- `EMAIL_FROM`
+- `CRON_SECRET`
 
 ## Hardening de Deploy Cloudflare
 
@@ -45,6 +48,20 @@ Padronizar execução de qualidade, segurança e deploy para reduzir regressões
 - `BETTER_AUTH_URL` e `NEXT_PUBLIC_APP_URL` permanecem como variáveis de runtime no Cloudflare Dashboard (plaintext vars).
 - O workflow falha explicitamente quando qualquer segredo obrigatório estiver ausente no ambiente GitHub correspondente.
 - Use environments do GitHub (`preview` e `production`) para separar credenciais e evitar uso acidental de segredos de produção em preview.
+
+## Segredos de Email/Cron no Worker
+
+Configurar por ambiente antes do deploy:
+
+```bash
+wrangler secret put RESEND_API_KEY --env preview
+wrangler secret put EMAIL_FROM --env preview
+wrangler secret put CRON_SECRET --env preview
+
+wrangler secret put RESEND_API_KEY --env production
+wrangler secret put EMAIL_FROM --env production
+wrangler secret put CRON_SECRET --env production
+```
 
 ## Gate de Segurança
 

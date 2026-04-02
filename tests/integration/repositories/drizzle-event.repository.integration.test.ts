@@ -132,6 +132,43 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
       expect(page[0].slug).toBe("pub-page-2");
     });
 
+    test("listStartingBetween returns published events in the provided window", async () => {
+      await cleanDatabase(db);
+
+      await createEventFixture(db, {
+        slug: "window-in",
+        status: "published",
+        startsAt: new Date("2026-04-03T12:15:00.000Z"),
+        endsAt: new Date("2026-04-03T14:00:00.000Z"),
+      });
+      await createEventFixture(db, {
+        slug: "window-out-before",
+        status: "published",
+        startsAt: new Date("2026-04-03T10:00:00.000Z"),
+        endsAt: new Date("2026-04-03T11:00:00.000Z"),
+      });
+      await createEventFixture(db, {
+        slug: "window-out-after",
+        status: "published",
+        startsAt: new Date("2026-04-03T16:00:00.000Z"),
+        endsAt: new Date("2026-04-03T18:00:00.000Z"),
+      });
+      await createEventFixture(db, {
+        slug: "window-draft",
+        status: "draft",
+        startsAt: new Date("2026-04-03T12:30:00.000Z"),
+        endsAt: new Date("2026-04-03T13:30:00.000Z"),
+      });
+
+      const repo = new DrizzleEventRepository(db);
+      const results = await repo.listStartingBetween(
+        new Date("2026-04-03T11:00:00.000Z"),
+        new Date("2026-04-03T13:00:00.000Z"),
+      );
+
+      expect(results.map((event) => event.slug)).toEqual(["window-in"]);
+    });
+
     test("listByOrganizer returns all events for the organizer", async () => {
       await cleanDatabase(db);
 

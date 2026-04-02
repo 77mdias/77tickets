@@ -1,16 +1,20 @@
 import {
   createConfirmOrderPaymentUseCase,
   createCancelOrderOnPaymentFailureUseCase,
+  createSendOrderConfirmationEmailUseCase,
 } from "@/server/application/use-cases";
 import { createValidationError, serializeAppError } from "@/server/application/errors";
 import { createDb } from "@/server/infrastructure/db/client";
 import {
   DrizzleCouponRepository,
+  DrizzleEventRepository,
   DrizzleLotRepository,
   DrizzleOrderRepository,
   DrizzleTicketRepository,
+  DrizzleUserRepository,
 } from "@/server/repositories/drizzle";
 import { createStripePaymentProvider } from "@/server/payment/stripe.payment-provider";
+import { createResendEmailProvider } from "@/server/email";
 import { toApiJsonResponse, withApiSecurityHeaders } from "@/server/api/security-response";
 import { mapAppErrorToResponse } from "@/server/api/error-mapper";
 import { getDatabaseUrlOrThrow } from "@/server/api/orders/create-order.route-adapter";
@@ -40,11 +44,22 @@ let cachedStripeWebhookRouteHandler: StripeWebhookRouteHandler | null = null;
 const buildStripeWebhookRouteHandler = (): StripeWebhookRouteHandler => {
   const db = createDb(getDatabaseUrlOrThrow());
   const orderRepository = new DrizzleOrderRepository(db);
+  const ticketRepository = new DrizzleTicketRepository(db);
+  const emailProvider = createResendEmailProvider();
+
+  const sendOrderConfirmationEmail = createSendOrderConfirmationEmailUseCase({
+    orderRepository,
+    ticketRepository,
+    eventRepository: new DrizzleEventRepository(db),
+    userRepository: new DrizzleUserRepository(db),
+    emailProvider,
+  });
 
   const confirmOrderPayment = createConfirmOrderPaymentUseCase({
     orderRepository,
-    ticketRepository: new DrizzleTicketRepository(db),
+    ticketRepository,
     couponRepository: new DrizzleCouponRepository(db),
+    sendOrderConfirmationEmail,
   });
 
   const cancelOrderOnPaymentFailure = createCancelOrderOnPaymentFailureUseCase({
