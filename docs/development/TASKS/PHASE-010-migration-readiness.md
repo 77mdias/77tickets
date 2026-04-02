@@ -14,14 +14,15 @@
 
 ## 📊 Resumo de Progresso
 
-| Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
-| --------- | ----- | --------- | ------------ | -------- | --------- |
-| Auditoria de Acoplamentos | 4 | 4 | 0 | 0 | 0 |
-| Prova de Portabilidade | 2 | 2 | 0 | 0 | 0 |
-| Documentação de Migração | 2 | 2 | 0 | 0 | 0 |
-| **TOTAL** | **8** | **8** | **0** | **0** | **0** |
+| Categoria                 | Total | Concluído | Em Andamento | Pendente | Bloqueado |
+| ------------------------- | ----- | --------- | ------------ | -------- | --------- |
+| Auditoria de Acoplamentos | 4     | 4         | 0            | 0        | 0         |
+| Prova de Portabilidade    | 2     | 2         | 0            | 0        | 0         |
+| Documentação de Migração  | 2     | 2         | 0            | 0        | 0         |
+| **TOTAL**                 | **8** | **8**     | **0**        | **0**    | **0**     |
 
 ### 🎯 Principais Indicadores
+
 - ⚠️ Risco médio (ROADMAP): retrabalho na migração se acoplamentos ao Vinext/Workers forem introduzidos sem auditoria.
 - 🎯 Meta: domain e application layers devem ser portáveis para NestJS sem modificação.
 - 🎯 Meta: repositórios portáveis com apenas troca de adapter de infraestrutura.
@@ -42,6 +43,7 @@
 ### 📦 Auditoria de Acoplamentos — Mapear dependências de runtime
 
 #### Objetivo
+
 Identificar onde o código de negócio está acoplado ao Vinext ou Workers, catalogar e classificar o esforço de desacoplamento.
 
 - [x] **MIG-001** - Auditar dependências de Vinext em `src/server/*`

@@ -52,6 +52,7 @@ next-env.d.ts
 !.agents-os/SUBAGENTS/*.md
 !.agents-os/RULES/
 !.agents-os/RULES/README.md
+!.agents-os/PROMPTS/
 
 # worktrees
 .worktrees/
