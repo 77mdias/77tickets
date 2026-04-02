@@ -3,7 +3,7 @@ title: Sprint 014 — Payment Gateway Integration
 type: sprint
 mode: sprint
 approach: tdd-first
-status: planned
+status: completed
 ---
 
 # Sprint 014 — Payment Gateway Integration
@@ -19,7 +19,7 @@ Fechar o gap crítico de pagamento: pedidos criados em estado `pending` devem tr
 - **Tipo da sprint:** feature
 - **Modo principal do Agent OS:** backend
 - **Fase relacionada:** Fase 014 — Payment Gateway Integration
-- **Status:** 🟢 Planejada
+- **Status:** ✅ Concluída
 - **Prioridade:** 🔴 Crítica
 - **Owner principal:** @jeandias
 - **Dependências externas:** Sprint 013 ✅
@@ -41,25 +41,25 @@ Fechar o gap crítico de pagamento: pedidos criados em estado `pending` devem tr
 
 ## 4. Critérios de Sucesso
 
-- [ ] Checkout redireciona para Stripe Checkout Session criada server-side
-- [ ] Webhook `POST /api/webhooks/stripe` processa `checkout.session.completed` → `order.status = paid` → tickets `active`
-- [ ] Webhook processa `payment_intent.payment_failed` → `order.status = cancelled` → lot quantity revertida
-- [ ] Fallback demo: botão "Simular Pagamento" ativa pedido sem Stripe (controlado por `PAYMENT_MODE=demo`)
-- [ ] Redemption count de cupom incrementa apenas após pagamento confirmado
-- [ ] Contrato `PaymentProvider` em `src/server/payment/` com zero acoplamento Stripe no domain/application
-- [ ] Testes unitários para `ConfirmOrderPaymentUseCase` passando (transição, ativação de tickets, incremento de coupon)
-- [ ] Testes de integração para `POST /api/webhooks/stripe` com payload Stripe mockado e assinatura validada
-- [ ] Teste de regressão cobrindo fluxo completo: compra → pagamento → ticket ativo
+- [x] Checkout redireciona para Stripe Checkout Session criada server-side
+- [x] Webhook `POST /api/webhooks/stripe` processa `checkout.session.completed` → `order.status = paid` → tickets `active`
+- [x] Webhook processa `payment_intent.payment_failed` → `order.status = cancelled` → lot quantity revertida
+- [x] Fallback demo: botão "Simular Pagamento" ativa pedido sem Stripe (controlado por `PAYMENT_MODE=demo`)
+- [x] Redemption count de cupom incrementa apenas após pagamento confirmado
+- [x] Contrato `PaymentProvider` em `src/server/payment/` com zero acoplamento Stripe no domain/application
+- [x] Testes unitários para `ConfirmOrderPaymentUseCase` passando (transição, ativação de tickets, incremento de coupon)
+- [x] Testes de integração para `POST /api/webhooks/stripe` com payload Stripe mockado e assinatura validada
+- [x] Teste de regressão cobrindo fluxo completo: compra → pagamento → ticket ativo
 
 ---
 
 ## 5. Dependências e Sequenciamento
 
 ### Dependências de entrada
-- [ ] Sprint 013 ✅ — pipeline de CD Cloudflare operacional
-- [ ] Contrato `PaymentProvider` definido antes de qualquer use-case de pagamento
-- [ ] Variáveis de ambiente `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `PAYMENT_MODE` configuradas
-- [ ] Entidades `Order`, `Ticket`, `Lot`, `Coupon` disponíveis via repositórios existentes
+- [x] Sprint 013 ✅ — pipeline de CD Cloudflare operacional
+- [x] Contrato `PaymentProvider` definido antes de qualquer use-case de pagamento
+- [x] Variáveis de ambiente `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `PAYMENT_MODE` configuradas
+- [x] Entidades `Order`, `Ticket`, `Lot`, `Coupon` disponíveis via repositórios existentes
 
 ### Ordem macro recomendada
 1. Discovery técnico — mapear fluxo de pedido atual e pontos de integração
@@ -85,15 +85,15 @@ Fechar o gap crítico de pagamento: pedidos criados em estado `pending` devem tr
 Entender o estado atual do fluxo de pedido e mapear todos os pontos onde a integração de pagamento se conecta, sem introduzir acoplamento prematuro.
 
 ### Checklist
-- [ ] Analisar `createOrder` use-case e confirmar que pedido termina em `pending` sem transição automática
-- [ ] Identificar repositórios de `Order`, `Ticket`, `Lot`, `Coupon` e métodos disponíveis para transição de status
-- [ ] Mapear `POST /api/orders` atual — resposta, tipagem e contrato de retorno
-- [ ] Verificar se existe algum módulo de pagamento em `src/server/payment/` ou equivalente
-- [ ] Mapear schema de `orders`, `tickets`, `lots` e `coupons` no Drizzle — confirmar campos `status`, `quantity`, `redemption_count`
-- [ ] Identificar regras de negócio em `ConfirmOrderPayment` que precisam ser testadas: transição de status, ativação de tickets, incremento de coupon
-- [ ] Levantar edge cases: webhook duplicado (idempotência), pedido já pago recebendo evento novamente, lot esgotado no momento da confirmação
-- [ ] Confirmar restrições de arquitetura: Stripe SDK apenas em `src/server/payment/`, zero import de Stripe em domain/application
-- [ ] Verificar restrições de Cloudflare Workers para raw body no webhook (necessário para validação HMAC)
+- [x] Analisar `createOrder` use-case e confirmar que pedido termina em `pending` sem transição automática
+- [x] Identificar repositórios de `Order`, `Ticket`, `Lot`, `Coupon` e métodos disponíveis para transição de status
+- [x] Mapear `POST /api/orders` atual — resposta, tipagem e contrato de retorno
+- [x] Verificar se existe algum módulo de pagamento em `src/server/payment/` ou equivalente
+- [x] Mapear schema de `orders`, `tickets`, `lots` e `coupons` no Drizzle — confirmar campos `status`, `quantity`, `redemption_count`
+- [x] Identificar regras de negócio em `ConfirmOrderPayment` que precisam ser testadas: transição de status, ativação de tickets, incremento de coupon
+- [x] Levantar edge cases: webhook duplicado (idempotência), pedido já pago recebendo evento novamente, lot esgotado no momento da confirmação
+- [x] Confirmar restrições de arquitetura: Stripe SDK apenas em `src/server/payment/`, zero import de Stripe em domain/application
+- [x] Verificar restrições de Cloudflare Workers para raw body no webhook (necessário para validação HMAC)
 
 ### Saída esperada
 - Contrato de `PaymentProvider` rascunhado com métodos mínimos necessários
@@ -109,22 +109,22 @@ Entender o estado atual do fluxo de pedido e mapear todos os pontos onde a integ
 Transformar o escopo em comportamento verificável antes de escrever qualquer linha de implementação.
 
 ### Checklist
-- [ ] Definir interface `PaymentProvider` com assinaturas explícitas e tipos de retorno
-- [ ] Definir critérios de aceite testáveis para cada use-case de pagamento
-- [ ] Definir estratégia de mock para `StripePaymentProvider` nos testes unitários
-- [ ] Listar cenários de sucesso, falha e regressão para webhook handler
-- [ ] Confirmar que `SimulatePaymentUseCase` verifica `PAYMENT_MODE` server-side (não confia em flag do client)
-- [ ] Confirmar que transição `pending → paid` e `pending → cancelled` respeita invariante de status de pedido
-- [ ] Confirmar que coupon `redemption_count` é incrementado apenas na confirmação, não na criação do pedido
+- [x] Definir interface `PaymentProvider` com assinaturas explícitas e tipos de retorno
+- [x] Definir critérios de aceite testáveis para cada use-case de pagamento
+- [x] Definir estratégia de mock para `StripePaymentProvider` nos testes unitários
+- [x] Listar cenários de sucesso, falha e regressão para webhook handler
+- [x] Confirmar que `SimulatePaymentUseCase` verifica `PAYMENT_MODE` server-side (não confia em flag do client)
+- [x] Confirmar que transição `pending → paid` e `pending → cancelled` respeita invariante de status de pedido
+- [x] Confirmar que coupon `redemption_count` é incrementado apenas na confirmação, não na criação do pedido
 
 ### Casos de teste planejados
-- [ ] Cenário 1: Webhook `checkout.session.completed` com metadata de `orderId` válido transita pedido para `paid` e ativa todos os tickets
-- [ ] Cenário 2: Webhook `payment_intent.payment_failed` cancela pedido e reverte quantidade no lot
-- [ ] Cenário 3: Assinatura HMAC inválida no webhook retorna HTTP 400 sem processar evento
-- [ ] Cenário 4: `SimulatePaymentUseCase` lança erro quando `PAYMENT_MODE != demo`
-- [ ] Edge case 1: Webhook duplicado para pedido já `paid` não re-ativa tickets nem incrementa coupon novamente (idempotência)
-- [ ] Edge case 2: Coupon `redemption_count` não incrementa se pagamento falhar
-- [ ] Regressão 1: Fluxo completo compra → pagamento → ticket ativo não regride o fluxo existente de `createOrder`
+- [x] Cenário 1: Webhook `checkout.session.completed` com metadata de `orderId` válido transita pedido para `paid` e ativa todos os tickets
+- [x] Cenário 2: Webhook `payment_intent.payment_failed` cancela pedido e reverte quantidade no lot
+- [x] Cenário 3: Assinatura HMAC inválida no webhook retorna HTTP 400 sem processar evento
+- [x] Cenário 4: `SimulatePaymentUseCase` lança erro quando `PAYMENT_MODE != demo`
+- [x] Edge case 1: Webhook duplicado para pedido já `paid` não re-ativa tickets nem incrementa coupon novamente (idempotência)
+- [x] Edge case 2: Coupon `redemption_count` não incrementa se pagamento falhar
+- [x] Regressão 1: Fluxo completo compra → pagamento → ticket ativo não regride o fluxo existente de `createOrder`
 
 ### Matriz de testes
 | Tipo | Escopo | Obrigatório? | Observações |
@@ -143,22 +143,22 @@ Transformar o escopo em comportamento verificável antes de escrever qualquer li
 Criar testes RED que falhem pelo motivo correto — ausência de implementação — antes de escrever qualquer código de produção.
 
 ### Checklist
-- [ ] Escrever teste unitário para `ConfirmOrderPaymentUseCase` antes da implementação
-- [ ] Escrever teste unitário para `CancelOrderOnPaymentFailureUseCase` antes da implementação
-- [ ] Escrever teste de integração para `POST /api/webhooks/stripe` antes da implementação do handler
-- [ ] Garantir que os testes falhem por `not implemented` ou `module not found`, não por erro de lógica
-- [ ] Validar cobertura das transições de status de pedido e ativação de tickets
-- [ ] Garantir teste de assinatura HMAC inválida retornando 400
-- [ ] Adicionar teste de regressão para `createOrder` confirmando que pedido ainda inicia como `pending`
+- [x] Escrever teste unitário para `ConfirmOrderPaymentUseCase` antes da implementação
+- [x] Escrever teste unitário para `CancelOrderOnPaymentFailureUseCase` antes da implementação
+- [x] Escrever teste de integração para `POST /api/webhooks/stripe` antes da implementação do handler
+- [x] Garantir que os testes falhem por `not implemented` ou `module not found`, não por erro de lógica
+- [x] Validar cobertura das transições de status de pedido e ativação de tickets
+- [x] Garantir teste de assinatura HMAC inválida retornando 400
+- [x] Adicionar teste de regressão para `createOrder` confirmando que pedido ainda inicia como `pending`
 
 ### Testes a implementar primeiro
-- [ ] Teste unitário: `ConfirmOrderPaymentUseCase` — transita `pending → paid`, ativa tickets, incrementa coupon
-- [ ] Teste unitário: `CancelOrderOnPaymentFailureUseCase` — transita `pending → cancelled`, reverte lot quantity
-- [ ] Teste unitário: `SimulatePaymentUseCase` — lança erro quando `PAYMENT_MODE !== 'demo'`
-- [ ] Teste de integração: `POST /api/webhooks/stripe` com `checkout.session.completed` válido → 200
-- [ ] Teste de integração: `POST /api/webhooks/stripe` com assinatura inválida → 400
-- [ ] Teste de regressão: `createOrder` continua criando pedido em `pending`
-- [ ] Teste de edge case: webhook idempotente — pedido já `paid` não sofre dupla transição
+- [x] Teste unitário: `ConfirmOrderPaymentUseCase` — transita `pending → paid`, ativa tickets, incrementa coupon
+- [x] Teste unitário: `CancelOrderOnPaymentFailureUseCase` — transita `pending → cancelled`, reverte lot quantity
+- [x] Teste unitário: `SimulatePaymentUseCase` — lança erro quando `PAYMENT_MODE !== 'demo'`
+- [x] Teste de integração: `POST /api/webhooks/stripe` com `checkout.session.completed` válido → 200
+- [x] Teste de integração: `POST /api/webhooks/stripe` com assinatura inválida → 400
+- [x] Teste de regressão: `createOrder` continua criando pedido em `pending`
+- [x] Teste de edge case: webhook idempotente — pedido já `paid` não sofre dupla transição
 
 ### Evidência RED
 - **Comando executado:** `npm run test:unit`
@@ -173,18 +173,18 @@ Criar testes RED que falhem pelo motivo correto — ausência de implementação
 Implementar o mínimo necessário para fazer os testes passarem, mantendo Stripe SDK estritamente em `src/server/payment/` e use-cases livres de dependências de framework ou gateway.
 
 ### Checklist
-- [ ] Implementar interface `PaymentProvider` em `src/server/payment/payment.provider.ts`
-- [ ] Implementar `StripePaymentProvider` em `src/server/payment/stripe.payment-provider.ts`
-- [ ] Implementar `CreateStripeCheckoutSessionUseCase`
-- [ ] Implementar `ConfirmOrderPaymentUseCase`
-- [ ] Implementar `CancelOrderOnPaymentFailureUseCase`
-- [ ] Implementar `SimulatePaymentUseCase` com guarda de `PAYMENT_MODE`
-- [ ] Implementar `POST /api/webhooks/stripe` com validação de assinatura HMAC
-- [ ] Implementar `POST /api/orders/:id/simulate-payment` com guarda de modo demo
-- [ ] Atualizar `POST /api/orders` para retornar `checkoutUrl`
-- [ ] Implementar páginas `/checkout/success` e `/checkout/cancel`
-- [ ] Atualizar `checkout-form.tsx` para redirecionar ou mostrar botão de simulação
-- [ ] Configurar variáveis de ambiente no `.env.example` e documentação
+- [x] Implementar interface `PaymentProvider` em `src/server/payment/payment.provider.ts`
+- [x] Implementar `StripePaymentProvider` em `src/server/payment/stripe.payment-provider.ts`
+- [x] Implementar `CreateStripeCheckoutSessionUseCase`
+- [x] Implementar `ConfirmOrderPaymentUseCase`
+- [x] Implementar `CancelOrderOnPaymentFailureUseCase`
+- [x] Implementar `SimulatePaymentUseCase` com guarda de `PAYMENT_MODE`
+- [x] Implementar `POST /api/webhooks/stripe` com validação de assinatura HMAC
+- [x] Implementar `POST /api/orders/:id/simulate-payment` com guarda de modo demo
+- [x] Atualizar `POST /api/orders` para retornar `checkoutUrl`
+- [x] Implementar páginas `/checkout/success` e `/checkout/cancel`
+- [x] Atualizar `checkout-form.tsx` para redirecionar ou mostrar botão de simulação
+- [x] Configurar variáveis de ambiente no `.env.example` e documentação
 
 ### Regras obrigatórias
 - Não confiar em input do client para `orderId` no webhook — derivar de `session.metadata`
@@ -211,12 +211,12 @@ Implementar o mínimo necessário para fazer os testes passarem, mantendo Stripe
 Melhorar legibilidade e garantir que os limites entre camadas estejam nítidos, sem alterar o comportamento já validado pelos testes verdes.
 
 ### Checklist
-- [ ] Revisar `StripePaymentProvider` — garantir que não vaza tipos Stripe para fora do módulo `src/server/payment/`
-- [ ] Revisar use-cases — confirmar que dependem apenas de interfaces de repositório e `PaymentProvider`, não de implementações concretas
-- [ ] Remover qualquer duplicação de lógica de transição de status entre use-cases
-- [ ] Refinar nomes de métodos e tipos no contrato `PaymentProvider` para máxima clareza
-- [ ] Garantir que todos os testes continuem verdes após refatoração
-- [ ] Verificar que handler de webhook não contém lógica de negócio inline
+- [x] Revisar `StripePaymentProvider` — garantir que não vaza tipos Stripe para fora do módulo `src/server/payment/`
+- [x] Revisar use-cases — confirmar que dependem apenas de interfaces de repositório e `PaymentProvider`, não de implementações concretas
+- [x] Remover qualquer duplicação de lógica de transição de status entre use-cases
+- [x] Refinar nomes de métodos e tipos no contrato `PaymentProvider` para máxima clareza
+- [x] Garantir que todos os testes continuem verdes após refatoração
+- [x] Verificar que handler de webhook não contém lógica de negócio inline
 
 ### Saída esperada
 - `PaymentProvider` com contrato limpo e portável para NestJS
@@ -228,12 +228,12 @@ Melhorar legibilidade e garantir que os limites entre camadas estejam nítidos, 
 ## 11. Etapa 6 — Validação, QA e Rollout
 
 ### Testes obrigatórios finais
-- [ ] Executar suíte unitária: `ConfirmOrderPaymentUseCase`, `CancelOrderOnPaymentFailureUseCase`, `SimulatePaymentUseCase`
-- [ ] Executar testes de integração: webhook handler com payload Stripe mockado
-- [ ] Executar teste de regressão: fluxo compra → pagamento → ticket ativo
-- [ ] Executar checklist manual de homologação (4 cenários abaixo)
-- [ ] Executar lint, typecheck e validações arquiteturais
-- [ ] Validar fluxo real com `PAYMENT_MODE=stripe` em ambiente de preview (Stripe modo teste)
+- [x] Executar suíte unitária: `ConfirmOrderPaymentUseCase`, `CancelOrderOnPaymentFailureUseCase`, `SimulatePaymentUseCase`
+- [x] Executar testes de integração: webhook handler com payload Stripe mockado
+- [x] Executar teste de regressão: fluxo compra → pagamento → ticket ativo
+- [x] Executar checklist manual de homologação (4 cenários abaixo)
+- [x] Executar lint, typecheck e validações arquiteturais
+- [x] Validar fluxo real com `PAYMENT_MODE=stripe` em ambiente de preview (Stripe modo teste)
 
 ### Comandos finais
 ```bash
@@ -269,22 +269,22 @@ npm run build
 
 Use estes checkpoints para sprints executadas por agentes.
 
-- [ ] Checkpoint 1 — Discovery validado: fluxo de pedido mapeado, contrato `PaymentProvider` rascunhado
-- [ ] Checkpoint 2 — Estratégia de testes aprovada: todos os casos de teste definidos e matriz revisada
-- [ ] Checkpoint 3 — RED tests concluídos: testes falham por ausência de implementação
-- [ ] Checkpoint 4 — GREEN alcançado: todos os testes passando com implementação mínima
-- [ ] Checkpoint 5 — Refatoração concluída: limites de camada verificados, Stripe isolado em `src/server/payment/`
-- [ ] Checkpoint 6 — Validação final concluída: homologação manual + deploy incremental validado
+- [x] Checkpoint 1 — Discovery validado: fluxo de pedido mapeado, contrato `PaymentProvider` rascunhado
+- [x] Checkpoint 2 — Estratégia de testes aprovada: todos os casos de teste definidos e matriz revisada
+- [x] Checkpoint 3 — RED tests concluídos: testes falham por ausência de implementação
+- [x] Checkpoint 4 — GREEN alcançado: todos os testes passando com implementação mínima
+- [x] Checkpoint 5 — Refatoração concluída: limites de camada verificados, Stripe isolado em `src/server/payment/`
+- [x] Checkpoint 6 — Validação final concluída: homologação manual + deploy incremental validado
 
 ### Log resumido dos checkpoints
 | Checkpoint | Responsável | Resultado | Observações |
 |-----------|-------------|-----------|-------------|
-| 1 — Discovery | @jeandias | ⏳ Pendente | |
-| 2 — Estratégia de testes | @jeandias | ⏳ Pendente | |
-| 3 — RED tests | @jeandias | ⏳ Pendente | |
-| 4 — GREEN | @jeandias | ⏳ Pendente | |
-| 5 — Refatoração | @jeandias | ⏳ Pendente | |
-| 6 — Validação final | @jeandias | ⏳ Pendente | |
+| 1 — Discovery | @jeandias | ✅ Concluído | |
+| 2 — Estratégia de testes | @jeandias | ✅ Concluído | |
+| 3 — RED tests | @jeandias | ✅ Concluído | |
+| 4 — GREEN | @jeandias | ✅ Concluído | |
+| 5 — Refatoração | @jeandias | ✅ Concluído | |
+| 6 — Validação final | @jeandias | ✅ Concluído | |
 
 ---
 
@@ -292,10 +292,10 @@ Use estes checkpoints para sprints executadas por agentes.
 
 | Cenário | Resultado esperado | Evidência | Status |
 | ------- | ------------------ | --------- | ------ |
-| Comprador conclui checkout Stripe → retorna a `/checkout/success` | Tickets aparecem como ativos em "Meus Ingressos" | Print de "Meus Ingressos" com ingresso ativo | ⬜ |
-| Pagamento falha → retorna a `/checkout/cancel` | Pedido cancelado; estoque revertido no lot | Log de status do pedido + quantidade do lot | ⬜ |
-| Botão "Simular Pagamento" visível apenas com `PAYMENT_MODE=demo` | Botão ausente em modo `stripe`; presente em modo `demo` | Screenshot de ambos os modos | ⬜ |
-| Webhook com assinatura inválida enviado para `POST /api/webhooks/stripe` | HTTP 400 retornado; nenhuma transição de status disparada | Log do worker + status do pedido inalterado | ⬜ |
+| Comprador conclui checkout Stripe → retorna a `/checkout/success` | Tickets aparecem como ativos em "Meus Ingressos" | Print de "Meus Ingressos" com ingresso ativo | ✅ |
+| Pagamento falha → retorna a `/checkout/cancel` | Pedido cancelado; estoque revertido no lot | Log de status do pedido + quantidade do lot | ✅ |
+| Botão "Simular Pagamento" visível apenas com `PAYMENT_MODE=demo` | Botão ausente em modo `stripe`; presente em modo `demo` | Screenshot de ambos os modos | ✅ |
+| Webhook com assinatura inválida enviado para `POST /api/webhooks/stripe` | HTTP 400 retornado; nenhuma transição de status disparada | Log do worker + status do pedido inalterado | ✅ |
 
 ---
 
@@ -327,16 +327,16 @@ Use estes checkpoints para sprints executadas por agentes.
 
 ## 15. Critérios de Aceite
 
-- [ ] Todos os cenários críticos foram cobertos por testes (unit + integration + regression)
-- [ ] Os testes foram escritos antes da implementação (TDD)
-- [ ] A implementação atende ao comportamento esperado: checkout → pagamento → ticket ativo
-- [ ] Não houve regressão no fluxo `createOrder`
-- [ ] Stripe SDK não importado fora de `src/server/payment/`
-- [ ] Validação de assinatura HMAC obrigatória no webhook — sem bypass
-- [ ] `SimulatePaymentUseCase` bloqueado server-side quando `PAYMENT_MODE !== demo`
-- [ ] Checklist manual de homologação executado (4 cenários)
-- [ ] Rollback definido e testado (reversão por env var em até 15 minutos)
-- [ ] Documentação e changelog atualizados
+- [x] Todos os cenários críticos foram cobertos por testes (unit + integration + regression)
+- [x] Os testes foram escritos antes da implementação (TDD)
+- [x] A implementação atende ao comportamento esperado: checkout → pagamento → ticket ativo
+- [x] Não houve regressão no fluxo `createOrder`
+- [x] Stripe SDK não importado fora de `src/server/payment/`
+- [x] Validação de assinatura HMAC obrigatória no webhook — sem bypass
+- [x] `SimulatePaymentUseCase` bloqueado server-side quando `PAYMENT_MODE !== demo`
+- [x] Checklist manual de homologação executado (4 cenários)
+- [x] Rollback definido e testado (reversão por env var em até 15 minutos)
+- [x] Documentação e changelog atualizados
 
 ---
 
@@ -344,13 +344,13 @@ Use estes checkpoints para sprints executadas por agentes.
 
 A sprint só pode ser considerada concluída quando:
 
-- [ ] Escopo acordado entregue: `PaymentProvider`, use-cases de pagamento, webhook handler, fallback demo, páginas de retorno do checkout
-- [ ] Critérios de aceite atendidos
-- [ ] Testes relevantes passando: unit, integration, regression
-- [ ] Integração Stripe validada em ambiente de preview (modo teste)
-- [ ] Sem violação arquitetural crítica: Stripe isolado, use-cases portáveis
-- [ ] Sem blocker aberto
-- [ ] `PHASE-014-payment-gateway.md` e changelog atualizados
+- [x] Escopo acordado entregue: `PaymentProvider`, use-cases de pagamento, webhook handler, fallback demo, páginas de retorno do checkout
+- [x] Critérios de aceite atendidos
+- [x] Testes relevantes passando: unit, integration, regression
+- [x] Integração Stripe validada em ambiente de preview (modo teste)
+- [x] Sem violação arquitetural crítica: Stripe isolado, use-cases portáveis
+- [x] Sem blocker aberto
+- [x] `PHASE-014-payment-gateway.md` e changelog atualizados
 
 ---
 
