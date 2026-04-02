@@ -1,7 +1,7 @@
-export { createDb } from "./client";
-export type { Db } from "./client";
+export { createDb, createHttpDb } from "./client";
+export type { Db, HttpDb } from "./client";
 
-import { createDb, type Db } from "./client";
+import { createDb, createHttpDb, type Db, type HttpDb } from "./client";
 
 const getDatabaseUrl = (): string => {
   const url = (process.env.DATABASE_URL ?? process.env.TEST_DATABASE_URL)?.trim();
@@ -16,4 +16,14 @@ export const getDb = (): Db => {
     cachedDb = createDb(getDatabaseUrl());
   }
   return cachedDb;
+};
+
+let cachedHttpDb: HttpDb | null = null;
+
+/** HTTP-transport singleton — safe for auth and non-transactional queries. */
+export const getHttpDb = (): HttpDb => {
+  if (!cachedHttpDb) {
+    cachedHttpDb = createHttpDb(getDatabaseUrl());
+  }
+  return cachedHttpDb;
 };

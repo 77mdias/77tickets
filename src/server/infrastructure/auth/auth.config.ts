@@ -3,13 +3,13 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { createAuthMiddleware, APIError } from "better-auth/api";
 import { bearer } from "better-auth/plugins";
 
-import type { Db } from "@/server/infrastructure/db/client";
-import { getDb } from "@/server/infrastructure/db";
+import type { HttpDb } from "@/server/infrastructure/db/client";
+import { getHttpDb } from "@/server/infrastructure/db";
 import * as schema from "@/server/infrastructure/db/schema";
 
 const ALLOWED_SIGNUP_ROLES = ["customer", "organizer"] as const;
 
-export const createAuth = (db: Db) =>
+export const createAuth = (db: HttpDb) =>
   betterAuth({
     database: drizzleAdapter(db, {
       provider: "pg",
@@ -62,7 +62,7 @@ let cachedAuth: AuthInstance | null = null;
 
 export const getAuth = (): AuthInstance => {
   if (!cachedAuth) {
-    cachedAuth = createAuth(getDb());
+    cachedAuth = createAuth(getHttpDb());
   }
   return cachedAuth;
 };
