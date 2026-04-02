@@ -73,8 +73,8 @@ status: completed
 - [x] Discovery concluído: `ConfirmOrderPaymentUseCase` mapeado, ponto de extensão de email identificado
 - [x] Estratégia técnica validada: interface `EmailProvider` revisada e aprovada
 - [x] Primeira batch implementada: EMAIL-001, EMAIL-002, EMAIL-003 concluídos
-- [x] Integração validada: email de confirmação disparado e recebido em staging
-- [x] Encerramento pronto: todos os testes passando, cron operacional, fase concluída
+- [ ] Integração validada: email de confirmação disparado e recebido em staging
+- [ ] Encerramento pronto: todos os testes passando, cron operacional, homologação manual concluída
 
 ---
 
@@ -121,14 +121,14 @@ Estabelecer o módulo `src/server/email/` com contrato portável `EmailProvider`
   **Arquivos/áreas afetadas:** `src/server/email/email.provider.ts`, `src/server/email/index.ts`
 
   **Critérios de aceitação:**
-  - [ ] Interface `EmailProvider` exportada com métodos `sendOrderConfirmation` e `sendEventReminder`
-  - [ ] Nenhum import de `resend`, `@resend/node` ou qualquer SDK externo no arquivo do contrato
-  - [ ] Tipos de parâmetros usam tipos de domínio (Order, Ticket, Event) da camada de servidor
-  - [ ] Barrel export disponível via `src/server/email/index.ts`
+  - [x] Interface `EmailProvider` exportada com métodos `sendOrderConfirmation` e `sendEventReminder`
+  - [x] Nenhum import de `resend`, `@resend/node` ou qualquer SDK externo no arquivo do contrato
+  - [x] Tipos de parâmetros usam tipos de domínio (Order, Ticket, Event) da camada de servidor
+  - [x] Barrel export disponível via `src/server/email/index.ts`
 
   **Estratégia de teste:**
-  - [ ] Unitário: mock implementando a interface compila e é aceito pelo TypeScript
-  - [ ] Nenhum teste de runtime necessário para a interface pura
+  - [x] Unitário: mock implementando a interface compila e é aceito pelo TypeScript
+  - [x] Nenhum teste de runtime necessário para a interface pura
 
   **Dependências:** Nenhuma
   **Bloqueia:** EMAIL-002, EMAIL-004, EMAIL-005, EMAIL-008
@@ -140,10 +140,10 @@ Estabelecer o módulo `src/server/email/` com contrato portável `EmailProvider`
   **Status:** ✅ Concluída
 
   **Definição de pronto:**
-  - [ ] Implementação concluída
-  - [ ] Interface compila sem erros
-  - [ ] Critérios de aceitação atendidos
-  - [ ] Sem violação arquitetural evidente
+  - [x] Implementação concluída
+  - [x] Interface compila sem erros
+  - [x] Critérios de aceitação atendidos
+  - [x] Sem violação arquitetural evidente
 
 ---
 
@@ -171,15 +171,15 @@ Estabelecer o módulo `src/server/email/` com contrato portável `EmailProvider`
   **Arquivos/áreas afetadas:** `src/server/email/resend.email-provider.ts`
 
   **Critérios de aceitação:**
-  - [ ] `ResendEmailProvider` implementa todos os métodos da interface `EmailProvider`
-  - [ ] Retry com máximo 3 tentativas e exponential backoff implementado
-  - [ ] SDK Resend não importado em nenhum outro arquivo além deste
-  - [ ] Falha após 3 tentativas é logada mas não relançada (fire-and-forget seguro)
+  - [x] `ResendEmailProvider` implementa todos os métodos da interface `EmailProvider`
+  - [x] Retry com máximo 3 tentativas e exponential backoff implementado
+  - [x] SDK Resend não importado em nenhum outro arquivo além deste
+  - [x] Falha após 3 tentativas é logada mas não relançada (fire-and-forget seguro)
 
   **Estratégia de teste:**
-  - [ ] Unitário: mock do SDK Resend valida que retry é tentado 3 vezes antes de desistir
-  - [ ] Unitário: falha após 3 tentativas não lança exceção para o caller
-  - [ ] Integração: adapter usa `RESEND_API_KEY` e `EMAIL_FROM` do ambiente corretamente
+  - [x] Unitário: mock do SDK Resend valida que retry é tentado 3 vezes antes de desistir
+  - [x] Unitário: falha após 3 tentativas não lança exceção para o caller
+  - [x] Integração: adapter usa `RESEND_API_KEY` e `EMAIL_FROM` do ambiente corretamente
 
   **Dependências:** EMAIL-001
   **Bloqueia:** EMAIL-004, EMAIL-005
@@ -191,10 +191,10 @@ Estabelecer o módulo `src/server/email/` com contrato portável `EmailProvider`
   **Status:** ✅ Concluída
 
   **Definição de pronto:**
-  - [ ] Implementação concluída
-  - [ ] Testes adicionados/atualizados
-  - [ ] Critérios de aceitação atendidos
-  - [ ] Sem violação arquitetural evidente
+  - [x] Implementação concluída
+  - [x] Testes adicionados/atualizados
+  - [x] Critérios de aceitação atendidos
+  - [x] Sem violação arquitetural evidente
 
 ---
 
@@ -221,12 +221,12 @@ Estabelecer o módulo `src/server/email/` com contrato portável `EmailProvider`
   **Arquivos/áreas afetadas:** `.env.example`, `wrangler.toml` (seção `[vars]` ou secrets)
 
   **Critérios de aceitação:**
-  - [ ] `.env.example` atualizado com `RESEND_API_KEY` e `EMAIL_FROM`
-  - [ ] Instrução de configuração para Cloudflare Workers documentada
-  - [ ] Aplicação inicia sem erro quando variáveis estão ausentes (no-op com log de aviso)
+  - [x] `.env.example` atualizado com `RESEND_API_KEY` e `EMAIL_FROM`
+  - [x] Instrução de configuração para Cloudflare Workers documentada
+  - [x] Aplicação inicia sem erro quando variáveis estão ausentes (no-op com log de aviso)
 
   **Estratégia de teste:**
-  - [ ] Regressão: build e startup não falham quando `RESEND_API_KEY` está ausente
+  - [x] Regressão: build e startup não falham quando `RESEND_API_KEY` está ausente
 
   **Dependências:** Nenhuma
   **Bloqueia:** Nenhuma (necessário antes do deploy, não bloqueia desenvolvimento)
@@ -238,9 +238,9 @@ Estabelecer o módulo `src/server/email/` com contrato portável `EmailProvider`
   **Status:** ✅ Concluída
 
   **Definição de pronto:**
-  - [ ] Implementação concluída
-  - [ ] Critérios de aceitação atendidos
-  - [ ] Sem violação arquitetural evidente
+  - [x] Implementação concluída
+  - [x] Critérios de aceitação atendidos
+  - [x] Sem violação arquitetural evidente
 
 ---
 
@@ -283,17 +283,17 @@ Implementar os dois use-cases de email na camada de aplicação: confirmação d
   **Arquivos/áreas afetadas:** `src/server/application/use-cases/send-order-confirmation-email.use-case.ts`, `src/server/application/use-cases/confirm-order-payment.use-case.ts`
 
   **Critérios de aceitação:**
-  - [ ] Use-case verifica `order.status === 'paid'` antes de disparar email
-  - [ ] QR code base64 gerado para cada ticket do pedido
-  - [ ] `EmailProvider.sendOrderConfirmation` chamado com order, tickets com QR codes e event
-  - [ ] Falha no provider não propaga exceção para o caller de `ConfirmOrderPaymentUseCase`
-  - [ ] Nenhum import de SDK Resend ou framework no arquivo do use-case
+  - [x] Use-case verifica `order.status === 'paid'` antes de disparar email
+  - [x] QR code base64 gerado para cada ticket do pedido
+  - [x] `EmailProvider.sendOrderConfirmation` chamado com order, tickets com QR codes e event
+  - [x] Falha no provider não propaga exceção para o caller de `ConfirmOrderPaymentUseCase`
+  - [x] Nenhum import de SDK Resend ou framework no arquivo do use-case
 
   **Estratégia de teste:**
-  - [ ] Unitário: verifica chamada ao provider com payload correto quando order.status === 'paid'
-  - [ ] Unitário: verifica ausência de chamada ao provider quando order.status !== 'paid'
-  - [ ] Regressão: falha no provider não quebra execução do caller
-  - [ ] Integração: handler de pagamento dispara use-case após transição paid
+  - [x] Unitário: verifica chamada ao provider com payload correto quando order.status === 'paid'
+  - [x] Unitário: verifica ausência de chamada ao provider quando order.status !== 'paid'
+  - [x] Regressão: falha no provider não quebra execução do caller
+  - [x] Integração: handler de pagamento dispara use-case após transição paid
 
   **Dependências:** EMAIL-001, EMAIL-002
   **Bloqueia:** EMAIL-009, EMAIL-010
@@ -305,10 +305,10 @@ Implementar os dois use-cases de email na camada de aplicação: confirmação d
   **Status:** ✅ Concluída
 
   **Definição de pronto:**
-  - [ ] Implementação concluída
-  - [ ] Testes adicionados/atualizados
-  - [ ] Critérios de aceitação atendidos
-  - [ ] Sem violação arquitetural evidente
+  - [x] Implementação concluída
+  - [x] Testes adicionados/atualizados
+  - [x] Critérios de aceitação atendidos
+  - [x] Sem violação arquitetural evidente
 
   **Notas adicionais:**
   - Integração com `ConfirmOrderPaymentUseCase` deve ser fire-and-forget para não impactar latência do fluxo de pagamento
@@ -338,15 +338,15 @@ Implementar os dois use-cases de email na camada de aplicação: confirmação d
   **Arquivos/áreas afetadas:** `src/server/application/use-cases/send-event-reminder-email.use-case.ts`
 
   **Critérios de aceitação:**
-  - [ ] Use-case lista apenas pedidos com status `paid` para o evento
-  - [ ] `EmailProvider.sendEventReminder` chamado para cada comprador elegível
-  - [ ] Use-case retorna sem erro quando nenhum pedido elegível encontrado
-  - [ ] Nenhum import de SDK Resend ou framework no arquivo do use-case
+  - [x] Use-case lista apenas pedidos com status `paid` para o evento
+  - [x] `EmailProvider.sendEventReminder` chamado para cada comprador elegível
+  - [x] Use-case retorna sem erro quando nenhum pedido elegível encontrado
+  - [x] Nenhum import de SDK Resend ou framework no arquivo do use-case
 
   **Estratégia de teste:**
-  - [ ] Unitário: verifica chamada ao provider para cada paid order do evento
-  - [ ] Unitário: verifica ausência de chamadas quando não há paid orders
-  - [ ] Regressão: pedidos cancelados ou expirados não recebem lembrete
+  - [x] Unitário: verifica chamada ao provider para cada paid order do evento
+  - [x] Unitário: verifica ausência de chamadas quando não há paid orders
+  - [x] Regressão: pedidos cancelados ou expirados não recebem lembrete
 
   **Dependências:** EMAIL-001, EMAIL-002
   **Bloqueia:** EMAIL-008
@@ -358,10 +358,10 @@ Implementar os dois use-cases de email na camada de aplicação: confirmação d
   **Status:** ✅ Concluída
 
   **Definição de pronto:**
-  - [ ] Implementação concluída
-  - [ ] Testes adicionados/atualizados
-  - [ ] Critérios de aceitação atendidos
-  - [ ] Sem violação arquitetural evidente
+  - [x] Implementação concluída
+  - [x] Testes adicionados/atualizados
+  - [x] Critérios de aceitação atendidos
+  - [x] Sem violação arquitetural evidente
 
 ---
 
@@ -403,16 +403,16 @@ Criar templates HTML responsivos para os dois tipos de email: confirmação de p
   **Arquivos/áreas afetadas:** `src/server/email/templates/order-confirmation.template.ts`
 
   **Critérios de aceitação:**
-  - [ ] Template renderiza QR codes inline via `<img src="data:image/png;base64,...">` para cada ticket
-  - [ ] Layout responsivo: funciona em 375px (mobile) sem overflow horizontal
-  - [ ] Inclui link clicável para `/meus-ingressos`
-  - [ ] Inclui nome do evento, data formatada e local
-  - [ ] Nenhuma dependência de React, shadcn, Tailwind ou qualquer framework de UI
+  - [x] Template renderiza QR codes inline via `<img src="data:image/png;base64,...">` para cada ticket
+  - [x] Layout responsivo: funciona em 375px (mobile) sem overflow horizontal
+  - [x] Inclui link clicável para `/meus-ingressos`
+  - [x] Inclui nome do evento, data formatada e local
+  - [x] Nenhuma dependência de React, shadcn, Tailwind ou qualquer framework de UI
 
   **Estratégia de teste:**
-  - [ ] Unitário: função retorna string HTML com QR code do ticket
-  - [ ] Unitário: função retorna string HTML com nome do evento e data
-  - [ ] Manual: rendering verificado em cliente de email em mobile e desktop
+  - [x] Unitário: função retorna string HTML com QR code do ticket
+  - [x] Unitário: função retorna string HTML com nome do evento e data
+  - [x] Manual: rendering verificado em cliente de email em mobile e desktop
 
   **Dependências:** EMAIL-001
   **Bloqueia:** EMAIL-004 (template necessário para o use-case)
@@ -424,10 +424,10 @@ Criar templates HTML responsivos para os dois tipos de email: confirmação de p
   **Status:** ✅ Concluída
 
   **Definição de pronto:**
-  - [ ] Implementação concluída
-  - [ ] Testes adicionados/atualizados
-  - [ ] Critérios de aceitação atendidos
-  - [ ] Sem violação arquitetural evidente
+  - [x] Implementação concluída
+  - [x] Testes adicionados/atualizados
+  - [x] Critérios de aceitação atendidos
+  - [x] Sem violação arquitetural evidente
 
 ---
 
@@ -454,14 +454,14 @@ Criar templates HTML responsivos para os dois tipos de email: confirmação de p
   **Arquivos/áreas afetadas:** `src/server/email/templates/event-reminder.template.ts`
 
   **Critérios de aceitação:**
-  - [ ] Template inclui nome do evento, data formatada e local
-  - [ ] CTA com link para `/meus-ingressos` visível e clicável
-  - [ ] Layout responsivo: funciona em 375px (mobile) sem overflow horizontal
-  - [ ] Nenhuma dependência de React, shadcn, Tailwind ou qualquer framework de UI
+  - [x] Template inclui nome do evento, data formatada e local
+  - [x] CTA com link para `/meus-ingressos` visível e clicável
+  - [x] Layout responsivo: funciona em 375px (mobile) sem overflow horizontal
+  - [x] Nenhuma dependência de React, shadcn, Tailwind ou qualquer framework de UI
 
   **Estratégia de teste:**
-  - [ ] Unitário: função retorna string HTML com nome do evento e link para /meus-ingressos
-  - [ ] Manual: rendering verificado em cliente de email em mobile
+  - [x] Unitário: função retorna string HTML com nome do evento e link para /meus-ingressos
+  - [x] Manual: rendering verificado em cliente de email em mobile
 
   **Dependências:** EMAIL-001
   **Bloqueia:** EMAIL-005 (template necessário para o use-case)
@@ -473,10 +473,10 @@ Criar templates HTML responsivos para os dois tipos de email: confirmação de p
   **Status:** ✅ Concluída
 
   **Definição de pronto:**
-  - [ ] Implementação concluída
-  - [ ] Testes adicionados/atualizados
-  - [ ] Critérios de aceitação atendidos
-  - [ ] Sem violação arquitetural evidente
+  - [x] Implementação concluída
+  - [x] Testes adicionados/atualizados
+  - [x] Critérios de aceitação atendidos
+  - [x] Sem violação arquitetural evidente
 
 ---
 
@@ -521,15 +521,15 @@ Criar o endpoint `POST /api/cron/event-reminders` que é acionado por Cloudflare
   **Arquivos/áreas afetadas:** `src/app/api/cron/event-reminders/route.ts`, `wrangler.toml`
 
   **Critérios de aceitação:**
-  - [ ] Endpoint retorna 401 quando `CRON_SECRET` header ausente ou inválido
-  - [ ] Endpoint retorna 200 com `{ processed: N }` quando executa com sucesso
-  - [ ] Endpoint retorna 200 com `{ processed: 0 }` quando nenhum evento elegível encontrado
-  - [ ] `SendEventReminderEmailUseCase` chamado para cada evento com `startsAt` na janela de 23h-25h
+  - [x] Endpoint retorna 401 quando `CRON_SECRET` header ausente ou inválido
+  - [x] Endpoint retorna 200 com `{ processed: N }` quando executa com sucesso
+  - [x] Endpoint retorna 200 com `{ processed: 0 }` quando nenhum evento elegível encontrado
+  - [x] `SendEventReminderEmailUseCase` chamado para cada evento com `startsAt` na janela de 23h-25h
 
   **Estratégia de teste:**
-  - [ ] Unitário: handler retorna 401 sem `CRON_SECRET` válido
-  - [ ] Unitário: handler chama use-case para eventos na janela correta
-  - [ ] Unitário: handler retorna 200 sem erro quando nenhum evento elegível
+  - [x] Unitário: handler retorna 401 sem `CRON_SECRET` válido
+  - [x] Unitário: handler chama use-case para eventos na janela correta
+  - [x] Unitário: handler retorna 200 sem erro quando nenhum evento elegível
 
   **Dependências:** EMAIL-001, EMAIL-005
   **Bloqueia:** Nenhuma
@@ -541,10 +541,10 @@ Criar o endpoint `POST /api/cron/event-reminders` que é acionado por Cloudflare
   **Status:** ✅ Concluída
 
   **Definição de pronto:**
-  - [ ] Implementação concluída
-  - [ ] Testes adicionados/atualizados
-  - [ ] Critérios de aceitação atendidos
-  - [ ] Sem violação arquitetural evidente
+  - [x] Implementação concluída
+  - [x] Testes adicionados/atualizados
+  - [x] Critérios de aceitação atendidos
+  - [x] Sem violação arquitetural evidente
 
   **Notas adicionais:**
   - Adicionar `CRON_SECRET` ao `.env.example` e documentar configuração via `wrangler secret put CRON_SECRET`
@@ -589,14 +589,14 @@ Garantir cobertura de testes unitários, de integração e regressão para os fl
   **Arquivos/áreas afetadas:** `tests/unit/server/application/use-cases/send-order-confirmation-email.use-case.test.ts`
 
   **Critérios de aceitação:**
-  - [ ] Teste verifica chamada ao provider com order, todos os tickets e event corretos
-  - [ ] Teste verifica que QR codes (data URLs) estão presentes no payload
-  - [ ] Teste verifica ausência de chamada ao provider quando order.status === 'cancelled'
-  - [ ] Teste verifica ausência de chamada ao provider quando order.status === 'expired'
+  - [x] Teste verifica chamada ao provider com order, todos os tickets e event corretos
+  - [x] Teste verifica que QR codes (data URLs) estão presentes no payload
+  - [x] Teste verifica ausência de chamada ao provider quando order.status === 'cancelled'
+  - [x] Teste verifica ausência de chamada ao provider quando order.status === 'expired'
 
   **Estratégia de teste:**
-  - [ ] Unitário: `EmailProvider` mockado
-  - [ ] Regressão: status não-paid bloqueia envio
+  - [x] Unitário: `EmailProvider` mockado
+  - [x] Regressão: status não-paid bloqueia envio
 
   **Dependências:** EMAIL-004
   **Bloqueia:** Nenhuma
@@ -608,9 +608,9 @@ Garantir cobertura de testes unitários, de integração e regressão para os fl
   **Status:** ✅ Concluída
 
   **Definição de pronto:**
-  - [ ] Testes implementados e passando
-  - [ ] Critérios de aceitação atendidos
-  - [ ] Sem violação arquitetural evidente
+  - [x] Testes implementados e passando
+  - [x] Critérios de aceitação atendidos
+  - [x] Sem violação arquitetural evidente
 
 ---
 
@@ -637,12 +637,12 @@ Garantir cobertura de testes unitários, de integração e regressão para os fl
   **Arquivos/áreas afetadas:** `tests/integration/server/api/confirm-payment-sends-email.test.ts`
 
   **Critérios de aceitação:**
-  - [ ] Teste confirma que `EmailProvider.sendOrderConfirmation` é chamado após transição para `paid`
-  - [ ] Teste confirma que `order.status === 'paid'` mesmo se `EmailProvider` lançar exceção
-  - [ ] Teste usa `EmailProvider` mockado — sem dependência de Resend real
+  - [x] Teste confirma que `EmailProvider.sendOrderConfirmation` é chamado após transição para `paid`
+  - [x] Teste confirma que `order.status === 'paid'` mesmo se `EmailProvider` lançar exceção
+  - [x] Teste usa `EmailProvider` mockado — sem dependência de Resend real
 
   **Estratégia de teste:**
-  - [ ] Integração: handler → use-case de pagamento → use-case de email → provider mockado
+  - [x] Integração: handler → use-case de pagamento → use-case de email → provider mockado
 
   **Dependências:** EMAIL-004, EMAIL-009
   **Bloqueia:** Nenhuma
@@ -654,9 +654,9 @@ Garantir cobertura de testes unitários, de integração e regressão para os fl
   **Status:** ✅ Concluída
 
   **Definição de pronto:**
-  - [ ] Testes implementados e passando
-  - [ ] Critérios de aceitação atendidos
-  - [ ] Sem violação arquitetural evidente
+  - [x] Testes implementados e passando
+  - [x] Critérios de aceitação atendidos
+  - [x] Sem violação arquitetural evidente
 
 ---
 
@@ -682,13 +682,13 @@ Garantir cobertura de testes unitários, de integração e regressão para os fl
   **Arquivos/áreas afetadas:** `tests/regression/email-not-sent-for-non-paid-orders.test.ts`
 
   **Critérios de aceitação:**
-  - [ ] Teste cobre status `cancelled` — sem chamada ao provider
-  - [ ] Teste cobre status `expired` — sem chamada ao provider
-  - [ ] Teste cobre status `pending` — sem chamada ao provider
-  - [ ] Teste falha se o guard `order.status === 'paid'` for removido da implementação
+  - [x] Teste cobre status `cancelled` — sem chamada ao provider
+  - [x] Teste cobre status `expired` — sem chamada ao provider
+  - [x] Teste cobre status `pending` — sem chamada ao provider
+  - [x] Teste falha se o guard `order.status === 'paid'` for removido da implementação
 
   **Estratégia de teste:**
-  - [ ] Regressão: guard de status verificado para múltiplos estados inválidos
+  - [x] Regressão: guard de status verificado para múltiplos estados inválidos
 
   **Dependências:** EMAIL-004, EMAIL-009
   **Bloqueia:** Nenhuma
@@ -700,9 +700,9 @@ Garantir cobertura de testes unitários, de integração e regressão para os fl
   **Status:** ✅ Concluída
 
   **Definição de pronto:**
-  - [ ] Testes implementados e passando
-  - [ ] Critérios de aceitação atendidos
-  - [ ] Sem violação arquitetural evidente
+  - [x] Testes implementados e passando
+  - [x] Critérios de aceitação atendidos
+  - [x] Sem violação arquitetural evidente
 
 ---
 
