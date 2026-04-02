@@ -215,7 +215,7 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 
 > Equivalente ao Sprint 018. **Entrada:** Gate da Fase 13 aprovado.
 
-**Objetivo:** extrair backend como serviço NestJS independente em `packages/backend/` sem alterar domain/application.
+**Objetivo:** extrair backend como serviço NestJS independente em `packages/backend/` sem alterar domain/application. Deploy no Render. Frontend permanece em Vinext/Cloudflare Workers.
 
 **Entregas:**
 - `packages/backend/` com NestJS bootstrapped (porta 3001)
@@ -223,35 +223,35 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 - 7 controllers NestJS (events, lots, orders, checkin, coupons, webhooks, cron)
 - Guards: `SessionGuard`, `RolesGuard`, `OwnershipGuard`
 - `DatabaseModule`, `EmailModule`, `PaymentModule` como NestJS DI providers
-- Deploy no Railway com health check
+- Deploy no Render com health check (`render.yaml`)
 
-### Fase 15 - Next.js Frontend Migration (Status: Planned - High Technical Priority)
+### Fase 15 - Vinext → NestJS API Integration (Status: Planned - High Technical Priority)
 
 > Equivalente ao Sprint 019.
 
-**Objetivo:** migrar frontend de Vinext para Next.js 15 App Router em `packages/web/`.
+**Objetivo:** conectar o frontend Vinext (que permanece em Cloudflare Workers) ao backend NestJS deployado no Render, substituindo as chamadas internas aos handlers Vinext por requisições HTTP ao NestJS.
 
 **Entregas:**
-- `packages/web/` com Next.js 15 + Tailwind 4 + shadcn/ui
-- 9 rotas migradas: `/`, `/eventos/[slug]`, `/checkout/*`, `/meus-ingressos`, `/admin`, `/checkin`, `/login`
-- `lib/api-client.ts` apontando para Railway NestJS
-- Server Actions para mutações (createOrder, checkinTicket, createEvent, createLot)
-- Better Auth com Next.js (cookies HttpOnly) + middleware de proteção
-- Deploy no Vercel com E2E smoke tests passando
+- `src/lib/api-client.ts` com `apiFetch` centralizado para NestJS Render URL
+- CORS configurado no NestJS para aceitar domínio Cloudflare Workers
+- Sessão Better Auth cross-origin (`SameSite=None; Secure`)
+- Todos os handlers internos do Vinext removidos
+- `API_BASE_URL` configurada via `wrangler.toml` e GitHub Secrets
+- E2E smoke tests passando no stack integrado: Cloudflare Workers + NestJS Render + Neon
 
 ### Fase 16 - Production Hardening + Launch (Status: Planned - High Technical Priority)
 
 > Equivalente ao Sprint 020.
 
-**Objetivo:** observabilidade, performance, staging e go-live oficial.
+**Objetivo:** observabilidade, performance, staging e go-live oficial no stack definitivo: NestJS/Render (backend) + Vinext/Cloudflare Workers (frontend).
 
 **Entregas:**
-- Sentry em NestJS e Next.js (error tracking + tracing)
-- Winston structured logging com request-id correlation
-- `GET /api/health` com DB check; Lighthouse CI no pipeline
-- Staging environment (Railway staging + Vercel preview + Neon branch)
-- 4 runbooks atualizados + `payment-failure.md`
-- `MIGRATION-COMPLETE.md`, `GO-LIVE-CHECKLIST.md`, CHANGELOG versionado
+- Sentry em NestJS (error tracking + tracing); Sentry browser SDK no Vinext (client-side)
+- Winston structured logging com request-id correlation no NestJS
+- `GET /api/health` com DB check; Lighthouse CI no pipeline contra Cloudflare Workers URL
+- Staging environment (Render staging + Cloudflare Workers preview + Neon branch)
+- 4 runbooks atualizados para NestJS/Render + Vinext/Cloudflare Workers + `payment-failure.md`
+- `MIGRATION-COMPLETE.md` (backend migration), `GO-LIVE-CHECKLIST.md`, CHANGELOG versionado
 
 ---
 
@@ -325,5 +325,5 @@ Evoluir o demo full-stack atual para uma base de produto pronta para migração 
 
 ### Sprints Planejadas — Fase de Migração
 18. Sprint 018: NestJS Backend Extraction. ⚠️ Requer gate Sprint 017.
-19. Sprint 019: Next.js Frontend Migration.
+19. Sprint 019: Vinext → NestJS API Integration.
 20. Sprint 020: Production Hardening + Launch.

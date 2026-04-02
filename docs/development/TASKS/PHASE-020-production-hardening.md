@@ -13,7 +13,7 @@ status: draft
 **Modo principal:** mixed (backend + infra)
 **Status Geral:** ⏳ 0% (0/15 tarefas completas) — FASE PLANEJADA
 **ETA:** 1.5 semanas
-**Pré-requisito:** Fase 019 — Next.js Frontend Migration ✅ (Next.js no Vercel + NestJS no Railway)
+**Pré-requisito:** Fase 019 — Vinext → NestJS API Integration ✅ (Vinext/Cloudflare Workers integrado ao NestJS Render)
 **Owner:** @jeandias
 **Docs relacionadas:** `docs/development/SPRINTS/SPRINT-020.md`, `docs/infrastructure/`
 
@@ -39,12 +39,12 @@ status: draft
 
 ## 🎯 Objetivos da Fase
 
-- Configurar Sentry em NestJS e Next.js para error tracking e tracing
-- Substituir `console.log` por structured logging (Winston) com correlação de request-id
+- Configurar Sentry em NestJS para error tracking e tracing
+- Substituir `console.log` por structured logging (Winston) com correlação de request-id no NestJS
 - Implementar `GET /api/health` com check real do banco de dados
-- Atingir Core Web Vitals: LCP < 2.5s, CLS < 0.1 nas páginas críticas
-- Configurar staging environment completo com dados mascarados
-- Atualizar os 4 runbooks para o novo stack (NestJS + Next.js)
+- Atingir Core Web Vitals: LCP < 2.5s, CLS < 0.1 nas páginas críticas do Cloudflare Workers
+- Configurar staging environment completo: Render staging + Cloudflare Workers preview + Neon branch
+- Atualizar os 4 runbooks para o stack definitivo (NestJS/Render + Vinext/Cloudflare Workers)
 - Realizar go-live oficial com checklist completado
 
 ---
@@ -52,27 +52,27 @@ status: draft
 ## 🗺️ Dependências, Batches e Caminho Crítico
 
 ### Dependências macro
-- Sprint 019 completa: Next.js no Vercel + NestJS no Railway
+- Sprint 019 completa: Vinext/Cloudflare Workers integrado ao NestJS Render
 - Contas Sentry criadas (free tier disponível)
 - Staging environment URLs conhecidas
 
 ### Caminho crítico
 1. PROD-001 (Sentry NestJS) — base da observabilidade
 2. PROD-003 (Structured logging) — depende de PROD-001 para correlação
-3. PROD-004 (Health check) — necessário para Railway health check
+3. PROD-004 (Health check) — necessário para Render health check
 4. PROD-009 (Staging environment) — necessário para testes de smoke em staging
 5. PROD-014 (Go-live checklist) — validação final
 6. PROD-015 (CHANGELOG versão final) — encerramento formal
 
 ### Paralelização possível
-- PROD-002 (Sentry Next.js) em paralelo com PROD-001
-- PROD-005, PROD-006, PROD-007 (performance) em paralelo
+- PROD-002 (Sentry browser SDK no Vinext) em paralelo com PROD-001
+- PROD-005, PROD-007 (performance backend + Lighthouse CI) em paralelo
 - PROD-008 (Lighthouse CI) independente
 - PROD-012, PROD-013 (documentação) em paralelo com infraestrutura
 - PROD-010, PROD-011 (infra complementar) após PROD-009
 
 ### Checkpoints
-- [ ] Sentry ativo em ambos (NestJS + Next.js)
+- [ ] Sentry ativo em NestJS (Render) + Sentry browser SDK no Vinext (opcional)
 - [ ] Structured logging com request-id funcionando
 - [ ] Core Web Vitals dentro do target
 - [ ] Staging environment validado com smoke tests
@@ -90,7 +90,8 @@ status: draft
 Dar visibilidade operacional à plataforma: erros capturados no Sentry, logs estruturados com correlação e health check para monitoramento de infra.
 
 #### Escopo da categoria
-- Sentry em NestJS e Next.js
+- Sentry em NestJS (Render) para error tracking server-side
+- Sentry browser SDK no Vinext para erros client-side (opcional)
 - Winston structured logging no NestJS
 - Health check endpoint no NestJS
 
@@ -137,37 +138,41 @@ Dar visibilidade operacional à plataforma: erros capturados no Sentry, logs est
 
 ---
 
-- [ ] **PROD-002** — Sentry SDK em Next.js: client errors + server errors + Web Vitals
+- [ ] **PROD-002** — Sentry browser SDK no Vinext para erros client-side
 
   **Modo recomendado:** frontend
   **Tipo:** infra
 
   **Descrição curta:**
-  - `@sentry/nextjs` instalado em `packages/web`
-  - `sentry.client.config.ts` e `sentry.server.config.ts`
-  - Web Vitals automático: LCP, FCP, CLS, FID enviados para Sentry
-  - Error boundaries integrados com Sentry
+  - Adicionar `@sentry/browser` como script no Vinext para capturar erros JS client-side
+  - Configurar `dsn` do Sentry e `environment` (production/staging)
+  - Error boundaries no Vinext integrados com `Sentry.captureException`
+  - `beforeSend`: filtrar erros de rede esperados (CORS, offline)
 
-  **Arquivos/áreas afetadas:** `packages/web/sentry.client.config.ts`, `packages/web/sentry.server.config.ts`, `packages/web/next.config.ts`
+  **Contexto mínimo:**
+  - Cloudflare Workers não tem runtime `@sentry/nextjs` — usar `@sentry/browser` no bundle client-side
+  - Erros de API (4xx/5xx) não precisam ser capturados aqui — NestJS já captura via PROD-001
+  - Apenas erros de JS puro no browser (runtime errors, UI crashes)
+
+  **Arquivos/áreas afetadas:** `src/app/` — entry point client do Vinext
 
   **Critérios de aceitação:**
-  - [ ] Erros client-side aparecem no Sentry com contexto de usuário
-  - [ ] Web Vitals visíveis no Sentry Performance
-  - [ ] `NEXT_PUBLIC_SENTRY_DSN` configurado no Vercel
+  - [ ] Erro JS client-side aparece no Sentry com stack trace
+  - [ ] `environment: 'production'` configurado corretamente
 
   **Estratégia de teste:**
   - [ ] Manual: trigger de erro client-side → verificar no Sentry
 
-  **Dependências:** NEXT-001 (packages/web existente)
+  **Dependências:** Sprint 019 completa (Vinext integrado ao NestJS)
   **Pode rodar em paralelo com:** PROD-001
 
-  **Prioridade:** 🔴 Crítica
+  **Prioridade:** 🟡 Média
   **Estimativa:** 1h
   **Responsável:** @jeandias
   **Status:** ⏳ Pendente
 
   **Definição de pronto:**
-  - [ ] Sentry Next.js ativo
+  - [ ] Sentry browser SDK ativo no Vinext
 
 ---
 
@@ -189,10 +194,10 @@ Dar visibilidade operacional à plataforma: erros capturados no Sentry, logs est
   - [ ] Todos os logs em formato JSON com request-id
   - [ ] Mesmo request-id em todos os logs de uma requisição (usando AsyncLocalStorage)
   - [ ] `console.log` removido de todos os arquivos em `packages/backend/`
-  - [ ] Logs visíveis no Railway dashboard
+  - [ ] Logs visíveis no Render dashboard
 
   **Estratégia de teste:**
-  - [ ] Integração: fazer request e verificar logs no Railway
+  - [ ] Integração: fazer request e verificar logs no Render
 
   **Dependências:** PROD-001
   **Pode rodar em paralelo com:** PROD-004
@@ -217,7 +222,7 @@ Dar visibilidade operacional à plataforma: erros capturados no Sentry, logs est
   - `GET /api/health` retorna `{ status: 'ok', db: 'connected', uptime, version }`
   - Executa `SELECT 1` para verificar conexão com banco
   - Se DB inacessível: retorna `{ status: 'degraded', db: 'error' }` com HTTP 503
-  - Railway e Railway Healthcheck usa este endpoint
+  - Render e Render Healthcheck usa este endpoint
 
   **Arquivos/áreas afetadas:** `packages/backend/src/api/health/health.controller.ts`
 
@@ -228,7 +233,7 @@ Dar visibilidade operacional à plataforma: erros capturados no Sentry, logs est
 
   **Estratégia de teste:**
   - [ ] Integração: health check com DB acessível e inacessível
-  - [ ] Integração: verificar que Railway usa este endpoint para healthcheck
+  - [ ] Integração: verificar que Render usa este endpoint para healthcheck
 
   **Dependências:** NEST-002 (NestJS bootstrap)
   **Pode rodar em paralelo com:** PROD-003
@@ -246,43 +251,42 @@ Dar visibilidade operacional à plataforma: erros capturados no Sentry, logs est
 ### 📦 Performance — Bundle, imagens e caching
 
 #### Objetivo
-Garantir que o Next.js atinge os targets de Core Web Vitals e que o bundle JS está dentro do limite aceitável para a experiência de usuário.
+Garantir que o Vinext/Cloudflare Workers atinge os targets de Core Web Vitals e que o NestJS serve respostas com cache headers adequados para rotas read-only.
 
 #### Escopo da categoria
-- Bundle analysis das páginas críticas
-- `next/image` para imagens de eventos
+- Bundle audit do Vinext Worker (tamanho do JS servido ao browser)
 - Cache-Control no NestJS para rotas read-only
-- Lighthouse CI no GitHub Actions
+- Lighthouse CI no GitHub Actions contra Cloudflare Workers URL
 
 #### Riscos da categoria
-- Bundle pode ser acima de 200KB se componentes shadcn/ui não forem lazy-loaded
+- Bundle do Vinext Worker pode ser pesado se dependências de shadcn/ui não estiverem sendo tree-shaked
 - Lighthouse CI pode falhar em ambiente CI com latência alta — usar `preset: desktop`
 
 #### Performance.1 — Otimização
 
-- [ ] **PROD-005** — Bundle analysis: `@next/bundle-analyzer` nas páginas críticas
+- [ ] **PROD-005** — Bundle audit do Vinext Worker
 
   **Modo recomendado:** frontend
   **Tipo:** refactor
 
   **Descrição curta:**
-  - Instalar `@next/bundle-analyzer`
-  - `ANALYZE=true npm run build` para ver bundle por página
-  - Identificar componentes pesados e aplicar `dynamic(() => import(...), { ssr: false })`
-  - Meta: páginas críticas (/, /eventos/[slug], /checkout) < 200KB JS parsed
+  - Analisar o tamanho do bundle JS do Vinext servido ao browser
+  - Identificar dependências pesadas (gráficos, QR, scanner) e aplicar lazy loading / code splitting onde possível
+  - Verificar se `shadcn/ui` e outras libs estão sendo tree-shaked corretamente
+  - Garantir que imagens de eventos têm `loading="lazy"` e dimensões explícitas para evitar CLS
 
-  **Arquivos/áreas afetadas:** `packages/web/next.config.ts`, `packages/web/src/app/`
+  **Arquivos/áreas afetadas:** `src/app/` (Vinext), bundler config
 
   **Critérios de aceitação:**
-  - [ ] Bundle analyzer mostra breakdown por página
-  - [ ] Páginas críticas < 200KB JS parsed
-  - [ ] Componentes pesados (gráficos, QR, scanner) lazy-loaded
+  - [ ] Componentes pesados (QrScanner, gráficos) carregados lazy
+  - [ ] Imagens com `loading="lazy"` e width/height definidos
+  - [ ] Bundle do Worker dentro do limite suportado pelo Cloudflare Workers (< 1MB gzipado)
 
   **Estratégia de teste:**
-  - [ ] Manual: `ANALYZE=true npm run build` e inspecionar visualmente
+  - [ ] Manual: inspecionar Network tab e confirmar lazy loading
 
-  **Dependências:** NEXT-001 (packages/web existente)
-  **Pode rodar em paralelo com:** PROD-006, PROD-007, PROD-008
+  **Dependências:** Sprint 019 completa
+  **Pode rodar em paralelo com:** PROD-007, PROD-008
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 2h
@@ -292,40 +296,6 @@ Garantir que o Next.js atinge os targets de Core Web Vitals e que o bundle JS es
   **Definição de pronto:**
   - [ ] Bundle dentro do limite
   - [ ] Lazy loading aplicado onde necessário
-
----
-
-- [ ] **PROD-006** — `next/image` para imagens de eventos (`imageUrl`)
-
-  **Modo recomendado:** frontend
-  **Tipo:** refactor
-
-  **Descrição curta:**
-  - Substituir `<img src={event.imageUrl}>` por `<Image src={event.imageUrl} fill sizes="...">` em todas as páginas
-  - Configurar `remotePatterns` no `next.config.ts` para aceitar URLs externas
-  - Lazy loading automático (below the fold)
-  - LQIP (blur placeholder) onde disponível
-
-  **Arquivos/áreas afetadas:** `packages/web/src/app/page.tsx`, `packages/web/src/app/eventos/[slug]/page.tsx`, `packages/web/next.config.ts`
-
-  **Critérios de aceitação:**
-  - [ ] Todas as `<img>` de eventos trocadas por `<Image>` do Next.js
-  - [ ] `remotePatterns` configurado para os domínios de imagem usados
-  - [ ] LCP melhora nas páginas com imagem acima do fold
-
-  **Estratégia de teste:**
-  - [ ] Manual: Lighthouse no mobile verifica LCP
-
-  **Dependências:** NEXT-004, NEXT-005
-  **Pode rodar em paralelo com:** PROD-005, PROD-007
-
-  **Prioridade:** 🟡 Alta
-  **Estimativa:** 1h
-  **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
-
-  **Definição de pronto:**
-  - [ ] next/image em todas as páginas
 
 ---
 
@@ -344,7 +314,7 @@ Garantir que o Next.js atinge os targets de Core Web Vitals e que o bundle JS es
   **Critérios de aceitação:**
   - [ ] Rotas públicas retornam Cache-Control correto
   - [ ] Rotas autenticadas retornam `private, no-store`
-  - [ ] Vercel CDN cacheia as rotas públicas automaticamente
+  - [ ] Cloudflare CDN cacheia as rotas públicas do NestJS automaticamente
 
   **Estratégia de teste:**
   - [ ] Manual: verificar headers no browser DevTools
@@ -369,7 +339,7 @@ Garantir que o Next.js atinge os targets de Core Web Vitals e que o bundle JS es
 
   **Descrição curta:**
   - `.github/workflows/lighthouse.yml` rodando em PRs
-  - `lhci autorun` contra Vercel preview URL
+  - `lhci autorun` contra Cloudflare Workers preview URL
   - Budget: LCP ≤ 2500ms, CLS ≤ 0.1, FID ≤ 100ms, performance score ≥ 80
   - PR bloqueado se qualquer página crítica falhar o budget
 
@@ -383,8 +353,8 @@ Garantir que o Next.js atinge os targets de Core Web Vitals e que o bundle JS es
   **Estratégia de teste:**
   - [ ] Integração: abrir PR e verificar Lighthouse CI
 
-  **Dependências:** NEXT-017 (Vercel deploy)
-  **Pode rodar em paralelo com:** PROD-005, PROD-006, PROD-007
+  **Dependências:** VINX-013 (Cloudflare Workers deploy)
+  **Pode rodar em paralelo com:** PROD-005, PROD-007
 
   **Prioridade:** 🟡 Alta
   **Estimativa:** 2h
@@ -402,13 +372,13 @@ Garantir que o Next.js atinge os targets de Core Web Vitals e que o bundle JS es
 Configurar um staging environment completo com dados mascarados para validar deploys antes de produção, e otimizar o gerenciamento de secrets e connection pooling.
 
 #### Escopo da categoria
-- Staging environment: Railway staging + Vercel preview + Neon branch
+- Staging environment: Render staging + Cloudflare Workers preview + Neon branch
 - GitHub Environments separados (staging/production)
 - Connection pooling tuning no Neon
 
 #### Riscos da categoria
 - Neon branch de staging pode ter dados desatualizados — atualizar periodicamente
-- Railway free tier pode ter cold start de 30s — documentar no runbook
+- Render free tier pode ter cold start de 30s — documentar no runbook
 
 - [ ] **PROD-009** — Staging environment completo
 
@@ -416,22 +386,22 @@ Configurar um staging environment completo com dados mascarados para validar dep
   **Tipo:** infra
 
   **Descrição curta:**
-  - Railway: criar serviço `77tickets-staging` com branch `staging` do GitHub
-  - Vercel: ativar preview deployments para branch `staging`
+  - Render: criar serviço `77tickets-staging` com branch `staging` do GitHub
+  - Cloudflare Workers: ativar Wrangler preview deployments para branch `staging`
   - Neon: criar branch `staging` do banco (fork do main, com PII removido)
   - `STAGING_DATABASE_URL` apontando para Neon staging branch
 
-  **Arquivos/áreas afetadas:** `.github/workflows/cd-vercel.yml`, configuração Railway e Neon
+  **Arquivos/áreas afetadas:** `.github/workflows/cd-workers.yml`, configuração Render e Neon
 
   **Critérios de aceitação:**
-  - [ ] Push para branch `staging` deploya ambos Railway e Vercel staging
+  - [ ] Push para branch `staging` deploya ambos Render staging e Cloudflare Workers preview
   - [ ] Smoke tests `--env=staging` passam 100%
   - [ ] Dados de staging não contêm PII real
 
   **Estratégia de teste:**
   - [ ] Integração: push para staging e smoke tests
 
-  **Dependências:** NEXT-018, NEST-020
+  **Dependências:** VINX-013, NEST-020
   **Bloqueia:** PROD-010
   **Pode rodar em paralelo com:** PROD-005 a PROD-008
 
@@ -487,7 +457,7 @@ Configurar um staging environment completo com dados mascarados para validar dep
 
   **Descrição curta:**
   - Trocar `DATABASE_URL` do modo `session` para `transaction` mode do Neon (PgBouncer)
-  - Ajustar `max` connections no pool do Drizzle de acordo com Railway free tier (10 max)
+  - Ajustar `max` connections no pool do Drizzle de acordo com Render free tier (10 max)
   - Adicionar log de warning se pool estiver próximo do limite
 
   **Arquivos/áreas afetadas:** `packages/backend/src/infrastructure/database/database.module.ts`
@@ -534,17 +504,17 @@ Atualizar toda a documentação operacional para o novo stack, criar o go-live c
   **Tipo:** docs
 
   **Descrição curta:**
-  - `docs/infrastructure/runbooks/auth-failure.md` — atualizar para Next.js + Better Auth cookies
-  - `docs/infrastructure/runbooks/checkin-failure.md` — atualizar para NestJS + Railway logs
+  - `docs/infrastructure/runbooks/auth-failure.md` — atualizar para Better Auth + NestJS/Render + Vinext/Cloudflare Workers
+  - `docs/infrastructure/runbooks/checkin-failure.md` — atualizar para NestJS/Render logs
   - `docs/infrastructure/runbooks/checkout-failure.md` — atualizar para NestJS + Stripe webhooks
   - `docs/infrastructure/runbooks/payment-failure.md` — NOVO: Stripe webhook failure, order stuck in pending
 
   **Arquivos/áreas afetadas:** `docs/infrastructure/runbooks/` (3 atualizados + 1 novo)
 
   **Critérios de aceitação:**
-  - [ ] Cada runbook tem: sintomas, diagnóstico (links Sentry + Railway/Vercel logs), passos de resolução
+  - [ ] Cada runbook tem: sintomas, diagnóstico (links Sentry + Render logs), passos de resolução
   - [ ] `payment-failure.md` criado com cenários: webhook não recebido, order stuck, assinatura inválida
-  - [ ] Links para Sentry, Railway e Vercel dashboards nos runbooks
+  - [ ] Links para Sentry e Render dashboards nos runbooks
 
   **Estratégia de teste:**
   - [ ] Manual: peer review dos runbooks
@@ -568,8 +538,8 @@ Atualizar toda a documentação operacional para o novo stack, criar o go-live c
   **Tipo:** docs
 
   **Descrição curta:**
-  - Resumo executivo da migração Vinext → NestJS + Next.js
-  - Decisões técnicas tomadas: monorepo, Better Auth shared DB, Railway + Vercel
+  - Resumo executivo da migração do backend: Vinext handlers → NestJS Render (frontend Vinext/Cloudflare Workers permanece)
+  - Decisões técnicas tomadas: monorepo packages/backend, Better Auth shared DB, Render para NestJS
   - Lessons learned: o que funcionou, o que foi mais difícil
   - Estado final: arquivos criados, tests passando, deploys ativos
 
@@ -669,8 +639,8 @@ Atualizar toda a documentação operacional para o novo stack, criar o go-live c
 - **Suites necessárias:** Lighthouse CI, smoke scripts, health check HTTP
 - **Cobertura alvo:** Core Web Vitals ≥ 80 score, smoke tests 100%, health check < 100ms
 - **Comandos de verificação:**
-  - `curl https://api.77tickets.railway.app/api/health`
-  - `cd packages/web && ANALYZE=true next build`
+  - `curl https://ticketflow-api.onrender.com/api/health`
+  - Bundle audit do Vinext Worker (inspecionar build output do Cloudflare Workers)
   - `npx lhci autorun --config=lighthouserc.json`
   - `node scripts/smoke/purchase-flow.ts --env=staging`
   - `node scripts/smoke/checkin-flow.ts --env=staging`
@@ -678,7 +648,7 @@ Atualizar toda a documentação operacional para o novo stack, criar o go-live c
 - **Estado atual:** ⏳ Pendente — fase não iniciada
 - **Fluxos críticos a validar manualmente:**
   - Erro proposital no NestJS aparece no Sentry com stack trace e request-id
-  - Logs do Railway mostram JSON estruturado com request-id consistente
+  - Logs do Render mostram JSON estruturado com request-id consistente
   - Lighthouse CI na home: LCP < 2.5s, CLS < 0.1
   - Go-live checklist completo e todos os itens marcados
 
@@ -691,15 +661,15 @@ Atualizar toda a documentação operacional para o novo stack, criar o go-live c
 
 ### Riscos em aberto
 - Sentry pode capturar PII involuntariamente — mitigar com `beforeSend` filter (PROD-001)
-- Railway free tier tem cold start de 30s — documentar no runbook de operações
+- Render free tier tem cold start de 30s — documentar no runbook de operações
 - Lighthouse CI em ambiente CI pode variar — usar `preset: desktop` para estabilidade
-- Vinext/Cloudflare Workers sendo aposentado: manter por 7 dias como fallback após go-live
+- Render free tier tem cold start de 30s — documentar no runbook de operações
 
 ### Decisões importantes
-- Go-live: DNS/URL oficial aponta para Vercel + Railway; Vinext permanece como fallback por 7 dias
+- Go-live: NestJS Render em produção + Vinext/Cloudflare Workers como frontend definitivo; Vinext não é aposentado
 - Sentry free tier (5k events/mês): suficiente para demo/portfolio
 - Neon free tier: 512MB storage, 3 branches — suficiente para staging + production
-- Railway free tier: $5 crédito/mês — suficiente para demo com baixo tráfego
+- Render free tier: $5 crédito/mês — suficiente para demo com baixo tráfego
 
 ---
 
@@ -716,18 +686,18 @@ Atualizar toda a documentação operacional para o novo stack, criar o go-live c
 
 ## ✅ Checklist de Encerramento da Fase
 
-- [ ] Sentry ativo em NestJS e Next.js — eventos chegando ao dashboard
-- [ ] Structured logging com request-id funcionando — logs JSON no Railway
+- [ ] Sentry ativo em NestJS (Render) — eventos chegando ao dashboard
+- [ ] Structured logging com request-id funcionando — logs JSON no Render
 - [ ] `GET /api/health` retornando 200 com DB check
 - [ ] Core Web Vitals: LCP < 2.5s e CLS < 0.1 nas páginas críticas
-- [ ] Bundle das páginas críticas < 200KB JS parsed
+- [ ] Bundle do Vinext Worker auditado e dentro do limite Cloudflare Workers
 - [ ] Staging environment funcionando com smoke tests 100%
 - [ ] GitHub Environments (staging / production) com secrets separados
 - [ ] 4 runbooks atualizados + `payment-failure.md` criado
 - [ ] `MIGRATION-COMPLETE.md` criado e revisado
 - [ ] Go-live checklist completo e todos os itens aprovados
 - [ ] CHANGELOG versionado com todas as sprints 014–020
-- [ ] Vinext/Cloudflare Workers mantido como fallback por 7 dias pós go-live
+- [ ] Vinext/Cloudflare Workers deployado como frontend definitivo em produção
 - [ ] Aprovação final registrada
 - [ ] GOV closure criado em `docs/development/Logs/GOV-XXX-phase-020.md`
 

@@ -39,7 +39,7 @@ status: draft
 - ⏳ Fase planejada — aguardando gate da Sprint 017
 - 🔴 Dependência crítica: MIGRATION-GATE.md aprovado antes de iniciar
 - 🧪 Meta: todos os 514 integration tests passando contra NestJS backend
-- 📦 Entrega: `packages/backend/` rodando independente no Railway
+- 📦 Entrega: `packages/backend/` rodando independente no Render
 
 ---
 
@@ -50,7 +50,7 @@ status: draft
 - Injetar repositórios Drizzle, EmailProvider e PaymentProvider via NestJS DI
 - Validar `tsc --noEmit` em isolamento no packages/backend (zero deps de Vinext/Cloudflare)
 - Adaptar integration tests para rodar contra NestJS
-- Deploy funcionando no Railway com health check
+- Deploy funcionando no Render com health check
 
 ---
 
@@ -117,7 +117,7 @@ Configurar o monorepo com workspaces e inicializar o projeto NestJS, garantindo 
 
   **Contexto mínimo:**
   - Monorepo com npm workspaces (compatível com Node 22)
-  - `packages/backend/` deve ser autônomo para deploy no Railway
+  - `packages/backend/` deve ser autônomo para deploy no Render
   - Manter `src/` original do Vinext intocado durante a migração
 
   **Implementação sugerida:**
@@ -828,15 +828,15 @@ Criar os módulos NestJS para Database (Drizzle + repositórios), Email (ResendE
 ### 📦 Tests & Deploy — Validação e configuração de deploy
 
 #### Objetivo
-Adaptar os integration tests existentes para rodar contra o NestJS backend e configurar o deploy no Railway.
+Adaptar os integration tests existentes para rodar contra o NestJS backend e configurar o deploy no Render.
 
 #### Escopo da categoria
 - 18 arquivos de integration tests adaptados para NestJS
-- `railway.json` com configuração de deploy
+- `render.yaml` com configuração de deploy
 
 #### Riscos da categoria
 - Tests podem depender de handler internals do Vinext
-- Railway pode ter limitações de plano free que afetam cold start
+- Render pode ter limitações de plano free que afetam cold start
 
 - [ ] **NEST-019** — Adaptar todos os integration tests para rodar contra NestJS
 
@@ -873,25 +873,25 @@ Adaptar os integration tests existentes para rodar contra o NestJS backend e con
 
 ---
 
-- [ ] **NEST-020** — Deploy config: `railway.json` e variáveis de ambiente template
+- [ ] **NEST-020** — Deploy config: `render.yaml` e variáveis de ambiente template
 
   **Modo recomendado:** backend
   **Tipo:** infra
 
   **Descrição curta:**
-  - `packages/backend/railway.json` com buildCommand e startCommand
+  - `packages/backend/render.yaml` com buildCommand e startCommand
   - `packages/backend/.env.example` com todas as env vars necessárias
   - Health check path: `/api/health` (implementado em NEST-004 context)
 
-  **Arquivos/áreas afetadas:** `packages/backend/railway.json`, `packages/backend/.env.example`
+  **Arquivos/áreas afetadas:** `packages/backend/render.yaml`, `packages/backend/.env.example`
 
   **Critérios de aceitação:**
-  - [ ] Railway deploya o backend com `npm run build && npm run start:prod`
+  - [ ] Render deploya o backend com `npm run build && npm run start:prod`
   - [ ] Health check `/api/health` responde 200 após deploy
   - [ ] Todas as env vars documentadas no `.env.example`
 
   **Estratégia de teste:**
-  - [ ] Integração: deploy manual no Railway e smoke test HTTP
+  - [ ] Integração: deploy manual no Render e smoke test HTTP
 
   **Dependências:** NEST-002
   **Pode rodar em paralelo com:** NEST-019
@@ -902,7 +902,7 @@ Adaptar os integration tests existentes para rodar contra o NestJS backend e con
   **Status:** ⏳ Pendente
 
   **Definição de pronto:**
-  - [ ] Deploy funcionando no Railway
+  - [ ] Deploy funcionando no Render
   - [ ] Health check OK
 
 ---
@@ -957,7 +957,7 @@ Adaptar os integration tests existentes para rodar contra o NestJS backend e con
 - [ ] `tsc --noEmit` verde em packages/backend isolado
 - [ ] Zero acoplamentos de Vinext/Cloudflare no domain/application portados
 - [ ] 514/514 integration tests passando contra NestJS
-- [ ] NestJS respondendo no Railway com health check OK
+- [ ] NestJS respondendo no Render com health check OK
 - [ ] RBAC testado: todos os 4 roles (customer/organizer/admin/checker)
 - [ ] Stripe webhook funcionando com assinatura HMAC válida
 - [ ] Documentação atualizada (CHANGELOG, ROADMAP, TASKS)

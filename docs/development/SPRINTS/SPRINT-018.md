@@ -12,7 +12,7 @@ status: planned
 
 ## 1. Objetivo
 
-Extrair o backend como serviço NestJS independente em `packages/backend/`, portando domain e application sem nenhuma alteração de lógica de negócio, mapeando todos os endpoints existentes em NestJS Controllers com Guards, e viabilizando deploy autônomo no Railway — inaugurando a Fase 1 da migração incremental documentada em `docs/development/MIGRATION-PLAN.md`.
+Extrair o backend como serviço NestJS independente em `packages/backend/`, portando domain e application sem nenhuma alteração de lógica de negócio, mapeando todos os endpoints existentes em NestJS Controllers com Guards, e viabilizando deploy autônomo no Render — inaugurando a Fase 1 da migração incremental documentada em `docs/development/MIGRATION-PLAN.md`. O frontend permanece em Vinext/Cloudflare Workers; a integração com o novo backend ocorre na Sprint 019.
 
 ---
 
@@ -32,12 +32,12 @@ Extrair o backend como serviço NestJS independente em `packages/backend/`, port
 ## 3. Contexto
 
 - **Problema atual:** O projeto opera como monolito Vinext + Cloudflare Workers (demo). O runtime atual acopla entrega HTTP, autenticação, e infraestrutura em adaptadores proprietários do Vinext. A Fase 1 da migração requer separar o backend em um serviço NestJS portável e deployável de forma independente.
-- **Impacto no sistema/produto:** Separação backend/frontend com deploy independente; adoção do padrão de DI nativo do NestJS; eliminação da dependência de Vinext/Cloudflare Workers no backend; base para a migração do frontend em Sprint 019.
+- **Impacto no sistema/produto:** Separação backend/frontend com deploy independente; adoção do padrão de DI nativo do NestJS; eliminação da dependência de Vinext/Cloudflare Workers no backend; base para a integração Vinext → NestJS da Sprint 019. O frontend permanece em Vinext/Cloudflare Workers indefinidamente.
 - **Riscos envolvidos:** Regressão de endpoints se o mapeamento de Controllers divergir dos contratos existentes. Acoplamento residual de imports Vinext/Cloudflare no domain/application detectado apenas no `tsc --noEmit` isolado. Raw body parser do NestJS conflitando com validação de assinatura Stripe no `WebhooksController`.
 - **Áreas afetadas:** `packages/backend/` (novo workspace), `packages/domain/` (novo — cópia portada do domain existente), `src/server/domain/`, `src/server/application/`, `src/server/repositories/`, `src/server/payment/`, `src/server/email/`
 - **Fluxos de usuário impactados:** Todos os endpoints públicos e autenticados — eventos, lotes, pedidos, check-in, cupons, webhooks Stripe, cron de lembretes.
 - **Premissas importantes:** Domain e application foram validados como framework-agnostic na Sprint 017. O gate de portabilidade (`tsc --noEmit` sem dependências de Vinext) foi aprovado antes de iniciar esta sprint. A extração não altera nenhum business logic — apenas muda a camada de entrega.
-- **Fora de escopo nesta sprint:** Migração do frontend (Sprint 019), GraphQL, WebSockets, multi-tenant, autenticação OAuth providers novos, migração de banco de dados.
+- **Fora de escopo nesta sprint:** Integração Vinext → NestJS (Sprint 019), GraphQL, WebSockets, multi-tenant, autenticação OAuth providers novos, migração de banco de dados. O frontend Vinext/Cloudflare Workers nunca é migrado.
 
 ---
 
@@ -50,7 +50,7 @@ Extrair o backend como serviço NestJS independente em `packages/backend/`, port
 - [ ] Repositórios Drizzle injetados via NestJS DI module providers no `DatabaseModule`
 - [ ] `EmailModule` e `PaymentModule` como NestJS providers injetáveis nos use-cases
 - [ ] Todos os integration tests passando contra NestJS backend (não mais Vinext) — 18 arquivos, 514 testes
-- [ ] Deploy funcionando: `railway.json` (ou `render.yaml`) configurado com healthCheck, buildCommand e startCommand
+- [ ] Deploy funcionando: `render.yaml` configurado com healthCheckPath, buildCommand e startCommand
 
 ---
 
@@ -61,7 +61,7 @@ Extrair o backend como serviço NestJS independente em `packages/backend/`, port
 - [ ] Domain e application confirmados framework-agnostic via `tsc --noEmit` isolado (resultado do gate Sprint 017)
 - [ ] Contratos de repositório em `src/server/repositories/*.contracts.ts` definidos e estáveis
 - [ ] `EmailProvider` e `PaymentProvider` com contratos portáveis (Sprints 015 e 014 concluídas)
-- [ ] Ambiente Railway ou Render disponível para configuração do deploy
+- [ ] Ambiente Render ou Render disponível para configuração do deploy
 
 ### Ordem macro recomendada
 1. Discovery — mapear todos os endpoints e contratos de entrega existentes no Vinext
@@ -136,7 +136,7 @@ Definir comportamento verificável para cada Controller e Guard antes de qualque
 | Integração | Todos os Controllers — paridade Vinext vs NestJS | Sim | 18 arquivos, 514 testes adaptados |
 | Unitário | `SessionGuard`, `RolesGuard`, `OwnershipGuard` | Sim | Mocks de sessão e user roles |
 | Auth/AuthZ | Endpoints com restrição de role e ownership | Sim | Cada guard validado isoladamente |
-| Smoke | NestJS sobe e responde `/api/events` no Railway | Sim | Validação pós-deploy |
+| Smoke | NestJS sobe e responde `/api/events` no Render | Sim | Validação pós-deploy |
 | Regressão | Todos os fluxos críticos (checkout, checkin, coupons) | Sim | Parity test completo |
 
 ---
@@ -196,7 +196,7 @@ Implementar o mínimo necessário para fazer os testes passarem respeitando a or
 - [ ] NEST-011: `WebhooksController` com raw body parser para Stripe HMAC validation
 - [ ] NEST-012: `CronController` com endpoint de lembretes protegido por `CRON_SECRET`
 - [ ] NEST-019: Adaptar 18 arquivos de integration tests para HTTP client apontando para NestJS
-- [ ] NEST-020: Configurar `railway.json` com buildCommand, startCommand e healthCheck
+- [ ] NEST-020: Configurar `render.yaml` com buildCommand, startCommand e healthCheckPath
 
 ### Regras obrigatórias
 - Domain e application em `packages/backend/src/` não recebem nenhum decorator NestJS — permanecem framework-agnostic
@@ -210,9 +210,9 @@ Implementar o mínimo necessário para fazer os testes passarem respeitando a or
 ### Mudanças previstas
 - **Backend:** `packages/backend/` (novo workspace completo com NestJS)
 - **API:** Todos os endpoints existentes replicados com contratos idênticos de request/response
-- **Frontend:** Sem alteração nesta sprint — continua apontando para Vinext até Sprint 019
+- **Frontend:** Sem alteração nesta sprint — permanece em Vinext/Cloudflare Workers indefinidamente
 - **Banco/Schema:** Sem migration — mesma base Neon PostgreSQL com mesmos schemas Drizzle
-- **Infra/Config:** `railway.json` (ou `render.yaml`), `packages/backend/.env.example`, `package.json` raiz com workspaces
+- **Infra/Config:** `render.yaml`, `packages/backend/.env.example`, `package.json` raiz com workspaces
 - **Docs:** `PHASE-018-nestjs-migration.md` atualizado com progresso; `MIGRATION-PLAN.md` com marco Sprint 018 atingido
 
 ---
@@ -247,7 +247,7 @@ Após integration tests verdes, garantir que os limites entre camadas estejam n�
 - [ ] Executar `npm run lint:architecture` — sem violação de boundaries
 - [ ] Executar `cd packages/backend && npm run build` — build de produção limpo
 - [ ] Executar checklist manual de homologação (4 cenários abaixo)
-- [ ] Validar deploy no Railway com `DATABASE_URL` apontando para Neon PostgreSQL
+- [ ] Validar deploy no Render com `DATABASE_URL` apontando para Neon PostgreSQL
 
 ### Comandos finais
 ```bash
@@ -258,11 +258,11 @@ cd packages/backend && npm run build
 ```
 
 ### Rollout
-- **Estratégia de deploy:** Deploy no Railway como novo serviço independente. Vinext continua operando em paralelo durante toda a transição. Frontend aponta para Vinext até Sprint 019. O NestJS backend é validado em paralelo sem impactar o fluxo de produção atual.
-- **Uso de feature flag:** Não necessário para o backend NestJS isolado. A troca de URL do frontend para NestJS ocorre apenas na Sprint 019.
-- **Plano de monitoramento pós-release:** Verificar Railway logs para erros de boot e de conexão com Neon. Observar latência de endpoints críticos (`/api/events`, `/api/orders`) nos primeiros 30 minutos.
+- **Estratégia de deploy:** Deploy no Render como novo serviço independente. Vinext/Cloudflare Workers continua operando em paralelo durante toda a transição e permanece como o runtime de frontend definitivo. O NestJS backend é validado em paralelo sem impactar o fluxo de produção atual. A integração Vinext → NestJS ocorre na Sprint 019.
+- **Uso de feature flag:** Não necessário para o backend NestJS isolado. A atualização do API client do Vinext para apontar ao NestJS ocorre apenas na Sprint 019.
+- **Plano de monitoramento pós-release:** Verificar Render logs para erros de boot e de conexão com Neon. Observar latência de endpoints críticos (`/api/events`, `/api/orders`) nos primeiros 30 minutos.
 - **Métricas a observar:** Taxa de resposta 200 em `/api/events`; ausência de erros de `tsc`; 514 integration tests passando.
-- **Alertas esperados:** Erro de conexão com `DATABASE_URL` no boot se env vars não configuradas no Railway.
+- **Alertas esperados:** Erro de conexão com `DATABASE_URL` no boot se env vars não configuradas no Render.
 
 ### Responsáveis
 - **Backend:** @jeandias
@@ -273,7 +273,7 @@ cd packages/backend && npm run build
 
 ### Janela de deploy
 - **Horário recomendado:** Fora do horário de pico; após validação completa de integration tests
-- **Tempo de monitoramento:** 30 minutos após deploy no Railway
+- **Tempo de monitoramento:** 30 minutos após deploy no Render
 
 ---
 
@@ -284,7 +284,7 @@ cd packages/backend && npm run build
 - [ ] Checkpoint 3 — RED tests concluídos: integration tests adaptados falhando com `ECONNREFUSED`; unit tests de guards falhando com `Cannot find module`
 - [ ] Checkpoint 4 — GREEN alcançado: caminho crítico NEST-001→NEST-019 completo, todos os testes passando
 - [ ] Checkpoint 5 — Refatoração concluída: Controllers finos, Guards coesos, domain/application sem imports NestJS
-- [ ] Checkpoint 6 — Validação final concluída: deploy Railway funcional, `tsc --noEmit` limpo, 514 testes verdes
+- [ ] Checkpoint 6 — Validação final concluída: deploy Render funcional, `tsc --noEmit` limpo, 514 testes verdes
 
 ### Log resumido dos checkpoints
 | Checkpoint | Responsável | Resultado | Observações |
@@ -305,7 +305,7 @@ cd packages/backend && npm run build
 | `GET /api/events` no NestJS — mesmo resultado que no Vinext (parity test) | Lista de eventos com shape idêntico ao Vinext; HTTP 200 | Output JSON comparado lado a lado | ⬜ |
 | `POST /api/orders` com auth customer via NestJS cria pedido corretamente | Pedido criado com `status: 'pending'` e `checkoutUrl` retornado; HTTP 201 | Log do banco + resposta da API | ⬜ |
 | `POST /api/checkin` com auth checker no NestJS valida ticket ativo | Ticket marcado como usado; HTTP 200 com status de entrada | Log da transação + resposta da API | ⬜ |
-| NestJS sobe no Railway com `DATABASE_URL` e conecta ao Neon PostgreSQL | Boot sem erros; `/api/events` retorna HTTP 200 com dados reais | Log do Railway + resposta do healthCheck | ⬜ |
+| NestJS sobe no Render com `DATABASE_URL` e conecta ao Neon PostgreSQL | Boot sem erros; `/api/events` retorna HTTP 200 com dados reais | Log do Render + resposta do healthCheck | ⬜ |
 | `SessionGuard` rejeita request sem sessão válida | HTTP 401 com body estruturado `{ error: 'Unauthorized' }` | Resposta da requisição sem cookie de sessão | ⬜ |
 | Guard RBAC bloqueia customer acessando endpoint de organizer | HTTP 403 com body estruturado `{ error: 'Forbidden' }` | Resposta com token de customer em endpoint organizer | ⬜ |
 
@@ -314,14 +314,14 @@ cd packages/backend && npm run build
 ## 14. Plano de Rollback
 
 ### Gatilhos
-- Integration tests falhando em mais de 5% após deploy no Railway
+- Integration tests falhando em mais de 5% após deploy no Render
 - Erro de conexão com Neon PostgreSQL persistente após configuração de env vars
 - `tsc --noEmit` com erros de tipo em `packages/backend/` após refatoração
 - Import acidental de Vinext ou Cloudflare detectado em domain/application pelo `lint:architecture`
 - Comportamento divergente de endpoint entre NestJS e Vinext detectado em parity test
 
 ### Passos
-1. Remover URL do serviço NestJS Railway das configurações de acesso (frontend ainda aponta para Vinext — sem impacto para usuários)
+1. Remover URL do serviço NestJS Render das configurações de acesso (frontend ainda aponta para Vinext — sem impacto para usuários)
 2. Reverter commits de `packages/backend/` para versão estável anterior no branch
 3. Executar `npm run test:integration` contra Vinext para confirmar que nenhuma regressão foi introduzida no monolito existente
 4. Comunicar incidente e registrar causa provável no `docs/development/TASKS/PHASE-018-nestjs-migration.md`
@@ -348,7 +348,7 @@ cd packages/backend && npm run build
 - [ ] `SessionGuard`, `RolesGuard` e `OwnershipGuard` testados e funcionais
 - [ ] Webhook Stripe com raw body parser configurado e assinatura HMAC validada
 - [ ] Checklist de homologação executado (6 cenários)
-- [ ] Rollback definido: remover URL Railway sem impacto em Vinext (até 30 minutos)
+- [ ] Rollback definido: remover URL Render sem impacto em Vinext (até 30 minutos)
 - [ ] `PHASE-018-nestjs-migration.md` atualizado com evidências de conclusão
 
 ---
@@ -357,7 +357,7 @@ cd packages/backend && npm run build
 
 A sprint só pode ser considerada concluída quando:
 
-- [ ] `packages/backend/` com NestJS completo, deployado e operacional no Railway
+- [ ] `packages/backend/` com NestJS completo, deployado e operacional no Render
 - [ ] `tsc --noEmit` limpo em `packages/backend/` — zero erros de tipo
 - [ ] 18 arquivos de integration tests passando 100% contra NestJS (514 testes)
 - [ ] Domain e application portados sem nenhuma alteração de business logic

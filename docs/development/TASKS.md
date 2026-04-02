@@ -25,7 +25,7 @@
 | 016 | Sprint 016 | `docs/development/TASKS/PHASE-016-discovery-analytics.md` | ⏳ Planejada | 0/18 |
 | 017 | Sprint 017 | `docs/development/TASKS/PHASE-017-ux-gate.md` | ⏳ Planejada | 0/15 |
 | 018 | Sprint 018 | `docs/development/TASKS/PHASE-018-nestjs-migration.md` | ⏳ Planejada | 0/20 |
-| 019 | Sprint 019 | `docs/development/TASKS/PHASE-019-nextjs-migration.md` | ⏳ Planejada | 0/19 |
+| 019 | Sprint 019 | `docs/development/TASKS/PHASE-019-nestjs-api-integration.md` | ⏳ Planejada | 0/13 |
 | 020 | Sprint 020 | `docs/development/TASKS/PHASE-020-production-hardening.md` | ⏳ Planejada | 0/15 |
 
 ## Ordem Recomendada de Execução (TDD-first)
@@ -53,7 +53,7 @@
 
 ### Planejadas — Fase de Migração (018–020)
 18. Fase 018: NestJS Backend Extraction — packages/backend/, controllers, guards, DI, Railway. ⚠️ Requer gate Sprint 017.
-19. Fase 019: Next.js Frontend Migration — packages/web/, pages, Server Actions, Vercel.
+19. Fase 019: Vinext → NestJS API Integration — conectar Cloudflare Workers ao NestJS Render.
 20. Fase 020: Production Hardening + Launch — Sentry, structured logging, Core Web Vitals, go-live.
 
 ## Regras Operacionais

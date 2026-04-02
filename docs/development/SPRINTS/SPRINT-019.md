@@ -1,255 +1,243 @@
 ---
-title: Sprint 019 — Next.js Frontend Migration
+title: Sprint 019 — Vinext → NestJS API Integration
 type: sprint
 mode: frontend
 approach: tdd-first
 status: planned
 ---
 
-# Sprint 019 — Next.js Frontend Migration
+# Sprint 019 — Vinext → NestJS API Integration
 
 ## 1. Objetivo
 
-Migrar o frontend de Vinext (Vite adapter para Cloudflare Workers) para Next.js 15 com App Router estável em `packages/web/`, com todas as páginas migradas, conectadas ao NestJS backend via API client, e deploy funcional no Vercel.
+Conectar o frontend Vinext (que permanece em Cloudflare Workers) ao backend NestJS deployado no Render, substituindo as chamadas internas aos handlers do Vinext por requisições HTTP ao NestJS, validando CORS, sessão cross-origin e todos os fluxos ponta a ponta no stack integrado.
 
 ---
 
 ## 2. Resumo Executivo
 
-- **Tipo da sprint:** migração
+- **Tipo da sprint:** integração
 - **Modo principal do Agent OS:** frontend
-- **Fase relacionada:** Fase 019 — Next.js Frontend Migration
+- **Fase relacionada:** Fase 019 — Vinext → NestJS API Integration
 - **Status:** 🟢 Planejada
 - **Prioridade:** 🔴 Crítica
 - **Owner principal:** @jeandias
-- **Dependências externas:** Sprint 018 ✅ (NestJS backend rodando em Railway)
-- **Janela estimada:** 2 semanas
+- **Dependências externas:** Sprint 018 ✅ (NestJS backend rodando no Render com URL conhecida)
+- **Janela estimada:** 1.5 semanas
 
 ---
 
 ## 3. Contexto
 
-- **Problema atual:** o frontend usa Vinext (Vite adapter para Cloudflare Workers), um framework experimental sem suporte de longo prazo, que acopla o runtime de apresentação à infraestrutura Cloudflare e dificulta a evolução para o stack definido no MIGRATION-PLAN.md.
-- **Impacto no sistema/produto:** substituição completa do runtime de frontend; deploy migra de Cloudflare Workers para Vercel; Server Actions do Next.js substituem os route handlers internos do Vinext.
-- **Riscos envolvidos:** diferenças entre o modelo de renderização do Vinext e do Next.js App Router (Server Components, Server Actions, streaming); integração do Better Auth com Next.js via cookies HttpOnly requer atenção ao modelo de sessão; funil de checkout depende de redirects do Stripe que devem ser testados no novo domínio Vercel.
-- **Áreas afetadas:** `packages/web/` (novo pacote), toda `src/app/` (migra para `packages/web/src/app/`).
-- **Fluxos de usuário impactados:** todos os fluxos de comprador (listagem, detalhe, checkout, meus ingressos), fluxo do organizador (admin dashboard), fluxo do checker (check-in via câmera).
-- **Premissas importantes:** domain e application não mudam — apenas a camada de apresentação migra; NestJS backend (Sprint 018) está pronto para receber requests do novo frontend; React 19 + Tailwind 4 + shadcn/ui são mantidos.
-- **Fora de escopo nesta sprint:** redesign visual, novos componentes UI, migração de backend (concluída na Sprint 018).
+- **Problema atual:** O Vinext atual tem frontend e backend colocados no mesmo processo — os handlers de API são funções internas do mesmo Worker. Após a Sprint 018, o backend existe como serviço NestJS independente no Render, mas o frontend Vinext ainda chama os handlers internos. A integração precisa redirecionar todas as chamadas para o NestJS externo.
+- **Impacto no sistema/produto:** Vinext passa a ser exclusivamente o runtime de apresentação; toda lógica de negócio e persistência é servida pelo NestJS no Render. O Cloudflare Workers continua como o ponto de entrada do comprador/checker/organizer.
+- **Riscos envolvidos:** CORS entre domínios distintos (Cloudflare Workers URL ≠ Render URL) exige configuração explícita no NestJS; cookies de sessão Better Auth precisam de `SameSite=None; Secure` e domínio correto para funcionar cross-origin; o Vinext pode ter dependências dos handlers internos não mapeadas.
+- **Áreas afetadas:** `src/app/` (todos os componentes com fetch/mutation), env vars do Cloudflare Workers (`wrangler.toml`), session handling no Vinext, CORS config no NestJS.
+- **Fluxos de usuário impactados:** todos — compra, meus ingressos, check-in, admin dashboard.
+- **Premissas importantes:** O frontend Vinext/Cloudflare Workers **não será migrado para Next.js** — permanece como runtime definitivo. O NestJS no Render é o único backend a partir desta sprint.
+- **Fora de escopo nesta sprint:** Migração de framework frontend, redesign visual, novos endpoints, mudanças em domain/application.
 
 ---
 
 ## 4. Critérios de Sucesso
 
-- [ ] `packages/web/` com Next.js 15 (App Router) bootstrapped com TypeScript strict e `src/` dir
-- [ ] Todas as 9 rotas migradas: `/`, `/eventos/[slug]`, `/checkout/success`, `/checkout/cancel`, `/meus-ingressos`, `/admin`, `/checkin`, `/login`
-- [ ] `lib/api-client.ts` apontando para NestJS backend URL com Authorization header
-- [ ] Server Actions implementadas: `createOrder`, `checkinTicket`, `createEvent`, `createLot`, `updateLot`
-- [ ] Better Auth integrado com Next.js (session via cookies HttpOnly, `auth()` helper server-side)
-- [ ] Middleware de proteção de rotas para `/admin`, `/meus-ingressos`, `/checkin`
-- [ ] Deploy no Vercel com `NEXT_PUBLIC_API_URL` apontando para Railway (NestJS)
-- [ ] E2E smoke tests passando no stack Next.js + NestJS integrado
+- [ ] Variável `API_BASE_URL` configurada no `wrangler.toml` (e `.dev.vars`) apontando para a URL do NestJS no Render
+- [ ] Handlers internos do Vinext desativados ou removidos — todas as chamadas vão para NestJS via HTTP fetch
+- [ ] CORS configurado no NestJS para aceitar o domínio do Cloudflare Workers (produção e preview)
+- [ ] Cookies de sessão Better Auth funcionando cross-origin (`SameSite=None; Secure`)
+- [ ] Todos os 9 fluxos de UI funcionando contra NestJS: listagem, detalhe de evento, checkout, meus ingressos, admin, checkin, login, stripe success/cancel
+- [ ] Integration tests adaptados para apontar ao NestJS Render — 18 arquivos, 514 testes passando
+- [ ] E2E smoke tests passando no stack integrado: Cloudflare Workers Vinext + NestJS Render + Neon PostgreSQL
 
 ---
 
 ## 5. Dependências e Sequenciamento
 
 ### Dependências de entrada
-- [ ] Sprint 018 concluída: NestJS backend rodando em Railway com endpoints de eventos, orders, checkin, auth
-- [ ] Better Auth configurado no NestJS com acesso ao banco Neon (schema users/sessions compartilhado)
-- [ ] Stripe webhooks configurados no NestJS, rotas de checkout/success/cancel funcionais
-- [ ] `NEXT_PUBLIC_API_URL` (Railway URL) disponível como secret no GitHub Actions
+- [ ] Sprint 018 concluída: NestJS no Render com URL pública conhecida, todos os endpoints respondendo
+- [ ] CORS habilitado no NestJS para o domínio Cloudflare Workers (configurado no NEST-002)
+- [ ] Better Auth com `trustedOrigins` incluindo o domínio Cloudflare Workers
+- [ ] `API_BASE_URL` disponível como secret no GitHub Actions (para CD do Cloudflare Workers)
 
 ### Ordem macro recomendada
-1. Discovery técnico: mapear rotas Vinext existentes e componentes a migrar
-2. Estratégia de comportamento e testes: definir contratos de Server Components e Server Actions
-3. RED tests: escrever testes de middleware, auth e Server Actions antes da implementação
-4. Setup: Next.js 15 scaffolding, Tailwind 4, shadcn/ui, api-client
-5. Auth: Better Auth adapter, `auth()` helper, middleware de proteção de rotas
-6. Pages: migrar rotas em ordem do caminho crítico (home → evento → meus-ingressos → admin)
-7. Server Actions: createOrder, checkinTicket, createEvent, createLot/updateLot
-8. Deploy: vercel.json, cd-vercel.yml, E2E smoke
-9. Refatoração e validação final
+1. Discovery: mapear todos os pontos de chamada interna aos handlers no Vinext
+2. Comportamento e testes: definir contratos do API client e sessão cross-origin
+3. RED tests: testes do API client e session middleware falhando antes da implementação
+4. CORS + session no NestJS: habilitar origens do Cloudflare Workers
+5. API client no Vinext: criar abstração HTTP para NestJS
+6. Migrar chamadas por domínio vertical (events → orders → checkin → admin)
+7. Auth/sessão cross-origin: validar cookie flow
+8. Deploy: atualizar Cloudflare Workers com `API_BASE_URL`
+9. Smoke tests e validação final
 
 ### Paralelização possível
-- NEXT-011, NEXT-012, NEXT-013, NEXT-014 (server actions) podem ser desenvolvidas em paralelo após NEXT-003 e NEXT-015
-- NEXT-006, NEXT-009, NEXT-010 (páginas de menor complexidade) podem ser desenvolvidas em paralelo após NEXT-016
-- NEXT-017 (vercel.json) pode ser preparado em paralelo com as páginas após NEXT-001
+- VINX-003, VINX-004, VINX-005 (chamadas de eventos, orders, checkin) em paralelo após VINX-002
+- VINX-006 (admin) em paralelo após VINX-002 + VINX-008
+- VINX-010 (deploy config) pode ser preparado cedo
 
 ### Caminho crítico
-- NEXT-001 → NEXT-002 → NEXT-003 → NEXT-015 → NEXT-016 → NEXT-004 → NEXT-005 → NEXT-007 → NEXT-008 → NEXT-019
+- VINX-001 → VINX-002 → VINX-008 → VINX-003 → VINX-004 → VINX-012 → VINX-013
 
 ---
 
 ## 6. Etapa 1 — Discovery Técnico
 
 ### Objetivo
-Mapear todas as rotas, componentes e dependências do Vinext atual antes de iniciar a migração, confirmando o delta real entre o comportamento existente e o modelo Next.js App Router.
+Mapear todos os pontos onde o frontend Vinext chama handlers internos, confirmar quais dependências de runtime precisam ser removidas, e verificar a estratégia de sessão do Better Auth para cross-origin.
 
 ### Checklist
-- [ ] Analisar `src/app/` atual: listar todas as rotas, layouts, loaders e componentes de cada página
-- [ ] Identificar quais componentes são puramente visuais (migração direta) e quais têm lógica de side-effect (precisam virar Server Actions)
-- [ ] Mapear uso de autenticação no Vinext: como sessão é lida, quais rotas são protegidas
-- [ ] Verificar componentes com acesso a câmera (`QrScanner`) — compatibilidade com Next.js App Router e Client Components
-- [ ] Mapear dependências de `TicketQR` (geração de QR code): confirmar compatibilidade server/client
-- [ ] Identificar variáveis de ambiente usadas atualmente e equivalentes no Next.js
-- [ ] Confirmar restrições de Tailwind 4 no contexto do `packages/web/` como pacote separado no monorepo
-- [ ] Verificar estratégia de sessão do Better Auth: cookies HttpOnly compatíveis com Vercel Edge e SSR
+- [ ] Listar todos os arquivos em `src/app/` que fazem fetch para `/api/*` ou chamam funções de handler diretamente
+- [ ] Identificar se as chamadas usam fetch nativo, um helper centralizado, ou chamadas diretas de função
+- [ ] Verificar como a sessão do Better Auth é lida no Vinext atualmente (cookie, header, contexto do Worker)
+- [ ] Confirmar que `SameSite=None; Secure` é suportado no Cloudflare Workers como cookie de resposta do NestJS
+- [ ] Verificar se `wrangler.toml` já tem suporte a variáveis de ambiente de texto (`[vars]`) ou se usa Secrets
+- [ ] Mapear quais handlers internos do Vinext podem ser removidos sem quebrar funcionalidade que não foi portada
+- [ ] Confirmar URL base do NestJS no Render (ex: `https://ticketflow-api.onrender.com`)
+- [ ] Verificar estrutura do CORS config atual no NestJS (Sprint 018) — confirmar que aceita Cloudflare Workers URL
 
 ### Saída esperada
-- Mapa completo de rotas Vinext → rotas Next.js App Router
-- Lista de componentes Client vs Server por página
-- Variáveis de ambiente mapeadas (`NEXT_PUBLIC_API_URL`, `BETTER_AUTH_SECRET`, etc.)
-- Riscos de compatibilidade conhecidos (QrScanner, TicketQR)
+- Lista completa de chamadas a serem migradas para API client
+- Confirmação do mecanismo de sessão cross-origin
+- `API_BASE_URL` definida e documentada
+- Estratégia de remoção dos handlers internos
 
 ---
 
 ## 7. Etapa 2 — Design de Comportamento e Estratégia de Testes
 
 ### Objetivo
-Definir contratos verificáveis para Server Components, Server Actions e middleware de auth antes de qualquer implementação.
+Definir contratos verificáveis para o API client, para o fluxo de sessão cross-origin e para o comportamento de cada fluxo de UI com o NestJS externo.
 
 ### Checklist
-- [ ] Definir contrato do `api-client.ts`: assinatura de `apiFetch`, tratamento de erros, injeção do Authorization header
-- [ ] Definir comportamento do middleware: quais rotas proteger, redirect target, como ler a sessão do cookie
-- [ ] Definir contrato das Server Actions: input Zod-validated, output `{ success, data?, error? }`
-- [ ] Confirmar que Server Actions não expõem totais de preço nem IDs de sessão direto ao client
-- [ ] Definir estratégia de testes: unitários para Server Actions, integração para middleware e api-client, E2E smoke para fluxos críticos
-- [ ] Confirmar comportamento de `/admin` para role `customer`: redirect ou 403
-- [ ] Confirmar comportamento de `/meus-ingressos` sem sessão: redirect para `/login`
+- [ ] Definir interface do `apiFetch(path, options)`: inclui `Authorization` ou cookie de sessão, trata 401/403/500 com error shapes consistentes
+- [ ] Definir comportamento de sessão: cookie `__session` deve ser enviado automaticamente nas requisições cross-origin com `credentials: 'include'`
+- [ ] Confirmar que o NestJS tem `Access-Control-Allow-Credentials: true` habilitado para os domínios do Cloudflare Workers
+- [ ] Definir comportamento de fallback para erros de rede (NestJS indisponível) — error boundary no Vinext
+- [ ] Confirmar que Server Actions do Vinext (mutações via form) podem ser substituídas por fetch direto ao NestJS com CSRF protection adequada
+- [ ] Definir testes de integração: API client chama URL correta, inclui credentials, trata erros
 
 ### Casos de teste planejados
-- [ ] Home page (`/`) carrega lista de eventos via NestJS corretamente como Server Component
-- [ ] `/meus-ingressos` redireciona para `/login` quando não autenticado
-- [ ] `/admin` retorna redirect ou 403 para role `customer`
-- [ ] `createOrder` Server Action chama `POST /api/orders` no NestJS e retorna `{ checkoutUrl }`
-- [ ] Middleware bloqueia `/admin` para sessão com role `customer`
-- [ ] `checkinTicket` Server Action retorna erro estruturado quando ticket já foi usado
-- [ ] Better Auth `auth()` helper server-side retorna `null` para request sem cookie de sessão válido
+- [ ] `apiFetch('/api/events')` chama `${API_BASE_URL}/api/events` com `credentials: 'include'`
+- [ ] `apiFetch('/api/orders', { method: 'POST', body })` envia JSON e retorna `checkoutUrl` do NestJS
+- [ ] Sessão inválida: NestJS retorna 401, `apiFetch` lança erro com shape `{ code: 'unauthorized' }`
+- [ ] CORS: request do Cloudflare Workers para NestJS não é bloqueado pelo browser
+- [ ] Cookie `__session` persiste após login e é enviado nas requisições subsequentes
 
 ### Matriz de testes
 | Tipo | Escopo | Obrigatório? | Observações |
 |------|--------|--------------|-------------|
-| Unitário | Server Actions (createOrder, checkinTicket, createEvent) | Sim | Validação Zod, error shape |
-| Integração | api-client, middleware de auth | Sim | Headers, redirects, RBAC |
-| E2E | Fluxo de compra, admin, checkin | Sim | Smoke no stack Vercel + Railway |
-| Regressão | Rotas públicas sem auth | Sim | Backward compat com URLs existentes |
-| Auth/AuthZ | Middleware para /admin, /meus-ingressos, /checkin | Sim | Roles customer, organizer, checker |
+| Unitário | `apiFetch` — URL composition, credentials, error handling | Sim | Mock de fetch |
+| Integração | CORS, session cookie flow | Sim | Teste contra NestJS local |
+| E2E | Fluxos: compra, meus ingressos, checkin, admin | Sim | Cloudflare Workers dev + NestJS local |
+| Regressão | Rotas públicas sem auth (/, /eventos/:slug) | Sim | Sem cookie de sessão |
+| Auth/AuthZ | Rotas protegidas com sessão expirada | Sim | 401 redireciona para login |
 
 ---
 
 ## 8. Etapa 3 — Testes Primeiro (TDD)
 
 ### Objetivo
-Criar testes RED que representem o comportamento esperado do middleware de auth, das Server Actions e do api-client antes de qualquer implementação.
+Criar testes RED que representem o comportamento esperado do API client e do fluxo de sessão cross-origin antes de qualquer implementação.
 
 ### Checklist
-- [ ] Escrever testes de middleware: rotas protegidas redirecionam sem sessão, passam com sessão válida
-- [ ] Escrever testes unitários para `createOrder` Server Action: chama api-client com payload correto, retorna checkoutUrl
-- [ ] Escrever testes unitários para `checkinTicket` Server Action: retorna erro estruturado para ticket inválido
-- [ ] Escrever testes de integração para `api-client`: injeta Authorization header, trata 401/403/500
-- [ ] Garantir que os testes falhem pelo motivo correto (middleware e Server Actions não existem ainda)
-- [ ] Adicionar testes de regressão para rotas públicas (`/`, `/eventos/[slug]`) acessíveis sem auth
+- [ ] Escrever teste unitário para `apiFetch`: verifica que URL base é composta corretamente com `API_BASE_URL`
+- [ ] Escrever teste unitário: `apiFetch` inclui `credentials: 'include'` em todas as requisições
+- [ ] Escrever teste unitário: `apiFetch` com resposta 401 lança `UnauthorizedError` com shape correto
+- [ ] Escrever teste de integração: CORS config no NestJS aceita origem do Cloudflare Workers
+- [ ] Escrever teste de integração: cookie de sessão é enviado nas requisições após login
+- [ ] Garantir que todos os testes falham pelo motivo correto antes da implementação
 
 ### Testes a implementar primeiro
-- [ ] Teste de integração: middleware redireciona `/admin` para `/login` sem sessão
-- [ ] Teste de integração: middleware permite `/admin` com sessão de role `organizer`
-- [ ] Teste unitário: `createOrder` valida input com Zod antes de chamar api-client
-- [ ] Teste unitário: `api-client.apiFetch` inclui `Authorization: Bearer <token>` no header
-- [ ] Teste de autorização: `auth()` helper retorna `null` sem cookie de sessão
-- [ ] Teste de regressão: página `/` acessível sem autenticação
+- [ ] Teste unitário: `apiFetch('/api/events')` → `fetch('https://render-url/api/events', { credentials: 'include' })`
+- [ ] Teste unitário: `apiFetch` propaga headers de auth corretamente
+- [ ] Teste de integração: `POST /api/orders` cross-origin retorna `checkoutUrl`
+- [ ] Teste de regressão: página de listagem de eventos carrega sem sessão
 
 ### Evidência RED
-- **Comando executado:** `cd packages/web && npx vitest run --reporter=verbose`
-- **Falha esperada observada:** testes falham com "Cannot find module" para middleware, Server Actions e api-client inexistentes
-- **Observações:** confirmar que o erro é ausência dos módulos, não erro de configuração do runner de testes
+- **Comando executado:** `npm run test:unit -- --testPathPattern="api-client"`
+- **Falha esperada observada:** `Cannot find module 'src/lib/api-client'`
+- **Observações:** confirmar que a falha é ausência do módulo, não erro de configuração
 
 ---
 
 ## 9. Etapa 4 — Implementação
 
 ### Objetivo
-Implementar o mínimo necessário para os testes passarem, na ordem do caminho crítico, preservando a separação entre camada de apresentação e domain/application.
+Implementar o mínimo necessário para os testes passarem, seguindo a ordem do caminho crítico: CORS → API client → sessão → migração de chamadas por fluxo → deploy.
 
 ### Checklist
-- [ ] Bootstrapar `packages/web/` com `create-next-app@latest` (TypeScript strict, App Router, `src/` dir)
-- [ ] Configurar Tailwind 4 e shadcn/ui no `packages/web/`
-- [ ] Implementar `packages/web/src/lib/api-client.ts` com `apiFetch`, Authorization header e tratamento de erros
-- [ ] Implementar Better Auth adapter para Next.js em `packages/web/src/lib/auth.ts` e `src/app/api/auth/[...all]/route.ts`
-- [ ] Implementar middleware de proteção de rotas em `packages/web/src/middleware.ts`
-- [ ] Migrar página `/` como Server Component com fetch via api-client
-- [ ] Migrar `/eventos/[slug]` com Server Component para dados do evento e Client Component para LotSelector
-- [ ] Migrar `/meus-ingressos` com guard de autenticação e componente `TicketQR`
-- [ ] Migrar `/admin` com guard de role e Server Components para dados; Client Components para formulários
-- [ ] Migrar `/checkin` com guard de role e `CheckinForm` + `QrScanner` como Client Components
-- [ ] Migrar `/login` com `LoginForm` do Better Auth
-- [ ] Implementar `/checkout/success` e `/checkout/cancel`
-- [ ] Implementar Server Actions: `createOrder`, `checkinTicket`, `createEvent`, `createLot`, `updateLot`
-- [ ] Criar `vercel.json` com rewrites, headers e referências a env vars
-- [ ] Criar ou atualizar GitHub Actions para deploy do `packages/web/` no Vercel
+- [ ] VINX-001: Atualizar CORS no NestJS (`packages/backend/src/main.ts`) — adicionar domínio(s) do Cloudflare Workers em `allowedOrigins`, habilitar `credentials: true`
+- [ ] VINX-002: Criar `src/lib/api-client.ts` no Vinext — `apiFetch(path, options)` com `API_BASE_URL` env, `credentials: 'include'`, error handling estruturado
+- [ ] VINX-003: Migrar chamadas de eventos para `apiFetch` — `GET /api/events`, `GET /api/events/:slug`
+- [ ] VINX-004: Migrar chamadas de orders para `apiFetch` — `POST /api/orders`, `GET /api/orders/mine`
+- [ ] VINX-005: Migrar chamadas de checkin para `apiFetch` — `POST /api/checkin`
+- [ ] VINX-006: Migrar chamadas de admin para `apiFetch` — events CRUD, lots, listEventOrders, analytics
+- [ ] VINX-007: Migrar chamadas de coupons para `apiFetch` — create, update
+- [ ] VINX-008: Validar sessão cross-origin — confirmar que cookie `__session` do Better Auth é enviado com `credentials: 'include'`; atualizar `trustedOrigins` no Better Auth config do NestJS
+- [ ] VINX-009: Remover ou desativar handlers internos do Vinext que foram portados ao NestJS — manter apenas o routing de páginas
+- [ ] VINX-010: Atualizar `wrangler.toml` com `[vars] API_BASE_URL = "https://ticketflow-api.onrender.com"` (valor de produção); atualizar `.dev.vars` com URL de desenvolvimento
+- [ ] VINX-011: Adaptar integration tests para rodar contra NestJS (substituir chamadas internas por HTTP para NestJS local na porta 3001)
+- [ ] VINX-012: E2E smoke tests no stack integrado: `scripts/smoke/purchase-flow.ts`, `scripts/smoke/checkin-flow.ts`
+- [ ] VINX-013: Deploy Cloudflare Workers com `API_BASE_URL` configurada via Wrangler Secrets
 
 ### Regras obrigatórias
-- Não confiar em input do client para calcular totais de pedido — Server Actions delegam toda lógica de preço ao NestJS
-- Auth e verificação de role no middleware e nos Server Actions, não apenas no frontend
-- Nenhuma implementação de Server Action sem teste correspondente
-- Componentes de câmera (`QrScanner`) e geração de QR (`TicketQR`) marcados como `'use client'`
-- Variáveis de ambiente com prefixo `NEXT_PUBLIC_` apenas para valores não-sensíveis
+- Nenhuma regra de negócio no `apiFetch` — apenas transporte HTTP
+- `credentials: 'include'` em todas as requisições autenticadas
+- Nenhum preço ou total calculado no frontend — delegar ao NestJS
+- `API_BASE_URL` nunca hardcoded — sempre via env var
+- Handlers internos do Vinext removidos após validação de que NestJS cobre o mesmo endpoint
 
 ### Mudanças previstas
-- **Backend:** nenhuma — NestJS permanece inalterado
-- **API:** nenhuma — contratos de API do NestJS não mudam
-- **Frontend:** `packages/web/` inteiro (novo pacote); `src/app/` no Vinext torna-se legado até validação
-- **Banco/Schema:** nenhuma — mesmo banco Neon, mesmo schema Better Auth
-- **Infra/Config:** `vercel.json`, GitHub Actions `cd-vercel.yml`, secrets `NEXT_PUBLIC_API_URL` e `BETTER_AUTH_SECRET`
-- **Docs:** atualizar `docs/infrastructure/` com novo diagrama de deploy (Vercel + Railway + Neon)
+- **Backend (NestJS):** CORS atualizado com domínio Cloudflare Workers; `trustedOrigins` do Better Auth atualizado
+- **Frontend (Vinext):** `src/lib/api-client.ts` novo; chamadas internas substituídas por `apiFetch`; handlers internos removidos
+- **Infra/Config:** `wrangler.toml` com `API_BASE_URL`; GitHub Secrets com `API_BASE_URL` para CD
+- **Docs:** `docs/infrastructure/` com diagrama atualizado (Cloudflare Workers → Render → Neon)
 
 ---
 
 ## 10. Etapa 5 — Refatoração
 
 ### Objetivo
-Garantir clareza na separação entre Server Components, Client Components e Server Actions após os testes passarem, e eliminar duplicações entre o código migrado e eventuais adaptações temporárias.
+Garantir que `apiFetch` é o único ponto de chamada ao NestJS no codebase Vinext, eliminar duplicações entre chamadas diretas e via API client, e confirmar que handlers internos foram completamente removidos.
 
 ### Checklist
-- [ ] Revisar todos os componentes migrados e confirmar marcação correta de `'use client'` (somente onde necessário)
-- [ ] Extrair utilitários compartilhados (formatação de data, formatação de moeda) para `packages/web/src/lib/`
-- [ ] Remover qualquer duplicação de lógica de fetch entre Server Components e Server Actions
-- [ ] Garantir que todos os testes continuem verdes após refatoração
-- [ ] Verificar que `api-client.ts` não contém lógica de negócio — apenas transporte HTTP
+- [ ] Verificar com `grep -r "fetch.*\/api\/" src/app/` que não existem chamadas diretas a `/api/*` sem passar pelo `apiFetch`
+- [ ] Verificar que nenhum handler interno (route handler do Vinext) está sendo chamado diretamente de componentes de UI
+- [ ] Garantir que error handling é consistente em todos os fluxos — erros do NestJS são tratados com o mesmo shape
+- [ ] Garantir que todos os testes continuam verdes após refatoração
 
 ### Saída esperada
-- Separação clara entre Server e Client Components em cada página
-- `api-client.ts` como único ponto de chamada ao NestJS backend
-- Sem duplicação de guards de auth entre middleware e Server Actions
-- Todos os testes verdes
+- `apiFetch` como único ponto de saída para chamadas ao NestJS
+- Handlers internos do Vinext ausentes ou inerts
+- Error boundaries no Vinext cobrindo falhas de rede ao NestJS
 
 ---
 
 ## 11. Etapa 6 — Validação, QA e Rollout
 
 ### Testes obrigatórios finais
-- [ ] Executar `cd packages/web && next build` — sem erros de TypeScript ou de build
-- [ ] Executar `cd packages/web && next lint` — sem warnings críticos
-- [ ] Executar testes unitários das Server Actions
-- [ ] Executar testes de integração do middleware e api-client
-- [ ] Executar `node scripts/smoke/purchase-flow.ts` apontando para Vercel preview URL
-- [ ] Validar fluxo manual ponta a ponta: compra, admin, checkin
+- [ ] Executar `npm run test:unit` — sem falhas no api-client e session tests
+- [ ] Executar `npm run test:integration` — 514 testes passando contra NestJS
+- [ ] Executar `node scripts/smoke/purchase-flow.ts` apontando para Cloudflare Workers dev + NestJS local
+- [ ] Validar fluxo manual ponta a ponta: compra completa, check-in, criação de evento no admin
+- [ ] Testar login/logout com sessão cross-origin em browser real
 
 ### Comandos finais
 ```bash
-cd packages/web && next build
-cd packages/web && next lint
-npm run test:unit -- --testPathPattern="packages/web"
-npm run test:integration -- --testPathPattern="packages/web"
+npm run test:unit
+npm run test:integration
 node scripts/smoke/purchase-flow.ts
+node scripts/smoke/checkin-flow.ts
+# Deploy de validação
+wrangler deploy --env staging
 ```
 
 ### Rollout
-- **Estratégia de deploy:** deploy no Vercel como novo projeto; Vinext em Cloudflare Workers permanece como fallback até validação; troca de DNS/URL da demo apenas após smoke tests 100% no novo stack
-- **Uso de feature flag:** não necessário — novo projeto Vercel com URL separada até troca de DNS
-- **Plano de monitoramento pós-release:** verificar logs do Vercel para erros de Server Actions; monitorar latência de SSR nas páginas críticas (`/`, `/eventos/[slug]`)
-- **Métricas a observar:** tempo de build Vercel, latência de TTFB nas páginas com SSR, taxa de erro em Server Actions
-- **Alertas esperados:** nenhum no Vinext/Cloudflare — deploy paralelo
+- **Estratégia de deploy:** Deploy Cloudflare Workers com `API_BASE_URL` apontando para NestJS Render. Rollback imediato disponível revertendo `API_BASE_URL` para handlers internos (se mantidos como fallback) ou redeployando versão anterior do Worker.
+- **Uso de feature flag:** Não necessário — a troca é atômica via env var no Cloudflare Workers.
+- **Plano de monitoramento pós-release:** Verificar Cloudflare Workers logs para erros de CORS e 401/403 inesperados. Monitorar Render logs para erros de conexão.
+- **Métricas a observar:** Taxa de erro nos Workers; latência de requests ao NestJS; taxa de falha de sessão.
+- **Alertas esperados:** Possível erro de CORS no primeiro deploy se domínio não estava configurado — verificar antes de rollout.
 
 ### Responsáveis
 - **Backend:** @jeandias
@@ -259,19 +247,19 @@ node scripts/smoke/purchase-flow.ts
 - **Release/Deploy:** @jeandias
 
 ### Janela de deploy
-- **Horário recomendado:** qualquer horário — deploy paralelo sem troca de DNS imediata
-- **Tempo de monitoramento:** 30 minutos após troca de DNS para o Vercel
+- **Horário recomendado:** Fora do horário de pico, após smoke tests 100% em staging
+- **Tempo de monitoramento:** 30 minutos após deploy em produção
 
 ---
 
 ## 12. Checkpoints do Agent OS
 
-- [ ] Checkpoint 1 — Discovery validado: mapa de rotas, componentes client/server e variáveis de ambiente definidos
-- [ ] Checkpoint 2 — Estratégia de testes aprovada: contratos de middleware, Server Actions e api-client revisados
-- [ ] Checkpoint 3 — RED tests concluídos: testes de middleware, Server Actions e api-client falhando pelo motivo correto
-- [ ] Checkpoint 4 — GREEN alcançado: setup, auth e páginas críticas funcionais com testes passando
-- [ ] Checkpoint 5 — Refatoração concluída: separação Server/Client Components revisada, sem duplicações
-- [ ] Checkpoint 6 — Validação final concluída: build, lint, smoke e homologação manual passando
+- [ ] Checkpoint 1 — Discovery validado: todos os pontos de chamada interna mapeados, URL NestJS conhecida, estratégia de sessão definida
+- [ ] Checkpoint 2 — Estratégia de testes aprovada: contratos de `apiFetch` e session flow revisados
+- [ ] Checkpoint 3 — RED tests concluídos: testes de api-client falhando com `Cannot find module`
+- [ ] Checkpoint 4 — GREEN alcançado: CORS, api-client e sessão cross-origin funcionando; chamadas migradas por fluxo
+- [ ] Checkpoint 5 — Refatoração concluída: handlers internos removidos, `apiFetch` como único ponto de saída
+- [ ] Checkpoint 6 — Validação final concluída: smoke tests, integration tests e deploy Cloudflare Workers funcionando
 
 ### Log resumido dos checkpoints
 | Checkpoint | Responsável | Resultado | Observações |
@@ -289,32 +277,32 @@ node scripts/smoke/purchase-flow.ts
 
 | Cenário | Resultado esperado | Evidência | Status |
 | ------- | ------------------ | --------- | ------ |
-| Comprador acessa `/` no Vercel | Lista de eventos carrega via SSR sem erro | Screenshot / network log | ⬜ |
-| Comprador acessa `/eventos/[slug]` e seleciona lote | LotSelector atualiza preço corretamente | Screenshot / interação manual | ⬜ |
-| Comprador completa compra: `/eventos/[slug]` → Stripe → `/checkout/success` → `/meus-ingressos` | Tickets aparecem com QR code após pagamento | Screenshot de `/meus-ingressos` | ⬜ |
-| Usuário não autenticado acessa `/meus-ingressos` | Redirect para `/login` | Network log / URL final | ⬜ |
-| Customer autenticado acessa `/admin` | Redirect ou 403 | Network log / response body | ⬜ |
-| Organizer acessa `/admin` → cria evento → publica | Evento aparece na home | Screenshot do fluxo | ⬜ |
-| Checker acessa `/checkin` → escaneia QR via câmera | Check-in confirmado com feedback visual | Screenshot / response do NestJS | ⬜ |
-| E2E smoke no stack Vercel + Railway | `purchase-flow.ts` retorna exit 0 | Output do script | ⬜ |
+| Comprador acessa `/` no Cloudflare Workers | Lista de eventos carregada via NestJS Render; HTTP 200 | Network log mostrando chamada para Render URL | ⬜ |
+| Comprador acessa `/eventos/:slug` e seleciona lote | Preço atualizado; NestJS retorna lotes ativos | Network log + UI correta | ⬜ |
+| Comprador completa compra → Stripe → `/checkout/success` → meus ingressos | Tickets aparecem com QR code após pagamento | Screenshot de meus ingressos | ⬜ |
+| Usuário não autenticado acessa rota protegida | Redirect para `/login` | Network log / URL final | ⬜ |
+| Customer tenta acessar admin | 403 do NestJS tratado com error boundary | Response body + UI de erro | ⬜ |
+| Checker escaneia QR no check-in | NestJS valida ticket; resposta de sucesso | Screenshot + Render log | ⬜ |
+| CORS: request do Cloudflare Workers para NestJS | Nenhum erro de CORS no console do browser | Console do browser sem erros | ⬜ |
+| Cookie de sessão cross-origin | `__session` enviado em todas as requisições autenticadas | Network tab — cookie header presente | ⬜ |
 
 ---
 
 ## 14. Plano de Rollback
 
 ### Gatilhos
-- Build Vercel falhando em produção após troca de DNS
-- Server Actions retornando erros 500 em fluxo de compra
-- Middleware bloqueando rotas que deveriam estar acessíveis
-- Integração com Better Auth quebrando sessão de usuários existentes
-- Smoke tests falhando no novo stack após troca de DNS
+- Erros de CORS persistentes em produção bloqueando fluxos críticos
+- Sessão cross-origin falhando (usuários deslogados em cada request)
+- NestJS Render com latência > 2s em endpoints críticos causando timeout no Cloudflare Workers
+- Integration tests com mais de 5% de falha após deploy
+- Smoke tests de compra falhando em produção
 
 ### Passos
-1. Reverter DNS da demo para apontar de volta ao Cloudflare Workers (Vinext)
-2. Verificar se o Vinext está respondendo corretamente após re-apontamento
-3. Executar smoke tests no stack Vinext: `GET /api/events`, fluxo de compra manual
-4. Comunicar rollback e registrar causa provável no CHANGELOG.md
-5. Abrir task de investigação com logs do Vercel e Railway para diagnosticar causa raiz
+1. Reverter `API_BASE_URL` no Cloudflare Workers para os handlers internos (se mantidos) ou redeployar versão anterior do Worker
+2. Executar smoke tests contra a versão revertida para confirmar estabilidade
+3. Verificar logs do Render para diagnosticar causa raiz do problema
+4. Comunicar rollback e registrar causa provável no `docs/development/TASKS/PHASE-019-nestjs-api-integration.md`
+5. Abrir task de investigação com logs do Cloudflare Workers e NestJS Render
 
 ### Responsáveis
 - **Execução técnica:** @jeandias
@@ -322,23 +310,22 @@ node scripts/smoke/purchase-flow.ts
 - **Comunicação:** @jeandias
 
 ### RTO
-- Até 30 minutos (reversão de DNS para Cloudflare Workers)
+- Até 15 minutos (reversão de env var no Cloudflare Workers via Wrangler ou dashboard)
 
 ---
 
 ## 15. Critérios de Aceite
 
 - [ ] Todos os cenários críticos cobertos por testes antes da implementação (TDD)
-- [ ] Os testes foram escritos antes da implementação
-- [ ] Todas as 9 rotas migradas e funcionais no Vercel
-- [ ] Middleware de proteção de rotas funcionando para todos os roles
-- [ ] Server Actions delegam lógica de negócio ao NestJS — nenhuma regra de preço no frontend
-- [ ] Better Auth integrado com sessão via cookies HttpOnly no Next.js
-- [ ] Build e lint passando sem erros
-- [ ] E2E smoke tests passando no stack Next.js + NestJS integrado
-- [ ] Não houve regressão nos fluxos críticos (compra, check-in, admin)
-- [ ] Rollback documentado e testado
-- [ ] Critérios de sucesso da sprint foram atingidos
+- [ ] `apiFetch` implementado e testado antes de migrar qualquer chamada
+- [ ] CORS e sessão cross-origin validados antes de iniciar migração de chamadas
+- [ ] Todos os 9 fluxos de UI funcionando contra NestJS Render
+- [ ] Handlers internos do Vinext removidos após validação de paridade
+- [ ] Integration tests (514) passando contra NestJS
+- [ ] E2E smoke tests passando no stack integrado
+- [ ] `API_BASE_URL` configurada corretamente nos ambientes dev, staging e produção
+- [ ] Rollback documentado com RTO de 15 minutos
+- [ ] Critérios de sucesso da sprint atingidos
 
 ---
 
@@ -346,14 +333,15 @@ node scripts/smoke/purchase-flow.ts
 
 A sprint só pode ser considerada concluída quando:
 
-- [ ] Escopo acordado entregue: todas as 9 rotas, Server Actions, auth e deploy no Vercel
-- [ ] Critérios de aceite atendidos
-- [ ] Testes unitários e de integração passando
-- [ ] Build Vercel funcionando no ambiente de produção
-- [ ] Smoke tests passando no stack integrado Vercel + Railway + Neon
-- [ ] Sem violação arquitetural crítica (regras de negócio no NestJS, não no Next.js)
+- [ ] Vinext/Cloudflare Workers fazendo todas as chamadas para NestJS Render — zero handlers internos de API restantes
+- [ ] `apiFetch` como único ponto de saída HTTP para o NestJS
+- [ ] CORS e sessão cross-origin funcionando sem erros em browser real
+- [ ] 514 integration tests passando contra NestJS
+- [ ] E2E smoke tests passando no stack integrado
+- [ ] Cloudflare Workers deployado com `API_BASE_URL` de produção configurada
+- [ ] Sem violação arquitetural: sem regra de negócio no frontend, sem hardcoded URLs
 - [ ] Sem blocker aberto
-- [ ] Documentação de infra/deploy atualizada
+- [ ] Diagrama de infraestrutura em `docs/infrastructure/` atualizado (Cloudflare Workers → Render → Neon)
 
 ---
 
@@ -375,6 +363,9 @@ Mandatory rules:
 - when useful, split work into parallelizable execution batches
 - preserve the current architecture and codebase conventions
 - do not generate generic sprint content
+
+The frontend runs on Vinext/Cloudflare Workers and will NOT be migrated to Next.js.
+The backend NestJS runs on Render.
 
 Always keep the sprint specific to the current codebase and architecture.
 Follow the sprint template exactly.

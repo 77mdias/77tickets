@@ -21,7 +21,7 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
   - `docs/development/TASKS/PHASE-016-discovery-analytics.md` — 18 tasks (DISC-001–010, ANA-001–008)
   - `docs/development/TASKS/PHASE-017-ux-gate.md` — 15 tasks (UX-001–010, GATE-001–005)
   - `docs/development/TASKS/PHASE-018-nestjs-migration.md` — 20 tasks (NEST-001–020)
-  - `docs/development/TASKS/PHASE-019-nextjs-migration.md` — 19 tasks (NEXT-001–019)
+  - `docs/development/TASKS/PHASE-019-nestjs-api-integration.md` — 13 tasks (VINX-001–013)
   - `docs/development/TASKS/PHASE-020-production-hardening.md` — 15 tasks (PROD-001–015)
   - Fases 10–16 adicionadas ao `docs/development/ROADMAP.md`
   - `docs/development/TASKS.md` atualizado com Fases 014–020
