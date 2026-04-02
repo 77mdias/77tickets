@@ -137,3 +137,38 @@ Mitigacao:
 
 - resolver antes da migracao completa o contrato de `events/[slug]/orders` (slug vs UUID)
 - registrar decisao no modulo correspondente antes de migrar esse endpoint
+
+## 9) Estado atual pos-sprints 014–016
+
+Data: 2026-04-02
+Auditoria: Sprint 017 (GATE-001)
+
+### Novos modulos introduzidos
+
+| Modulo atual | Localizacao | Dependencias externas | Portabilidade | Destino NestJS |
+|---|---|---|---|---|
+| Email provider | `src/server/email/` | `resend` (SDK), `process.env` | Confirmada | `EmailModule` com `ResendEmailProvider` |
+| Email templates | `src/server/email/templates/` | nenhuma | Confirmada | mantidos em `EmailModule` |
+| Payment provider | `src/server/payment/` | `stripe` (SDK), `process.env` | Confirmada | `PaymentModule` com `StripePaymentProvider` |
+| Cron use-case | `src/server/application/use-cases/send-event-reminder-email.use-case.ts` | nenhuma | Confirmada | `EmailModule` > use-case registrado como provider |
+
+### Resultado da auditoria de acoplamento
+
+- `npm run lint:architecture` retornou zero violacoes.
+- Inspecao manual de `src/server/payment/` e `src/server/email/`: zero imports de `vinext/*`, `@cloudflare/*`, `hono`, ou `ExecutionContext`.
+- Referencias a `process.env` sao padrao Node.js/Next.js — portaveis para NestJS via `ConfigService`.
+- Nenhum acoplamento bloqueante encontrado.
+
+### Mapa de migracao expandido
+
+Modulos NestJS adicionais recomendados:
+
+- `PaymentModule` — encapsula `StripePaymentProvider` e webhook handler
+- `EmailModule` — encapsula `ResendEmailProvider` e templates
+- `CronModule` — agendamento de lembretes de evento (equivalente ao endpoint de cron atual)
+
+### Decisoes de migracao
+
+- `PaymentProvider` e `EmailProvider` sao interfaces puras — o binding da implementacao concreta (Stripe/Resend) ocorre no modulo de infraestrutura do NestJS, sem modificar a camada application.
+- Variaveis de ambiente (`STRIPE_SECRET_KEY`, `RESEND_API_KEY`, etc.) migram para `ConfigService` do NestJS com validacao via `@nestjs/config` + Zod.
+- Templates de email permanecem como funcoes TS puras sem decorators — portaveis sem modificacao.

@@ -259,7 +259,7 @@ export function EventList({ filters }: EventListProps) {
               <p className="mt-1 text-sm text-zinc-600">{formatDateTime(event.startsAt)}</p>
               <p className="mt-1 text-sm text-zinc-500">{event.location ?? "Local a definir"}</p>
               <Link
-                className="mt-4 inline-flex rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white"
+                className="mt-4 inline-flex min-h-[44px] items-center rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white"
                 href={`/eventos/${event.slug}`}
               >
                 Ver detalhes

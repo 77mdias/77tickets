@@ -65,7 +65,7 @@ export function LotSelector({ eventId, lots }: LotSelectorProps) {
         <label className="grid gap-1">
           <span className="text-sm font-medium text-zinc-800">Lote</span>
           <select
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-base"
             value={selectedLot?.id ?? ""}
             onChange={(event) => {
               setSelectedLotId(event.target.value);
@@ -83,7 +83,7 @@ export function LotSelector({ eventId, lots }: LotSelectorProps) {
         <label className="grid gap-1">
           <span className="text-sm font-medium text-zinc-800">Quantidade</span>
           <input
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-base"
             type="number"
             min={1}
             max={maxQuantity}
@@ -105,7 +105,7 @@ export function LotSelector({ eventId, lots }: LotSelectorProps) {
       </div>
 
       <Link
-        className="mt-5 inline-flex rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white"
+        className="mt-5 inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white sm:w-auto"
         href={`/checkout?${checkoutParams.toString()}`}
       >
         Comprar
