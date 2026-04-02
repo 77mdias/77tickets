@@ -14,8 +14,8 @@ Modo de trabalho obrigatorio:
 4. fazer discovery no codigo com rg/sed para entender o estado atual antes de editar
 5. implementar a solucao minima necessaria, com baixo risco e sem refatoracao ampla
 6. validar com:
-   - npm run lint
-   - npm run build
+   - bun run lint
+   - bun run build
 7. finalizar entrega operacional:
    - salvar a feature nova implementada (commit local objetivo com TASK_ID, quando houver alteracoes)
    - dar check na task no PHASE correspondente (item da task, criterios de aceite e status)

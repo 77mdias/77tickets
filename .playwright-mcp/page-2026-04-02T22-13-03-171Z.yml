@@ -1,0 +1,15 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - heading "Entrar" [level=1] [ref=e5]
+    - paragraph [ref=e6]: Faça login para concluir compras e acessar seus ingressos.
+    - generic [ref=e7]:
+      - button "Entrar" [ref=e8]
+      - button "Criar conta" [ref=e9]
+    - generic [ref=e10]:
+      - generic [ref=e11]:
+        - generic [ref=e12]: E-mail
+        - textbox "E-mail" [ref=e13]: manual.organizer.1775167491@test.local
+      - generic [ref=e14]:
+        - generic [ref=e15]: Senha
+        - textbox "Senha" [ref=e16]: Manual123!
+      - button "Processando..." [disabled] [ref=e18]

@@ -23,6 +23,7 @@ TicketFlow is a ticketing platform demo built with production-oriented boundarie
 
 Current direction:
 - Runtime: Vinext full-stack demo
+- Package manager: Bun
 - Deployment target (demo): Cloudflare Workers
 - Database: Neon PostgreSQL
 - ORM: Drizzle ORM
@@ -34,6 +35,11 @@ Future migration target:
 - Backend: NestJS
 
 All work must preserve easy migration with minimal rewrite of domain/application logic.
+
+Package management rules:
+- Use `bun install` for dependency installation.
+- Use `bun run <script>` for project scripts.
+- Do not introduce new `npm`-based workflow instructions in active docs/runbooks.
 
 ## 3) Non-Negotiable Architecture
 

@@ -1,4 +1,4 @@
-import { index, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { index, pgEnum, pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 import { user } from "./users";
 
@@ -18,6 +18,7 @@ export const events = pgTable(
     slug: text("slug").notNull().unique(),
     title: text("title").notNull(),
     description: text("description"),
+    category: varchar("category", { length: 100 }),
     location: text("location"),
     imageUrl: text("image_url"),
     status: eventStatusEnum("status").notNull().default("draft"),
@@ -28,5 +29,6 @@ export const events = pgTable(
   (table) => [
     index("events_organizer_id_idx").on(table.organizerId),
     index("events_status_idx").on(table.status),
+    index("events_category_idx").on(table.category),
   ],
 );

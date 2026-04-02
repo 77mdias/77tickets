@@ -4,6 +4,15 @@ import { DrizzleEventRepository } from "../../../src/server/repositories/drizzle
 import { cleanDatabase, createTestDb } from "../setup";
 import { createEventFixture } from "../../fixtures";
 
+const encodeCursor = (startsAt: Date, id: string): string =>
+  Buffer.from(
+    JSON.stringify({
+      startsAt: startsAt.toISOString(),
+      id,
+    }),
+    "utf8",
+  ).toString("base64url");
+
 describe.skipIf(!process.env.TEST_DATABASE_URL)(
   "DrizzleEventRepository",
   () => {
@@ -99,37 +108,94 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)(
       const repo = new DrizzleEventRepository(db);
       const results = await repo.listPublished();
 
-      expect(results.map((event) => event.slug)).toEqual(["pub-upcoming"]);
-      expect(results.every((event) => event.status === "published")).toBe(true);
+      expect(results.items.map((event) => event.slug)).toEqual(["pub-upcoming"]);
+      expect(results.items.every((event) => event.status === "published")).toBe(true);
+      expect(results.hasMore).toBe(false);
     });
 
-    test("listPublished supports limit and offset pagination", async () => {
+    test("listPublished supports filters plus cursor and legacy pagination in startsAt/id order", async () => {
       await cleanDatabase(db);
 
       await createEventFixture(db, {
+        id: "00000000-0000-0000-0000-000000000201",
         slug: "pub-page-1",
+        title: "Festival Rock",
+        location: "Sao Paulo",
+        category: "concerts",
         status: "published",
         startsAt: new Date("2099-06-01T10:00:00.000Z"),
         endsAt: new Date("2099-06-01T20:00:00.000Z"),
       });
       await createEventFixture(db, {
+        id: "00000000-0000-0000-0000-000000000202",
         slug: "pub-page-2",
+        title: "Festival Tech",
+        location: "Sao Paulo",
+        category: "concerts",
         status: "published",
         startsAt: new Date("2099-07-01T10:00:00.000Z"),
         endsAt: new Date("2099-07-01T20:00:00.000Z"),
       });
       await createEventFixture(db, {
+        id: "00000000-0000-0000-0000-000000000203",
         slug: "pub-page-3",
+        title: "Festival Lights",
+        location: "Sao Paulo",
+        category: "concerts",
         status: "published",
-        startsAt: new Date("2099-08-01T10:00:00.000Z"),
+        startsAt: new Date("2099-07-01T10:00:00.000Z"),
         endsAt: new Date("2099-08-01T20:00:00.000Z"),
+      });
+      await createEventFixture(db, {
+        slug: "pub-other-location",
+        title: "Festival Recife",
+        location: "Recife",
+        category: "concerts",
+        status: "published",
+        startsAt: new Date("2099-07-01T11:00:00.000Z"),
+        endsAt: new Date("2099-07-01T21:00:00.000Z"),
+      });
+      await createEventFixture(db, {
+        slug: "pub-other-category",
+        title: "Festival Theater",
+        location: "Sao Paulo",
+        category: "theater",
+        status: "published",
+        startsAt: new Date("2099-07-02T10:00:00.000Z"),
+        endsAt: new Date("2099-07-02T20:00:00.000Z"),
       });
 
       const repo = new DrizzleEventRepository(db);
-      const page = await repo.listPublished({ limit: 1, offset: 1 });
+      const firstPage = await repo.listPublished({
+        q: "festival",
+        date: "2099-07-01",
+        location: "Sao Paulo",
+        category: "concerts",
+        page: 1,
+        limit: 2,
+      });
 
-      expect(page).toHaveLength(1);
-      expect(page[0].slug).toBe("pub-page-2");
+      expect(firstPage.items.map((event) => event.slug)).toEqual([
+        "pub-page-2",
+        "pub-page-3",
+      ]);
+      expect(firstPage.hasMore).toBe(false);
+
+      const legacyPage = await repo.listPublished({ page: 2, limit: 1 });
+
+      expect(legacyPage.items).toHaveLength(1);
+      expect(legacyPage.items[0].slug).toBe("pub-page-2");
+
+      const cursorPage = await repo.listPublished({
+        limit: 1,
+        cursor: encodeCursor(
+          new Date("2099-07-01T10:00:00.000Z"),
+          "00000000-0000-0000-0000-000000000202",
+        ),
+      });
+
+      expect(cursorPage.items.map((event) => event.slug)).toEqual(["pub-page-3"]);
+      expect(cursorPage.hasMore).toBe(true);
     });
 
     test("listStartingBetween returns published events in the provided window", async () => {

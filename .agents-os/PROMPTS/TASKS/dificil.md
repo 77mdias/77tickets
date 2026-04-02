@@ -18,8 +18,8 @@ Modo de trabalho obrigatorio:
 5. montar plano por fases (implementacao, validacao, rollout)
 6. implementar mudancas estruturais necessarias mantendo consistencia entre backend, frontend, dados e integracoes
 7. executar validacoes fortes:
-   - npm run lint
-   - npm run build
+   - bun run lint
+   - bun run build
    - testes de integracao/e2e aplicaveis ao escopo
    - verificacao manual de cenarios criticos
 8. finalizar entrega operacional:

@@ -81,7 +81,7 @@ Repita o bloco acima para cada tarefa dentro da subcategoria. Para tarefas arqui
 
 - **Suites necessárias:** Liste Jest, E2E, Cypress, Karma, etc.
 - **Cobertura alvo:** {{ex.: >80% branches}}
-- **Comandos de verificação:** `make test`, `cd frontend && npm test -- --watch=false`, etc.
+- **Comandos de verificação:** `make test`, `cd frontend && bun test --watch=false`, etc.
 - **Estado atual:** ✅ Passando / ⚠️ Em falha (detalhar)
 
 ---
@@ -99,7 +99,7 @@ Repita o bloco acima para cada tarefa dentro da subcategoria. Para tarefas arqui
 
 - [ ] Todas as tarefas da tabela marcadas como concluídas.
 - [ ] Migrations aplicadas e committed (`make prisma-migrate` + `git add backend/prisma/migrations`).
-- [ ] Testes backend/frontend executados e passando (`make test`, `npm test`).
+- [ ] Testes backend/frontend executados e passando (`make test`, `bun test`).
 - [ ] Documentação atualizada (TASKS.md, CHANGELOG.md, notas relevantes).
 - [ ] Revisão de segurança/AIDEV anchors verificada.
 - [ ] Aprovação final registrada (issue, PR ou doc).

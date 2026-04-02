@@ -22,7 +22,7 @@
 | 013 | Sprint 013 | `docs/development/TASKS/PHASE-013-cd-cloudflare-release-security.md` | 🟢 Concluída | 4/4 |
 | 014 | Sprint 014 | `docs/development/TASKS/PHASE-014-payment-gateway.md` | ⏳ Planejada | 0/15 |
 | 015 | Sprint 015 | `docs/development/TASKS/PHASE-015-email-notifications.md` | 🟢 Concluída | 11/11 |
-| 016 | Sprint 016 | `docs/development/TASKS/PHASE-016-discovery-analytics.md` | ⏳ Planejada | 0/18 |
+| 016 | Sprint 016 | `docs/development/TASKS/PHASE-016-discovery-analytics.md` | 🟢 Concluída | 18/18 |
 | 017 | Sprint 017 | `docs/development/TASKS/PHASE-017-ux-gate.md` | ⏳ Planejada | 0/15 |
 | 018 | Sprint 018 | `docs/development/TASKS/PHASE-018-nestjs-migration.md` | ⏳ Planejada | 0/20 |
 | 019 | Sprint 019 | `docs/development/TASKS/PHASE-019-nestjs-api-integration.md` | ⏳ Planejada | 0/13 |
@@ -48,8 +48,10 @@
 
 ### Planejadas — Fase de Produto (014–017)
 14. Fase 014: Payment Gateway Integration — Stripe + webhook + SimulatePayment.
-15. Fase 016: Event Discovery + Organizer Analytics — busca fulltext + cursor pagination + métricas.
-16. Fase 017: UX Polish + Pre-Migration Gate — skeletons, error boundaries, QR scanner, gate formal.
+15. Fase 017: UX Polish + Pre-Migration Gate — skeletons, error boundaries, QR scanner, gate formal.
+
+### Concluídas Recentes
+15. Fase 016: Event Discovery + Organizer Analytics — busca fulltext + cursor pagination + métricas. ✅
 
 ### Planejadas — Fase de Migração (018–020)
 18. Fase 018: NestJS Backend Extraction — packages/backend/, controllers, guards, DI, Railway. ⚠️ Requer gate Sprint 017.

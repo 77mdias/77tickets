@@ -1,6 +1,11 @@
 import type { EventRepository } from "../../repositories";
 
 export interface ListPublishedEventsInput {
+  q?: string;
+  date?: string;
+  location?: string;
+  category?: string;
+  cursor?: string;
   page?: number;
   limit?: number;
 }
@@ -17,6 +22,7 @@ export interface PublishedEventListItem {
 export interface ListPublishedEventsResult {
   page: number;
   limit: number;
+  nextCursor: string | null;
   events: PublishedEventListItem[];
 }
 
@@ -49,14 +55,29 @@ export const createListPublishedEventsUseCase = (
   return async (input) => {
     const page = normalizePositiveInteger(input.page, DEFAULT_PAGE);
     const limit = normalizeLimit(input.limit);
-    const offset = (page - 1) * limit;
-
-    const events = await dependencies.eventRepository.listPublished({ limit, offset });
+    const repositoryResult = await dependencies.eventRepository.listPublished({
+      q: input.q,
+      date: input.date,
+      location: input.location,
+      category: input.category,
+      cursor: input.cursor,
+      page,
+      limit,
+    });
+    const publishedEventsPage = Array.isArray(repositoryResult)
+      ? { items: repositoryResult, hasMore: false }
+      : repositoryResult;
+    const lastEvent = publishedEventsPage.items.at(-1);
+    const nextCursor =
+      publishedEventsPage.hasMore && lastEvent
+        ? encodeCursor(lastEvent.startsAt, lastEvent.id)
+        : null;
 
     return {
       page,
       limit,
-      events: events.map((event) => ({
+      nextCursor,
+      events: publishedEventsPage.items.map((event) => ({
         id: event.id,
         slug: event.slug,
         title: event.title,
@@ -67,3 +88,14 @@ export const createListPublishedEventsUseCase = (
     };
   };
 };
+
+const encodeCursor = (startsAt: Date, id: string): string =>
+  toBase64Url(
+    JSON.stringify({
+      startsAt: startsAt.toISOString(),
+      id,
+    }),
+  );
+
+const toBase64Url = (value: string): string =>
+  btoa(value).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");

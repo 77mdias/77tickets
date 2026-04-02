@@ -44,24 +44,24 @@ Essas regras existem para preservar o fluxo `UI -> handler -> use-case -> reposi
 
 ### Como validar
 
-- `npm run lint:architecture`: executa o ESLint nas áreas com guardrails de fronteira.
-- `npm run lint`: executa o lint completo do repositório.
-- `npm run build`: valida que a aplicação continua compilando após a mudança.
+- `bun run lint:architecture`: executa o ESLint nas áreas com guardrails de fronteira.
+- `bun run lint`: executa o lint completo do repositório.
+- `bun run build`: valida que a aplicação continua compilando após a mudança.
 
 ### Comandos essenciais
 
 | Comando | O que faz |
 |---------|-----------|
-| `npm run test` | Roda toda a suite (unit + integration) |
-| `npm run test:unit` | Roda apenas testes unitários |
-| `npm run test:integration` | Roda testes de integração (requer `TEST_DATABASE_URL`) |
-| `npm run test:watch` | Modo watch para TDD local |
-| `npm run lint` | Lint completo do repositório |
-| `npm run lint:architecture` | Valida fronteiras arquiteturais |
-| `npm run build` | Valida que a aplicação compila |
-| `npm run ci:quality` | Gate de qualidade usado no workflow de CI |
-| `npm run ci:integration` | Executa testes de integração para CI |
-| `npm run security:audit` | Bloqueia advisories de dependências `high/critical` |
+| `bun run test` | Roda toda a suite (unit + integration) |
+| `bun run test:unit` | Roda apenas testes unitários |
+| `bun run test:integration` | Roda testes de integração (requer `TEST_DATABASE_URL`) |
+| `bun run test:watch` | Modo watch para TDD local |
+| `bun run lint` | Lint completo do repositório |
+| `bun run lint:architecture` | Valida fronteiras arquiteturais |
+| `bun run build` | Valida que a aplicação compila |
+| `bun run ci:quality` | Gate de qualidade usado no workflow de CI |
+| `bun run ci:integration` | Executa testes de integração para CI |
+| `bun run security:audit` | Bloqueia advisories de dependências `high/critical` |
 
 > Para testes de integração, configure `TEST_DATABASE_URL` no `.env` apontando para um banco/branch Neon separado do desenvolvimento. Consulte `docs/development/Logs/INF-002.md` para detalhes do setup.
 

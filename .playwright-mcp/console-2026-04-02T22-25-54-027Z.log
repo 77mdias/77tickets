@@ -1,0 +1,6 @@
+[     168ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/node_modules/.vite/deps/react-dom_client.js?v=d8c1ac46:20102
+[   26442ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/api/events?limit=12&cursor=eyJzdGFydHNBdCI6IjIwMjYtMDQtMTNUMjI6MDY6NTguMDUzWiIsImlkIjoiMDlkYmUxZmQtMTJlMS00ZTJkLWFjNjQtZGMyYTllZDg1NmI5In0:0
+[   45743ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/api/events?limit=12&cursor=eyJzdGFydHNBdCI6IjIwMjYtMDQtMTNUMjI6MDY6NTguMDUzWiIsImlkIjoiMDlkYmUxZmQtMTJlMS00ZTJkLWFjNjQtZGMyYTllZDg1NmI5In0:0
+[   59475ms] [LOG] [vite] server connection lost. Polling for restart... @ http://localhost:3000/@vite/client:864
+[   82177ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/node_modules/.vite/deps/react-dom_client.js?v=d8c1ac46:20102
+[  187903ms] [LOG] [vite] server connection lost. Polling for restart... @ http://localhost:3000/@vite/client:864

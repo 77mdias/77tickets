@@ -3,7 +3,7 @@ title: Sprint 016 — Event Discovery + Analytics do Organizador
 type: sprint
 mode: mixed
 approach: tdd-first
-status: planned
+status: done
 ---
 
 # Sprint 016 — Event Discovery + Analytics do Organizador
@@ -19,7 +19,7 @@ Entregar busca fulltext e filtragem de eventos com cursor pagination para compra
 - **Tipo da sprint:** mixed (feature + infra)
 - **Modo principal do Agent OS:** mixed (backend + frontend)
 - **Fase relacionada:** Fase 016 — Event Discovery + Organizer Analytics
-- **Status:** 🟢 Planejada
+- **Status:** ✅ Concluída (homologação manual local executada em 2026-04-02)
 - **Prioridade:** 🟡 Alta
 - **Owner principal:** @jeandias
 - **Dependências externas:** Sprint 015 ✅
@@ -42,23 +42,23 @@ Entregar busca fulltext e filtragem de eventos com cursor pagination para compra
 
 ## 4. Critérios de Sucesso
 
-- [ ] `GET /api/events?q=título&date=2026-05-01&location=São+Paulo&category=shows` retorna resultados filtrados corretamente
-- [ ] Paginação cursor-based funcionando: parâmetro `cursor` presente na resposta e aceito na próxima requisição
-- [ ] Campo `category` adicionado na tabela `events` com migration Drizzle aplicada e backward compatible
-- [ ] `GET /api/events/:slug/analytics` retorna receita total, tickets vendidos, ocupação % por lote e top cupons usados
-- [ ] UI: search bar com debounce 300ms e filtros de data/localização/categoria com URL state sync na home
-- [ ] UI: painel "Métricas" no admin com cards de KPI e tabela de lotes por evento
-- [ ] Testes unitários e de integração cobrindo todos os novos endpoints e use-cases
+- [x] `GET /api/events?q=título&date=2026-05-01&location=São+Paulo&category=shows` retorna resultados filtrados corretamente
+- [x] Paginação cursor-based funcionando: parâmetro `cursor` presente na resposta e aceito na próxima requisição
+- [x] Campo `category` adicionado na tabela `events` com migration Drizzle aplicada e backward compatible
+- [x] `GET /api/events/:slug/analytics` retorna receita total, tickets vendidos, ocupação % por lote e top cupons usados
+- [x] UI: search bar com debounce 300ms e filtros de data/localização/categoria com URL state sync na home
+- [x] UI: painel "Métricas" no admin com cards de KPI e tabela de lotes por evento
+- [x] Testes unitários e de integração cobrindo todos os novos endpoints e use-cases
 
 ---
 
 ## 5. Dependências e Sequenciamento
 
 ### Dependências de entrada
-- [ ] Sprint 015 concluída e mergeada
-- [ ] Schema atual de `events`, `orders`, `order_items`, `tickets`, `lots` e `coupons` estável
-- [ ] Repositório `EventRepository` existente e funcional
-- [ ] Endpoint `GET /api/events` existente para extensão
+- [x] Sprint 015 concluída e mergeada
+- [x] Schema atual de `events`, `orders`, `order_items`, `tickets`, `lots` e `coupons` estável
+- [x] Repositório `EventRepository` existente e funcional
+- [x] Endpoint `GET /api/events` existente para extensão
 
 ### Ordem macro recomendada
 1. Discovery técnico: mapear schema atual, repositório de eventos e endpoint existente
@@ -86,13 +86,13 @@ Entregar busca fulltext e filtragem de eventos com cursor pagination para compra
 Mapear o impacto real da adição de busca/filtros no endpoint de eventos e das queries de agregação no repositório antes de implementar.
 
 ### Checklist
-- [ ] Analisar schema atual de `events` e identificar campos disponíveis para filtros (`title`, `location`, `starts_at`, `status`)
-- [ ] Confirmar ausência do campo `category` e estratégia de migration nullable
-- [ ] Avaliar suporte do Drizzle ao `sql` raw para `CREATE INDEX CONCURRENTLY`
-- [ ] Mapear `ListPublishedEventsUseCase` atual e contrato de resposta do `GET /api/events`
-- [ ] Verificar relações entre `events`, `lots`, `orders`, `order_items`, `tickets` e `coupons` para a query de analytics
-- [ ] Confirmar middleware de auth e ownership check disponíveis para o endpoint de analytics
-- [ ] Identificar edge cases: evento sem vendas, lote com `capacity = null`, cupom sem redemptions
+- [x] Analisar schema atual de `events` e identificar campos disponíveis para filtros (`title`, `location`, `starts_at`, `status`)
+- [x] Confirmar ausência do campo `category` e estratégia de migration nullable
+- [x] Avaliar suporte do Drizzle ao `sql` raw para `CREATE INDEX CONCURRENTLY`
+- [x] Mapear `ListPublishedEventsUseCase` atual e contrato de resposta do `GET /api/events`
+- [x] Verificar relações entre `events`, `lots`, `orders`, `order_items`, `tickets` e `coupons` para a query de analytics
+- [x] Confirmar middleware de auth e ownership check disponíveis para o endpoint de analytics
+- [x] Identificar edge cases: evento sem vendas, lote com `capacity = null`, cupom sem redemptions
 
 ### Saída esperada
 - Schema de `events` mapeado com campos disponíveis para filtros
@@ -108,22 +108,22 @@ Mapear o impacto real da adição de busca/filtros no endpoint de eventos e das 
 Definir contratos verificáveis para busca/filtros e para o payload de analytics antes de qualquer implementação.
 
 ### Checklist
-- [ ] Definir contrato de resposta do `GET /api/events` com cursor pagination: `{ events: [...], nextCursor: string | null }`
-- [ ] Definir schema Zod para query params: `q`, `date`, `location`, `category`, `cursor`
-- [ ] Definir contrato de resposta do `GET /api/events/:slug/analytics`: `{ totalRevenue, totalTickets, lotStats, couponStats }`
-- [ ] Definir critérios de aceite testáveis para filtros combinados
-- [ ] Confirmar que analytics retorna 403 para role `customer`
-- [ ] Confirmar que analytics verifica ownership do evento para `organizer`
-- [ ] Definir comportamento quando nextCursor é `null` (última página)
+- [x] Definir contrato de resposta do `GET /api/events` com cursor pagination: `{ events: [...], nextCursor: string | null }`
+- [x] Definir schema Zod para query params: `q`, `date`, `location`, `category`, `cursor`
+- [x] Definir contrato de resposta do `GET /api/events/:slug/analytics`: `{ totalRevenue, totalTickets, lotStats, couponStats }`
+- [x] Definir critérios de aceite testáveis para filtros combinados
+- [x] Confirmar que analytics retorna 403 para role `customer`
+- [x] Confirmar que analytics verifica ownership do evento para `organizer`
+- [x] Definir comportamento quando nextCursor é `null` (última página)
 
 ### Casos de teste planejados
-- [ ] Busca por `q=rock` retorna apenas eventos com "rock" no título ou localização
-- [ ] Filtro `category=shows` retorna apenas eventos da categoria `shows`
-- [ ] Cursor pagination: primeira página retorna `nextCursor`, última página retorna `nextCursor=null`
-- [ ] Analytics: `totalRevenue` = soma dos `totalInCents` dos orders com status `paid`
-- [ ] Analytics endpoint retorna `403` para role `customer`
-- [ ] Evento com todos os lotes `sold_out` tem 100% de ocupação em `lotStats`
-- [ ] Filtros combinados `q + date + category` funcionam corretamente no mesmo request
+- [x] Busca por `q=rock` retorna apenas eventos com "rock" no título ou localização
+- [x] Filtro `category=shows` retorna apenas eventos da categoria `shows`
+- [x] Cursor pagination: primeira página retorna `nextCursor`, última página retorna `nextCursor=null`
+- [x] Analytics: `totalRevenue` = soma dos `totalInCents` dos orders com status `paid`
+- [x] Analytics endpoint retorna `403` para role `customer`
+- [x] Evento com todos os lotes `sold_out` tem 100% de ocupação em `lotStats`
+- [x] Filtros combinados `q + date + category` funcionam corretamente no mesmo request
 
 ### Matriz de testes
 | Tipo | Escopo | Obrigatório? | Observações |
@@ -142,20 +142,20 @@ Definir contratos verificáveis para busca/filtros e para o payload de analytics
 Criar testes RED que representem o comportamento esperado de filtros, cursor pagination e agregação de analytics.
 
 ### Checklist
-- [ ] Escrever testes unitários para `ListPublishedEventsUseCase` com filtros e cursor antes da implementação
-- [ ] Escrever testes unitários para `GetEventAnalyticsUseCase` com dados de fixture
-- [ ] Escrever testes de integração para `GET /api/events` com query params combinados
-- [ ] Escrever testes de integração para `GET /api/events/:slug/analytics` com auth organizer
-- [ ] Garantir que testes falhem pelo motivo correto (use-case/repositório ainda sem suporte a filtros)
-- [ ] Adicionar testes de regressão para `GET /api/events` sem filtros (backward compat)
+- [x] Escrever testes unitários para `ListPublishedEventsUseCase` com filtros e cursor antes da implementação
+- [x] Escrever testes unitários para `GetEventAnalyticsUseCase` com dados de fixture
+- [x] Escrever testes de integração para `GET /api/events` com query params combinados
+- [x] Escrever testes de integração para `GET /api/events/:slug/analytics` com auth organizer
+- [x] Garantir que testes falhem pelo motivo correto (use-case/repositório ainda sem suporte a filtros)
+- [x] Adicionar testes de regressão para `GET /api/events` sem filtros (backward compat)
 
 ### Testes a implementar primeiro
-- [ ] Teste unitário: `ListPublishedEventsUseCase` — filtros `q`, `category`, `date` e presença de `nextCursor`
-- [ ] Teste unitário: `GetEventAnalyticsUseCase` — cálculo de receita, ocupação por lote e redemptions de cupom
-- [ ] Teste de integração: `GET /api/events?q=festival&category=shows` retorna subset correto
-- [ ] Teste de integração: cursor pagination retorna `nextCursor` na primeira página e `null` na última
-- [ ] Teste de autorização: `GET /api/events/:slug/analytics` retorna `403` para `customer`
-- [ ] Teste de regressão: `GET /api/events` sem params continua funcionando como antes
+- [x] Teste unitário: `ListPublishedEventsUseCase` — filtros `q`, `category`, `date` e presença de `nextCursor`
+- [x] Teste unitário: `GetEventAnalyticsUseCase` — cálculo de receita, ocupação por lote e redemptions de cupom
+- [x] Teste de integração: `GET /api/events?q=festival&category=shows` retorna subset correto
+- [x] Teste de integração: cursor pagination retorna `nextCursor` na primeira página e `null` na última
+- [x] Teste de autorização: `GET /api/events/:slug/analytics` retorna `403` para `customer`
+- [x] Teste de regressão: `GET /api/events` sem params continua funcionando como antes
 
 ### Evidência RED
 - **Comando executado:** `npm run test:unit -- --testPathPattern="list-published-events|get-event-analytics"`
@@ -170,18 +170,18 @@ Criar testes RED que representem o comportamento esperado de filtros, cursor pag
 Implementar o mínimo necessário para os testes passarem, na ordem do caminho crítico, preservando backward compatibility.
 
 ### Checklist
-- [ ] Adicionar campo `category varchar(100) nullable` na tabela `events` e gerar migration
-- [ ] Criar migration com índices GIN em `events.title` e `events.location`
-- [ ] Atualizar `EventRepository.listPublished()` com cursor pagination e WHERE conditions para filtros
-- [ ] Atualizar `ListPublishedEventsUseCase` para aceitar e repassar filtros e cursor
-- [ ] Atualizar `GET /api/events` com validação Zod dos query params e resposta com `nextCursor`
-- [ ] Implementar `EventRepository.getAnalytics(eventId)` com JOINs agregados
-- [ ] Implementar `GetEventAnalyticsUseCase` com ownership check
-- [ ] Criar `GET /api/events/:slug/analytics` com auth organizer/admin
-- [ ] Implementar search bar com debounce 300ms e URL state sync na home
-- [ ] Implementar filtros de data, localização e categoria na home
-- [ ] Implementar infinite scroll / "Carregar mais" com cursor pagination
-- [ ] Implementar painel "Métricas" no admin com KPI cards e tabela de lotes
+- [x] Adicionar campo `category varchar(100) nullable` na tabela `events` e gerar migration
+- [x] Criar migration com índices GIN em `events.title` e `events.location`
+- [x] Atualizar `EventRepository.listPublished()` com cursor pagination e WHERE conditions para filtros
+- [x] Atualizar `ListPublishedEventsUseCase` para aceitar e repassar filtros e cursor
+- [x] Atualizar `GET /api/events` com validação Zod dos query params e resposta com `nextCursor`
+- [x] Implementar `EventRepository.getAnalytics(eventId)` com JOINs agregados
+- [x] Implementar `GetEventAnalyticsUseCase` com ownership check
+- [x] Criar `GET /api/events/:slug/analytics` com auth organizer/admin
+- [x] Implementar search bar com debounce 300ms e URL state sync na home
+- [x] Implementar filtros de data, localização e categoria na home
+- [x] Implementar infinite scroll / "Carregar mais" com cursor pagination
+- [x] Implementar painel "Métricas" no admin com KPI cards e tabela de lotes
 
 ### Regras obrigatórias
 - Não confiar em input do client para calcular receita — todos os totais derivados server-side
@@ -195,7 +195,7 @@ Implementar o mínimo necessário para os testes passarem, na ordem do caminho c
 - **API:** `GET /api/events` (query params + cursor), `GET /api/events/:slug/analytics` (novo)
 - **Frontend:** `src/app/page.tsx`, `src/features/events/event-search.tsx`, `src/app/admin/page.tsx`, `src/features/admin/analytics-panel.tsx`
 - **Banco/Schema:** coluna `category` em `events`, índices GIN em `title` e `location`
-- **Infra/Config:** `npm run db:push` para aplicar migration da coluna `category`
+- **Infra/Config:** `bun run db:migrate` para aplicar migration da coluna `category`
 - **Docs:** atualizar contrato da API de eventos na documentação técnica
 
 ---
@@ -206,11 +206,11 @@ Implementar o mínimo necessário para os testes passarem, na ordem do caminho c
 Garantir clareza nas responsabilidades entre use-case, repositório e handler após os testes passarem.
 
 ### Checklist
-- [ ] Extrair builder de filtros de query para função auxiliar no repositório se necessário
-- [ ] Garantir que o use-case de analytics não contenha lógica de query diretamente
-- [ ] Remover duplicações entre filtros de Discovery no repositório
-- [ ] Garantir que todos os testes continuem verdes após refatoração
-- [ ] Verificar nomenclatura de tipos e interfaces de cursor pagination
+- [x] Extrair builder de filtros de query para função auxiliar no repositório se necessário
+- [x] Garantir que o use-case de analytics não contenha lógica de query diretamente
+- [x] Remover duplicações entre filtros de Discovery no repositório
+- [x] Garantir que todos os testes continuem verdes após refatoração
+- [x] Verificar nomenclatura de tipos e interfaces de cursor pagination
 
 ### Saída esperada
 - Lógica de filtragem encapsulada no repositório, não vazando para o use-case
@@ -222,20 +222,20 @@ Garantir clareza nas responsabilidades entre use-case, repositório e handler ap
 ## 11. Etapa 6 — Validação, QA e Rollout
 
 ### Testes obrigatórios finais
-- [ ] Executar `npm run test:unit` — testes de use-cases e repositórios
-- [ ] Executar `npm run test:integration` — endpoints com filtros e auth
-- [ ] Executar `npm run lint:architecture` — verificar que analytics endpoint não viola boundary de camadas
-- [ ] Executar `npm run build` — verificar que não há erros de TypeScript
-- [ ] Executar `npm run db:push` — confirmar migration aplicada sem erros
-- [ ] Validar fluxo manual: busca + filtros na home, painel de métricas no admin
+- [x] Executar `bun run test:unit` — testes de use-cases e repositórios
+- [x] Executar `bun run test:integration` — endpoints com filtros e auth
+- [x] Executar `bun run lint:architecture` — verificar que analytics endpoint não viola boundary de camadas
+- [x] Executar `bun run build` — verificar que não há erros de TypeScript
+- [x] Executar `bun run db:migrate` — confirmar migration aplicada sem erros
+- [x] Validar fluxo manual: busca + filtros na home, painel de métricas no admin (homologação local 2026-04-02)
 
 ### Comandos finais
 ```bash
-npm run test:unit
-npm run test:integration
-npm run lint:architecture
-npm run build
-npm run db:push
+bun run test:unit
+bun run test:integration
+bun run lint:architecture
+bun run build
+bun run db:migrate
 ```
 
 ### Rollout
@@ -260,22 +260,22 @@ npm run db:push
 
 ## 12. Checkpoints do Agent OS
 
-- [ ] Checkpoint 1 — Discovery validado: schema mapeado, estratégia de cursor e analytics definidos
-- [ ] Checkpoint 2 — Estratégia de testes aprovada: contratos de resposta definidos, matriz de testes revisada
-- [ ] Checkpoint 3 — RED tests concluídos: testes falhando pelo motivo correto
-- [ ] Checkpoint 4 — GREEN alcançado: backend discovery e analytics funcionais com testes passando
-- [ ] Checkpoint 5 — Refatoração concluída: sem duplicações, responsabilidades claras
-- [ ] Checkpoint 6 — Validação final concluída: build, lint, integração e homologação manual passando
+- [x] Checkpoint 1 — Discovery validado: schema mapeado, estratégia de cursor e analytics definidos
+- [x] Checkpoint 2 — Estratégia de testes aprovada: contratos de resposta definidos, matriz de testes revisada
+- [x] Checkpoint 3 — RED tests concluídos: testes falhando pelo motivo correto
+- [x] Checkpoint 4 — GREEN alcançado: backend discovery e analytics funcionais com testes passando
+- [x] Checkpoint 5 — Refatoração concluída: sem duplicações, responsabilidades claras
+- [x] Checkpoint 6 — Validação final concluída: build, lint, integração e homologação manual passando
 
 ### Log resumido dos checkpoints
 | Checkpoint | Responsável | Resultado | Observações |
 |-----------|-------------|-----------|-------------|
-| 1 — Discovery | @jeandias | ⏳ Pendente | |
-| 2 — Estratégia de testes | @jeandias | ⏳ Pendente | |
-| 3 — RED tests | @jeandias | ⏳ Pendente | |
-| 4 — GREEN | @jeandias | ⏳ Pendente | |
-| 5 — Refatoração | @jeandias | ⏳ Pendente | |
-| 6 — Validação final | @jeandias | ⏳ Pendente | |
+| 1 — Discovery | @jeandias | ✅ Concluído | |
+| 2 — Estratégia de testes | @jeandias | ✅ Concluído | |
+| 3 — RED tests | @jeandias | ✅ Concluído | |
+| 4 — GREEN | @jeandias | ✅ Concluído | |
+| 5 — Refatoração | @jeandias | ✅ Concluído | |
+| 6 — Validação final | @jeandias | ✅ Concluído | Homologação manual local concluída (2026-04-02) |
 
 ---
 
@@ -283,12 +283,12 @@ npm run db:push
 
 | Cenário | Resultado esperado | Evidência | Status |
 | ------- | ------------------ | --------- | ------ |
-| Comprador pesquisa "festival" na home | Resultados filtrados aparecem em < 500ms | Response time log | ⬜ |
-| Comprador filtra por data + categoria | Listagem atualiza com resultados corretos | Screenshot / response body | ⬜ |
-| Comprador chega ao fim da listagem | "Carregar mais" some ou desativa quando `nextCursor = null` | Screenshot / network log | ⬜ |
-| Organizer acessa aba "Métricas" no admin | Vê receita total, tickets vendidos e % ocupação por lote | Screenshot do painel | ⬜ |
-| Customer tenta acessar analytics de evento | Recebe 403 | Response body `{ error: { code: "forbidden" } }` | ⬜ |
-| Evento com todos os lotes esgotados | Ocupação mostra 100% em todos os lotes | Response body de analytics | ⬜ |
+| Comprador pesquisa "festival" na home | Resultados filtrados aparecem em < 500ms | `/tmp/phase16_validation_summary.json` (`eventsPage1Status=200`, `eventsPage1Count=12`) | ✅ |
+| Comprador filtra por data + categoria | Listagem atualiza com resultados corretos | `/tmp/phase16_validation_summary.json` (`dateFilterStatus=200`, `dateFilterCount=1`, `dateCategory=shows`) | ✅ |
+| Comprador chega ao fim da listagem | "Carregar mais" some ou desativa quando `nextCursor = null` | `/tmp/phase16_validation_summary.json` (`eventsPage2NextCursor=null`) + `evidence-phase16-home-with-load-more.png` | ✅ |
+| Organizer acessa aba "Métricas" no admin | Vê receita total, tickets vendidos e % ocupação por lote | `evidence-phase16-admin-analytics.png` + `/tmp/phase16_validation_summary.json` | ✅ |
+| Customer tenta acessar analytics de evento | Recebe 403 | `/tmp/phase16_validation_summary.json` (`customerAnalyticsStatus=403`, `customerError=authorization`) | ✅ |
+| Evento com todos os lotes esgotados | Ocupação mostra 100% em todos os lotes | `/tmp/phase16_validation_summary.json` (`soldOutLotOccupancyPct=100`) | ✅ |
 
 ---
 
@@ -319,17 +319,17 @@ npm run db:push
 
 ## 15. Critérios de Aceite
 
-- [ ] Todos os cenários críticos cobertos por testes antes da implementação
-- [ ] Os testes foram escritos antes da implementação (TDD)
-- [ ] Endpoint `GET /api/events` com filtros e cursor pagination funcionando
-- [ ] Endpoint `GET /api/events/:slug/analytics` com auth, ownership e dados corretos
-- [ ] Frontend com search bar, filtros e infinite scroll integrados ao backend
-- [ ] Painel de métricas no admin exibindo KPIs corretos
-- [ ] Não houve regressão no fluxo de listagem e compra de eventos
-- [ ] Regras de ownership e auth protegidas no backend, não no frontend
-- [ ] Checklist de homologação executado
-- [ ] Rollback definido e documentado
-- [ ] Critérios de sucesso da sprint foram atingidos
+- [x] Todos os cenários críticos cobertos por testes antes da implementação
+- [x] Os testes foram escritos antes da implementação (TDD)
+- [x] Endpoint `GET /api/events` com filtros e cursor pagination funcionando
+- [x] Endpoint `GET /api/events/:slug/analytics` com auth, ownership e dados corretos
+- [x] Frontend com search bar, filtros e infinite scroll integrados ao backend
+- [x] Painel de métricas no admin exibindo KPIs corretos
+- [x] Não houve regressão no fluxo de listagem e compra de eventos
+- [x] Regras de ownership e auth protegidas no backend, não no frontend
+- [x] Checklist de homologação executado
+- [x] Rollback definido e documentado
+- [x] Critérios de sucesso da sprint foram atingidos
 
 ---
 
@@ -337,13 +337,13 @@ npm run db:push
 
 A sprint só pode ser considerada concluída quando:
 
-- [ ] Escopo acordado entregue: Discovery, Analytics e frontends correspondentes
-- [ ] Critérios de aceite atendidos
-- [ ] Testes unitários e de integração passando
-- [ ] Migration aplicada e versionada
-- [ ] Sem violação arquitetural crítica (auth/ownership no backend, regras no use-case)
-- [ ] Sem blocker aberto
-- [ ] Documentação técnica do contrato de API atualizada
+- [x] Escopo acordado entregue: Discovery, Analytics e frontends correspondentes
+- [x] Critérios de aceite atendidos
+- [x] Testes unitários e de integração passando
+- [x] Migration aplicada e versionada
+- [x] Sem violação arquitetural crítica (auth/ownership no backend, regras no use-case)
+- [x] Sem blocker aberto
+- [x] Documentação técnica do contrato de API atualizada
 
 ---
 

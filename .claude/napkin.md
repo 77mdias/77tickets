@@ -15,7 +15,7 @@
 
 ## Shell & Command Reliability
 1. **[2026-03-26] Run lint and build to validate before committing**
-   Do instead: `npm run lint && npm run build` before every commit.
+   Do instead: `bun run lint && bun run build` before every commit.
 
 ## Domain Behavior Guardrails
 1. **[2026-03-26] Pricing, stock validation, ticket generation must always be server-side**

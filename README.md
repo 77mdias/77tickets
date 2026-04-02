@@ -42,33 +42,33 @@ Start here:
 Install dependencies:
 
 ```bash
-npm install
+bun install
 ```
 
 Run development server:
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 Build and run:
 
 ```bash
-npm run build
-npm run start
+bun run build
+bun run start
 ```
 
 ## Quality Commands
 
 ```bash
-npm run lint
-npm run lint:architecture
-npm run test
-npm run test:unit
-npm run test:regression
-npm run test:integration
-npm run ci:quality
-npm run security:audit
+bun run lint
+bun run lint:architecture
+bun run test
+bun run test:unit
+bun run test:regression
+bun run test:integration
+bun run ci:quality
+bun run security:audit
 ```
 
 ## CI/CD
@@ -83,8 +83,8 @@ npm run security:audit
 ## Database Commands
 
 ```bash
-npm run db:generate
-npm run db:migrate
+bun run db:generate
+bun run db:migrate
 ```
 
 > For integration tests, configure `TEST_DATABASE_URL` (recommended: dedicated Neon branch/database).

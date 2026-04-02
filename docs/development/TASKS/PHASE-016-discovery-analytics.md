@@ -1,10 +1,10 @@
 # 🚀 Tasks — Fase 016: Event Discovery + Analytics do Organizador
 
-**Status:** 🟢 ATIVA
-**Última atualização:** 2026-04-01
+**Status:** 🟢 CONCLUÍDA
+**Última atualização:** 2026-04-02
 **Sprint Atual:** Sprint 016
 **Modo principal:** mixed (backend + frontend)
-**Status Geral:** ⏳ 0% (0/18 tarefas completas) — FASE ATIVA
+**Status Geral:** ✅ 100% (18/18 tarefas completas) — FASE CONCLUÍDA
 **ETA:** 2 semanas
 **Pré-requisito:** Fase 015 (✅ Concluída)
 **Owner:** @jeandias
@@ -16,19 +16,19 @@
 
 | Categoria | Total | Concluído | Em Andamento | Pendente | Bloqueado |
 | --------- | ----- | --------- | ------------ | -------- | --------- |
-| Schema & Migration | 2 | 0 | 0 | 2 | 0 |
-| Backend Discovery | 3 | 0 | 0 | 3 | 0 |
-| Backend Analytics | 3 | 0 | 0 | 3 | 0 |
-| Frontend Discovery | 3 | 0 | 0 | 3 | 0 |
-| Frontend Analytics | 3 | 0 | 0 | 3 | 0 |
-| Tests | 4 | 0 | 0 | 4 | 0 |
-| **TOTAL** | **18** | **0** | **0** | **18** | **0** |
+| Schema & Migration | 2 | 2 | 0 | 0 | 0 |
+| Backend Discovery | 3 | 3 | 0 | 0 | 0 |
+| Backend Analytics | 3 | 3 | 0 | 0 | 0 |
+| Frontend Discovery | 3 | 3 | 0 | 0 | 0 |
+| Frontend Analytics | 3 | 3 | 0 | 0 | 0 |
+| Tests | 4 | 4 | 0 | 0 | 0 |
+| **TOTAL** | **18** | **18** | **0** | **0** | **0** |
 
 ### 🎯 Principais Indicadores
-- ⏳ Sprint recém planejada — nenhuma tarefa iniciada
-- ⚠️ DISC-001 (migration de `category`) é pré-requisito de todo o caminho de Discovery
-- 🔴 ANA-002 (`getAnalytics` no repositório) é pré-requisito crítico do path de Analytics
-- 🧪 Testes devem ser escritos antes da implementação (TDD obrigatório)
+- ✅ Discovery entregue com filtros `q/date/location/category` e paginação dual (`page/limit` + cursor).
+- ✅ Analytics do organizador entregue em `GET /api/events/:slug/analytics` com RBAC e ownership.
+- ✅ UI pública com debounce, URL state sync e "Carregar mais" por `nextCursor`.
+- ✅ Painel admin com KPIs, lotes e cupons integrado ao endpoint de analytics.
 
 ---
 
@@ -64,11 +64,11 @@
 - DISC-009 (unit tests Discovery) e ANA-007 (unit tests Analytics) podem ser escritos em paralelo
 
 ### Checkpoints
-- [ ] Discovery concluído: schema mapeado, JOINs para analytics validados
-- [ ] Estratégia técnica validada: contratos de cursor pagination e payload de analytics definidos
-- [ ] Primeira batch implementada: DISC-001, DISC-002, DISC-004 completos
-- [ ] Integração validada: endpoints de Discovery e Analytics com testes passando
-- [ ] Encerramento pronto: frontend integrado, painel de métricas funcional, build verde
+- [x] Discovery concluído: schema mapeado, JOINs para analytics validados
+- [x] Estratégia técnica validada: contratos de cursor pagination e payload de analytics definidos
+- [x] Primeira batch implementada: DISC-001, DISC-002, DISC-004 completos
+- [x] Integração validada: endpoints de Discovery e Analytics com testes passando
+- [x] Encerramento pronto: frontend integrado, painel de métricas funcional, build verde
 
 ---
 
@@ -92,7 +92,7 @@ Adicionar o campo `category` na tabela `events` de forma backward compatible e c
 
 ---
 
-- [ ] **DISC-001** — Adicionar campo `category` na tabela `events`
+- [x] **DISC-001** — Adicionar campo `category` na tabela `events`
 
   **Modo recomendado:** backend
   **Tipo:** infra
@@ -131,7 +131,7 @@ Adicionar o campo `category` na tabela `events` de forma backward compatible e c
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 1h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Implementação concluída
@@ -141,7 +141,7 @@ Adicionar o campo `category` na tabela `events` de forma backward compatible e c
 
 ---
 
-- [ ] **DISC-002** — Índices GIN em `events.title` e `events.location` para fulltext search
+- [x] **DISC-002** — Índices GIN em `events.title` e `events.location` para fulltext search
 
   **Modo recomendado:** backend
   **Tipo:** infra
@@ -179,7 +179,7 @@ Adicionar o campo `category` na tabela `events` de forma backward compatible e c
   **Prioridade:** 🟡 Alta
   **Estimativa:** 1h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Implementação concluída
@@ -205,7 +205,7 @@ Estender o use-case de listagem de eventos e o repositório para suportar filtro
 
 ---
 
-- [ ] **DISC-003** — `ListPublishedEventsUseCase` atualizado com filtros e cursor pagination
+- [x] **DISC-003** — `ListPublishedEventsUseCase` atualizado com filtros e cursor pagination
 
   **Modo recomendado:** backend
   **Tipo:** feature
@@ -244,7 +244,7 @@ Estender o use-case de listagem de eventos e o repositório para suportar filtro
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 2h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Implementação concluída
@@ -254,7 +254,7 @@ Estender o use-case de listagem de eventos e o repositório para suportar filtro
 
 ---
 
-- [ ] **DISC-004** — `EventRepository.listPublished()` com cursor pagination e filtros
+- [x] **DISC-004** — `EventRepository.listPublished()` com cursor pagination e filtros
 
   **Modo recomendado:** backend
   **Tipo:** feature
@@ -295,7 +295,7 @@ Estender o use-case de listagem de eventos e o repositório para suportar filtro
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 3h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Implementação concluída
@@ -305,7 +305,7 @@ Estender o use-case de listagem de eventos e o repositório para suportar filtro
 
 ---
 
-- [ ] **DISC-005** — `GET /api/events` atualizado com query params e validação Zod
+- [x] **DISC-005** — `GET /api/events` atualizado com query params e validação Zod
 
   **Modo recomendado:** backend
   **Tipo:** feature
@@ -346,7 +346,7 @@ Estender o use-case de listagem de eventos e o repositório para suportar filtro
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 1h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Implementação concluída
@@ -372,7 +372,7 @@ Implementar o use-case `GetEventAnalyticsUseCase`, a query de repositório `Even
 
 ---
 
-- [ ] **ANA-001** — `GetEventAnalyticsUseCase` — agregação de métricas do evento
+- [x] **ANA-001** — `GetEventAnalyticsUseCase` — agregação de métricas do evento
 
   **Modo recomendado:** backend
   **Tipo:** feature
@@ -414,7 +414,7 @@ Implementar o use-case `GetEventAnalyticsUseCase`, a query de repositório `Even
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 3h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Implementação concluída
@@ -424,7 +424,7 @@ Implementar o use-case `GetEventAnalyticsUseCase`, a query de repositório `Even
 
 ---
 
-- [ ] **ANA-002** — `EventRepository.getAnalytics(eventId)` — query com JOINs agregados
+- [x] **ANA-002** — `EventRepository.getAnalytics(eventId)` — query com JOINs agregados
 
   **Modo recomendado:** backend
   **Tipo:** feature
@@ -465,7 +465,7 @@ Implementar o use-case `GetEventAnalyticsUseCase`, a query de repositório `Even
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 3h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Implementação concluída
@@ -475,7 +475,7 @@ Implementar o use-case `GetEventAnalyticsUseCase`, a query de repositório `Even
 
 ---
 
-- [ ] **ANA-003** — `GET /api/events/:slug/analytics` — handler com auth organizer/admin
+- [x] **ANA-003** — `GET /api/events/:slug/analytics` — handler com auth organizer/admin
 
   **Modo recomendado:** backend
   **Tipo:** feature
@@ -518,7 +518,7 @@ Implementar o use-case `GetEventAnalyticsUseCase`, a query de repositório `Even
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 1h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Implementação concluída
@@ -544,7 +544,7 @@ Implementar search bar com debounce e URL state sync, dropdowns de filtro de dat
 
 ---
 
-- [ ] **DISC-006** — Search bar na home page com debounce 300ms e URL state sync
+- [x] **DISC-006** — Search bar na home page com debounce 300ms e URL state sync
 
   **Modo recomendado:** frontend
   **Tipo:** feature
@@ -583,7 +583,7 @@ Implementar search bar com debounce e URL state sync, dropdowns de filtro de dat
   **Prioridade:** 🟡 Alta
   **Estimativa:** 2h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Implementação concluída
@@ -593,7 +593,7 @@ Implementar search bar com debounce e URL state sync, dropdowns de filtro de dat
 
 ---
 
-- [ ] **DISC-007** — Filtros de data, localização e categoria com URL state sync
+- [x] **DISC-007** — Filtros de data, localização e categoria com URL state sync
 
   **Modo recomendado:** frontend
   **Tipo:** feature
@@ -633,7 +633,7 @@ Implementar search bar com debounce e URL state sync, dropdowns de filtro de dat
   **Prioridade:** 🟡 Alta
   **Estimativa:** 2h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Implementação concluída
@@ -643,7 +643,7 @@ Implementar search bar com debounce e URL state sync, dropdowns de filtro de dat
 
 ---
 
-- [ ] **DISC-008** — Infinite scroll / "Carregar mais" com cursor pagination
+- [x] **DISC-008** — Infinite scroll / "Carregar mais" com cursor pagination
 
   **Modo recomendado:** frontend
   **Tipo:** feature
@@ -682,7 +682,7 @@ Implementar search bar com debounce e URL state sync, dropdowns de filtro de dat
   **Prioridade:** 🟢 Média
   **Estimativa:** 2h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Implementação concluída
@@ -708,7 +708,7 @@ Implementar painel "Métricas" no admin dashboard com KPI cards de receita total
 
 ---
 
-- [ ] **ANA-004** — Painel "Métricas" no admin com KPI cards
+- [x] **ANA-004** — Painel "Métricas" no admin com KPI cards
 
   **Modo recomendado:** frontend
   **Tipo:** feature
@@ -749,7 +749,7 @@ Implementar painel "Métricas" no admin dashboard com KPI cards de receita total
   **Prioridade:** 🟡 Alta
   **Estimativa:** 3h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Implementação concluída
@@ -759,7 +759,7 @@ Implementar painel "Métricas" no admin dashboard com KPI cards de receita total
 
 ---
 
-- [ ] **ANA-005** — Tabela de lotes com colunas de ocupação
+- [x] **ANA-005** — Tabela de lotes com colunas de ocupação
 
   **Modo recomendado:** frontend
   **Tipo:** feature
@@ -796,7 +796,7 @@ Implementar painel "Métricas" no admin dashboard com KPI cards de receita total
   **Prioridade:** 🟡 Alta
   **Estimativa:** 1h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Implementação concluída
@@ -806,7 +806,7 @@ Implementar painel "Métricas" no admin dashboard com KPI cards de receita total
 
 ---
 
-- [ ] **ANA-006** — Lista de cupons com redemption count e % de uso
+- [x] **ANA-006** — Lista de cupons com redemption count e % de uso
 
   **Modo recomendado:** frontend
   **Tipo:** feature
@@ -842,7 +842,7 @@ Implementar painel "Métricas" no admin dashboard com KPI cards de receita total
   **Prioridade:** 🟢 Média
   **Estimativa:** 1h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Implementação concluída
@@ -867,7 +867,7 @@ Garantir cobertura de testes para todos os novos comportamentos de Discovery e A
 
 ---
 
-- [ ] **DISC-009** — Unit tests: `ListPublishedEventsUseCase` com filtros e cursor
+- [x] **DISC-009** — Unit tests: `ListPublishedEventsUseCase` com filtros e cursor
 
   **Modo recomendado:** backend
   **Tipo:** test
@@ -904,7 +904,7 @@ Garantir cobertura de testes para todos os novos comportamentos de Discovery e A
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 2h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Testes escritos (RED confirmado antes da implementação)
@@ -914,7 +914,7 @@ Garantir cobertura de testes para todos os novos comportamentos de Discovery e A
 
 ---
 
-- [ ] **ANA-007** — Unit tests: `GetEventAnalyticsUseCase` com dados de fixture
+- [x] **ANA-007** — Unit tests: `GetEventAnalyticsUseCase` com dados de fixture
 
   **Modo recomendado:** backend
   **Tipo:** test
@@ -951,7 +951,7 @@ Garantir cobertura de testes para todos os novos comportamentos de Discovery e A
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 2h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Testes escritos (RED confirmado antes da implementação)
@@ -961,7 +961,7 @@ Garantir cobertura de testes para todos os novos comportamentos de Discovery e A
 
 ---
 
-- [ ] **DISC-010** — Integration tests: `GET /api/events` com filtros combinados
+- [x] **DISC-010** — Integration tests: `GET /api/events` com filtros combinados
 
   **Modo recomendado:** backend
   **Tipo:** test
@@ -998,7 +998,7 @@ Garantir cobertura de testes para todos os novos comportamentos de Discovery e A
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 2h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Testes escritos antes da implementação completa (RED confirmado)
@@ -1008,7 +1008,7 @@ Garantir cobertura de testes para todos os novos comportamentos de Discovery e A
 
 ---
 
-- [ ] **ANA-008** — Integration tests: `GET /api/events/:slug/analytics` com auth organizer
+- [x] **ANA-008** — Integration tests: `GET /api/events/:slug/analytics` com auth organizer
 
   **Modo recomendado:** backend
   **Tipo:** test
@@ -1045,7 +1045,7 @@ Garantir cobertura de testes para todos os novos comportamentos de Discovery e A
   **Prioridade:** 🔴 Crítica
   **Estimativa:** 1h
   **Responsável:** @jeandias
-  **Status:** ⏳ Pendente
+  **Status:** ✅ Concluída
 
   **Definição de pronto:**
   - [ ] Testes escritos antes da implementação completa (RED confirmado)
@@ -1060,12 +1060,12 @@ Garantir cobertura de testes para todos os novos comportamentos de Discovery e A
 - **Suites necessárias:** unit, integration, build, lint:architecture
 - **Cobertura alvo:** >80% de branches nos use-cases de Discovery e Analytics; 100% dos cenários de auth no endpoint de analytics
 - **Comandos de verificação:**
-  - `npm run test:unit`
-  - `npm run test:integration`
-  - `npm run lint:architecture`
-  - `npm run build`
-  - `npm run db:push`
-- **Estado atual:** ⏳ Pendente — sprint não iniciada
+  - `bun run test:unit`
+  - `bun run test:integration`
+  - `bun run lint:architecture`
+  - `bun run build`
+  - `bun run db:migrate`
+- **Estado atual:** ✅ Concluída em desenvolvimento local
 - **Fluxos críticos a validar manualmente:**
   - Comprador pesquisa "festival" → resultados filtrados em < 500ms
   - Comprador filtra por data + categoria → listagem atualiza corretamente
@@ -1082,37 +1082,38 @@ Garantir cobertura de testes para todos os novos comportamentos de Discovery e A
 
 ### Riscos em aberto
 - Query de analytics com múltiplos JOINs pode ter impacto de performance em eventos com muitos pedidos — mitigar com `EXPLAIN ANALYZE` antes do deploy
-- `CREATE INDEX CONCURRENTLY` não pode ser executado dentro de uma transaction Drizzle — verificar se migration manual é necessária ou se Drizzle suporta configuração de transação por migration
+- Índices GIN foram aplicados via migration manual com `pg_trgm` para `title` e `location`
 - Cursor pagination muda o contrato de resposta do `GET /api/events` — validar que nenhum cliente existente usa `offset/limit` antes de remover suporte
 
 ### Decisões importantes
-- Cursor pagination usa campo `id` como cursor (string UUID) — simples e funcional, sem necessidade de cursor opaco nesta sprint
+- Cursor pagination usa token composto `startsAt + id` (base64url) para manter ordenação cronológica estável
 - Campo `category` é `varchar(100) nullable` — sem enum no banco para facilitar adição de novas categorias sem migration futura
-- Analytics endpoint resolve `slug` para `eventId` no handler (não no use-case) — mantém o use-case com `eventId` como input, sem dependência de como o evento é identificado externamente
+- Analytics endpoint recebe `slug` no handler e resolve evento no use-case para preservar boundary de camada API
 - Receita em centavos permanece como inteiro no backend — conversão para moeda formatada feita exclusivamente no frontend
 
 ---
 
 ## 📚 Documentação e Comunicação
 
-- [ ] Atualizar `docs/development/TASKS.md` com Fase 016
-- [ ] Atualizar `docs/development/CHANGELOG.md` ao encerrar a fase
-- [ ] Atualizar docs de schema com o novo campo `category` em `events`
-- [ ] Registrar decisão de cursor pagination vs offset pagination no changelog técnico
-- [ ] Registrar decisão de `category` como varchar (não enum) nos docs de schema
+- [x] Atualizar `docs/development/TASKS.md` com Fase 016
+- [x] Atualizar `docs/development/CHANGELOG.md` ao encerrar a fase
+- [x] Referenciar fechamento técnico em `docs/development/Logs/GOV-010-phase-016.md`
+- [x] Atualizar docs de schema com o novo campo `category` em `events`
+- [x] Registrar decisão de cursor pagination vs offset pagination no changelog técnico
+- [x] Registrar decisão de `category` como varchar (não enum) nos docs de schema
 
 ---
 
 ## ✅ Checklist de Encerramento da Fase
 
-- [ ] Todas as tarefas críticas (🔴) concluídas
-- [ ] Tasks pendentes de prioridade média (🟢) replanejadas ou formalmente adiadas
-- [ ] Migration de `category` aplicada e versionada no repositório
-- [ ] Índices GIN criados e validados com `EXPLAIN ANALYZE`
-- [ ] Testes unitários passando (`npm run test:unit`)
-- [ ] Testes de integração passando (`npm run test:integration`)
-- [ ] Fluxos críticos validados manualmente (busca, filtros, métricas)
-- [ ] Documentação de schema e API atualizada
-- [ ] Revisão de segurança: auth e ownership check validados no backend
-- [ ] Aprovação final registrada
-- [ ] Changelog atualizado
+- [x] Todas as tarefas críticas (🔴) concluídas
+- [x] Tasks pendentes de prioridade média (🟢) replanejadas ou formalmente adiadas
+- [x] Migration de `category` aplicada e versionada no repositório
+- [x] Índices GIN criados e validados com `EXPLAIN ANALYZE`
+- [x] Testes unitários passando (`bun run test:unit`)
+- [x] Testes de integração passando (`bun run test:integration`)
+- [x] Fluxos críticos validados manualmente (busca, filtros, métricas) — homologação local em 2026-04-02 com evidências em `/tmp/phase16_validation_summary.json` e screenshots `evidence-phase16-*.png`
+- [x] Documentação de schema e API atualizada
+- [x] Revisão de segurança: auth e ownership check validados no backend
+- [x] Aprovação final registrada
+- [x] Changelog atualizado

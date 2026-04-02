@@ -1,0 +1,37 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - heading "Eventos Abertos" [level=1] [ref=e6]
+      - paragraph [ref=e7]: Explore eventos publicados e inicie sua compra em poucos passos.
+    - generic [ref=e8]:
+      - link "Login" [ref=e9] [cursor=pointer]:
+        - /url: /login
+      - link "Meus Ingressos" [ref=e10] [cursor=pointer]:
+        - /url: /meus-ingressos
+  - generic [ref=e11]:
+    - generic [ref=e12]:
+      - generic [ref=e14]:
+        - paragraph [ref=e15]: Descoberta
+        - paragraph [ref=e16]: Filtre os eventos por termo, data, local e categoria.
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - generic [ref=e19]: Buscar
+          - searchbox "Buscar" [ref=e20]: festival
+        - generic [ref=e21]:
+          - generic [ref=e22]: Data
+          - textbox "Data" [ref=e23]: 2026-04-03
+        - generic [ref=e24]:
+          - generic [ref=e25]: Local
+          - textbox "Local" [ref=e26]:
+            - /placeholder: Sao Paulo, Recife...
+        - generic [ref=e27]:
+          - generic [ref=e28]: Categoria
+          - combobox "Categoria" [ref=e29]:
+            - option "Todas"
+            - option "Shows" [selected]
+            - option "Conferencias"
+            - option "Esportes"
+            - option "Festas"
+            - option "Educacao"
+            - option "Outros"
+    - paragraph [ref=e31]: Carregando eventos publicados...

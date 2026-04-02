@@ -6,6 +6,17 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 
 ### Added
 
+- Entrega técnica da Fase 016 (Event Discovery + Organizer Analytics):
+  - novo campo `events.category` (nullable) e migration `0005_breezy_flatman.sql`;
+  - extensão `pg_trgm` + índices GIN para busca em `events.title` e `events.location`;
+  - `GET /api/events` ampliado com filtros `q`, `date`, `location`, `category` e paginação dual (`page/limit` + `cursor/nextCursor`);
+  - novo endpoint `GET /api/events/:slug/analytics` com RBAC server-side (`organizer` com ownership e `admin`) e bloqueio de `customer`;
+  - novo use-case `GetEventAnalyticsUseCase` com consolidação de `totalRevenue`, `totalTickets`, `lotStats` e `couponStats`;
+  - home pública com busca debounce (300ms), sincronização de filtros na URL e botão "Carregar mais" por cursor;
+  - painel admin com cards de KPI e seções de lotes/cupons consumindo o endpoint de analytics;
+  - cobertura adicionada em testes unitários e de integração para discovery e analytics;
+  - homologação manual local executada em 2026-04-02 com evidências em `/tmp/phase16_validation_summary.json` e screenshots `evidence-phase16-*.png`.
+
 - Entrega técnica da Fase 015 (Email Transacional + Ticket Delivery):
   - novo módulo `src/server/email/` com contrato `EmailProvider`, templates HTML e adapter `ResendEmailProvider`;
   - novos use-cases `SendOrderConfirmationEmailUseCase` e `SendEventReminderEmailUseCase`;

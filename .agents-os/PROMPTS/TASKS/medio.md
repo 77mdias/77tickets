@@ -15,8 +15,8 @@ Modo de trabalho obrigatorio:
 5. criar plano curto de execucao por etapas
 6. implementar as alteracoes necessarias mantendo compatibilidade e evitando regressoes
 7. validar com:
-   - npm run lint
-   - npm run build
+   - bun run lint
+   - bun run build
    - testes adicionais pertinentes identificados durante o discovery
 8. finalizar entrega operacional:
    - salvar a feature nova implementada (commit local objetivo com TASK_ID, quando houver alteracoes)
