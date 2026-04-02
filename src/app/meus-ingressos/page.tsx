@@ -70,7 +70,7 @@ export default async function MyTicketsPage() {
   const orders = await loadCustomerOrders();
 
   return (
-    <div className="flex flex-1 justify-center bg-zinc-50 px-6 py-10">
+    <div className="flex flex-1 justify-center overflow-x-hidden bg-zinc-50 px-4 py-10">
       <main className="flex w-full max-w-6xl flex-col">
         <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -80,7 +80,7 @@ export default async function MyTicketsPage() {
             </p>
           </div>
           <Link
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700"
+            className="inline-flex min-h-[44px] items-center rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700"
             href="/"
           >
             Ver eventos

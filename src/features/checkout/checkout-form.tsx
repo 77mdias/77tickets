@@ -2,6 +2,7 @@
 
 import { type FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import {
   buildCheckoutPayload,
@@ -58,22 +59,22 @@ export function CheckoutForm({
       const payload = (await response.json()) as unknown;
 
       if (!response.ok) {
-        setViewState({
-          kind: "error",
-          message: extractCheckoutErrorMessage(payload),
-        });
+        const errorMessage = extractCheckoutErrorMessage(payload);
+        setViewState({ kind: "error", message: errorMessage });
+        toast.error("Erro ao processar pagamento. Tente novamente.");
         return;
       }
 
       const redirectTarget = extractCheckoutRedirectTarget(payload);
 
       if (!redirectTarget) {
-        setViewState({
-          kind: "error",
-          message: "Could not complete checkout. Please review your input and try again.",
-        });
+        const errorMessage = "Could not complete checkout. Please review your input and try again.";
+        setViewState({ kind: "error", message: errorMessage });
+        toast.error("Erro ao processar pagamento. Tente novamente.");
         return;
       }
+
+      toast.success("Pedido criado com sucesso!");
 
       if (redirectTarget.isExternal) {
         window.location.href = redirectTarget.checkoutUrl;
@@ -83,10 +84,9 @@ export function CheckoutForm({
       router.push(redirectTarget.checkoutUrl);
       router.refresh();
     } catch {
-      setViewState({
-        kind: "error",
-        message: "Could not complete checkout. Please review your input and try again.",
-      });
+      const errorMessage = "Could not complete checkout. Please review your input and try again.";
+      setViewState({ kind: "error", message: errorMessage });
+      toast.error("Erro ao processar pagamento. Tente novamente.");
     }
   };
 
@@ -102,7 +102,7 @@ export function CheckoutForm({
         <label className="grid gap-1">
           <span className="text-sm font-medium text-zinc-800">Event ID</span>
           <input
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-base"
             name="eventId"
             value={values.eventId}
             onChange={(event) => setValues((prev) => ({ ...prev, eventId: event.target.value }))}
@@ -113,7 +113,7 @@ export function CheckoutForm({
         <label className="grid gap-1">
           <span className="text-sm font-medium text-zinc-800">Lot ID</span>
           <input
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-base"
             name="lotId"
             value={values.lotId}
             onChange={(event) => setValues((prev) => ({ ...prev, lotId: event.target.value }))}
@@ -124,7 +124,7 @@ export function CheckoutForm({
         <label className="grid gap-1">
           <span className="text-sm font-medium text-zinc-800">Quantity</span>
           <input
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-base"
             name="quantity"
             type="number"
             min={1}
@@ -138,7 +138,7 @@ export function CheckoutForm({
         <label className="grid gap-1">
           <span className="text-sm font-medium text-zinc-800">Coupon Code (optional)</span>
           <input
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-base"
             name="couponCode"
             value={values.couponCode}
             onChange={(event) =>
@@ -148,11 +148,27 @@ export function CheckoutForm({
         </label>
 
         <button
-          className="mt-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-2 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
           type="submit"
           disabled={viewState.kind === "submitting"}
         >
-          {viewState.kind === "submitting" ? "Submitting..." : "Submit order"}
+          {viewState.kind === "submitting" ? (
+            <>
+              <svg
+                aria-hidden="true"
+                className="h-4 w-4 animate-spin"
+                fill="none"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" fill="currentColor" />
+              </svg>
+              Processando...
+            </>
+          ) : (
+            "Finalizar pedido"
+          )}
         </button>
       </form>
 

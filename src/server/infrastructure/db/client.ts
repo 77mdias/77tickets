@@ -1,5 +1,5 @@
 /**
- * Database client for Cloudflare Workers (and standard Node.js).
+ * Database clients for Cloudflare Workers (and standard Node.js).
  *
  * WHY @neondatabase/serverless instead of `pg` / `postgres`:
  *   Regular Node.js drivers (`pg`, `postgres`) open TCP connections, which are
@@ -7,30 +7,39 @@
  *   communicates over WebSocket (or HTTP), both of which are supported natively
  *   in Workers.
  *
- * WHY Pool (WebSocket) instead of HTTP mode:
- *   `@neondatabase/serverless` supports two transport modes:
- *   - HTTP mode  — `neon()` function + `drizzle-orm/neon-http`
- *                  Simpler, lower-latency for single queries, but does NOT
- *                  support transactions.
- *   - WebSocket mode — `Pool` + `drizzle-orm/neon-serverless` (this file)
- *                  Supports full transaction semantics via `db.transaction()`.
+ * TWO transport modes — use the right one for the job:
  *
- *   We must use WebSocket (Pool) mode because `DrizzleOrderRepository.create()`
- *   wraps the order + order-items + tickets inserts in a single transaction to
- *   guarantee atomicity. Switching to HTTP mode would silently break that
- *   invariant.
+ *   HTTP mode  (`createHttpDb`) — `neon()` + `drizzle-orm/neon-http`
+ *     Stateless per-query HTTP request. No persistent connection to lose.
+ *     Immune to Neon auto-suspend "Connection terminated" errors.
+ *     Does NOT support multi-statement transactions.
+ *     Use for: Better Auth (session/user queries), any non-transactional read.
  *
- * Workers-compatible: yes  (WebSocket is supported natively in Workers runtime)
- * Node-only APIs used: none  (no `net`, `fs`, `child_process`, or `node:*` imports)
+ *   WebSocket mode (`createDb`) — `Pool` + `drizzle-orm/neon-serverless`
+ *     Persistent WebSocket connection. Supports `db.transaction()`.
+ *     Can fail with "Connection terminated" if Neon suspends the idle pool.
+ *     Use only where `db.transaction()` is required (e.g. OrderRepository.create).
+ *
+ * Workers-compatible: yes  (both WebSocket and HTTP are natively supported)
+ * Node-only APIs used: none
  */
-import { Pool } from "@neondatabase/serverless";
+import { neon, Pool } from "@neondatabase/serverless";
+import { drizzle as drizzleHttp } from "drizzle-orm/neon-http";
 import { drizzle } from "drizzle-orm/neon-serverless";
 
 import * as schema from "./schema";
 
+/** HTTP-transport client — use for non-transactional queries (e.g. Better Auth). */
+export function createHttpDb(databaseUrl: string) {
+  const sql = neon(databaseUrl);
+  return drizzleHttp(sql, { schema });
+}
+
+/** WebSocket-transport client — use only where db.transaction() is needed. */
 export function createDb(databaseUrl: string) {
   const pool = new Pool({ connectionString: databaseUrl });
   return drizzle(pool, { schema });
 }
 
+export type HttpDb = ReturnType<typeof createHttpDb>;
 export type Db = ReturnType<typeof createDb>;

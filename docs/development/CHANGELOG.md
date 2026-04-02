@@ -6,6 +6,24 @@ Este arquivo segue o padrão [Keep a Changelog](https://keepachangelog.com/pt-BR
 
 ### Added
 
+- Entrega técnica da Fase 017 (UX Polish + Pre-Migration Gate):
+  - skeleton screens: `EventCardSkeleton`, `EventListSkeleton`, `EventDetailSkeleton`, `TicketCardSkeleton`, `OrderCardSkeleton`, `AdminTableSkeleton`, `AdminDashboardSkeleton`;
+  - `loading.tsx` nas rotas `/eventos`, `/eventos/[slug]`, `/meus-ingressos`, `/admin` com skeletons correspondentes;
+  - error boundaries em português nas rotas `/` (global), `/eventos/[slug]`, `/checkout`, `/meus-ingressos`, `/admin` — com botão "Tentar novamente" e link para home;
+  - toast notifications via `sonner` para checkout (pedido criado / erro de pagamento) e check-in (sucesso / falha); `<Toaster>` em `layout.tsx`;
+  - spinner SVG nos botões de submit do `CheckoutForm` e `CheckinForm` durante estado `submitting`; texto de ação em português;
+  - correções de layout mobile 375px: inputs com `text-base` e `w-full`, touch targets `min-h-[44px]`, link "Comprar" do `LotSelector` responsivo;
+  - PWA: `public/manifest.json`, `public/sw.js` (offline fallback), `public/offline.html`; meta `theme-color` e registro do service worker em `layout.tsx`;
+  - componente `QrScanner` com MediaDevices API + `jsqr`, cleanup de stream, throttle de 150ms e quadro de mira overlay;
+  - cliente puro `qr-scanner-client.ts` com `mapCameraError` e `parseQrResult` — testáveis em node;
+  - integração do `QrScanner` no `CheckinForm` com auto-submit ao detectar QR, `cameraError` state, fallback para input manual;
+  - teste de integração QR roundtrip: `qrcode.create` → RGBA escalonado → `jsqr` → código original;
+  - `jsqr@1.4.0` e `sonner@2.0.7` adicionados às dependências;
+  - smoke scripts: `purchase-flow.ts`, `checkin-flow.ts`, `admin-flow.ts` + helper `http.ts`; script `smoke` no `package.json`;
+  - `MIGRATION-PLAN.md` atualizado com estado pós-sprints 014–016 e mapa de migração NestJS;
+  - `MIGRATION-GATE.md` criado com auditoria (zero acoplamentos), evidências e aprovação formal;
+  - **Gate aprovado: Sprint 018 (NestJS) formalmente desbloqueada.**
+
 - Entrega técnica da Fase 016 (Event Discovery + Organizer Analytics):
   - novo campo `events.category` (nullable) e migration `0005_breezy_flatman.sql`;
   - extensão `pg_trgm` + índices GIN para busca em `events.title` e `events.location`;
