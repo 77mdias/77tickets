@@ -43,6 +43,7 @@ vi.mock("@/server/application/use-cases", () => ({
 
 vi.mock("@/server/infrastructure/db/client", () => ({
   createDb: () => ({}) as Record<string, never>,
+  createHttpDb: () => ({}) as Record<string, never>,
 }));
 
 vi.mock("@/server/infrastructure/observability", () => ({

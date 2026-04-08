@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("@/server/infrastructure/db/client", () => ({
   createDb: () => ({}) as Record<string, never>,
+  createHttpDb: () => ({}) as Record<string, never>,
 }));
 
 vi.mock("@/server/api/orders/create-order.route-adapter", () => ({
