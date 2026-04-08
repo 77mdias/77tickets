@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import type { DiscoveryFilters } from "./event-filters";
 
 interface DiscoveryEvent {
@@ -106,11 +107,14 @@ const loadDiscoveryEvents = async (input: {
 
 export function EventList({ filters }: EventListProps) {
   const requestIdRef = useRef(0);
+  const gridRef = useRef<HTMLDivElement>(null);
   const [events, setEvents] = useState<DiscoveryEvent[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useScrollReveal(gridRef, { childSelector: "> article", skip: isInitialLoading });
 
   const hasActiveFilters = Boolean(
     filters.q.trim() || filters.date.trim() || filters.location.trim() || filters.category.trim(),
@@ -241,7 +245,7 @@ export function EventList({ filters }: EventListProps) {
         </div>
       ) : null}
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div ref={gridRef} className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {events.map((event) => (
           <article
             key={event.id}
