@@ -1,5 +1,5 @@
-import { createCreateOrderHandler } from "@/server/api/create-order.handler";
-import type { CreateOrderHandlerResponse, CreateOrderRequest } from "@/server/api/create-order.handler";
+import { createCreateOrderHandler } from "@/server/api/orders/create-order.handler";
+import type { CreateOrderHandlerResponse, CreateOrderRequest } from "@/server/api/orders/create-order.handler";
 import {
   createCreateOrderRouteAdapter,
   getDatabaseUrlOrThrow,

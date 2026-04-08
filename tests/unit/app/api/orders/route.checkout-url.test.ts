@@ -5,7 +5,7 @@ const mocks = vi.hoisted(() => ({
   baseHandleCreateOrder: vi.fn(),
 }));
 
-vi.mock("@/server/api/create-order.handler", () => ({
+vi.mock("@/server/api/orders/create-order.handler", () => ({
   createCreateOrderHandler: () => mocks.baseHandleCreateOrder,
 }));
 
