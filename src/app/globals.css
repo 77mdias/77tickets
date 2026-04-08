@@ -41,3 +41,21 @@ body {
 input, select, textarea {
   color-scheme: dark;
 }
+
+/* ─── GSAP Scroll-Reveal — Initial hidden state ────────────────────────────
+   Applied by useScrollReveal via gsap.set() on mount.
+   This CSS class is a belt-and-suspenders fallback.
+   The hook uses gsap.set() directly, so this class is not required on elements.
+   The @media rule ensures reduced-motion users always see content.
+   ─────────────────────────────────────────────────────────────────────────── */
+.gsap-reveal {
+  opacity: 0;
+  transform: translateY(3rem); /* 48px — matches DS §03 y: 48 */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gsap-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
