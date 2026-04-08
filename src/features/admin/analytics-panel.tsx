@@ -157,11 +157,11 @@ export function AnalyticsPanel() {
   };
 
   return (
-    <section className="w-full rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+    <section className="w-full rounded-2xl border border-white/10 bg-white/5 p-6">
       <header className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-zinc-900">Analytics do evento</h2>
-          <p className="mt-1 text-sm text-zinc-600">
+          <h2 className="text-xl font-semibold text-white">Analytics do evento</h2>
+          <p className="mt-1 text-sm text-zinc-400">
             Consulte métricas operacionais por slug sem misturar regras de negócio na interface.
           </p>
         </div>
@@ -169,9 +169,9 @@ export function AnalyticsPanel() {
 
       <form className="mt-5 flex flex-col gap-3 sm:flex-row" onSubmit={onSubmit}>
         <label className="grid flex-1 gap-1">
-          <span className="text-sm font-medium text-zinc-800">Slug do evento</span>
+          <span className="text-sm font-medium text-zinc-300">Slug do evento</span>
           <input
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="rounded-md border border-white/15 bg-zinc-900 px-3 py-2 text-sm text-white placeholder:text-zinc-500"
             name="slug"
             value={slug}
             onChange={(event) => setSlug(event.target.value)}
@@ -180,7 +180,7 @@ export function AnalyticsPanel() {
         </label>
 
         <button
-          className="mt-auto rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-auto rounded-md bg-white px-4 py-2 text-sm font-medium text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60"
           type="submit"
           disabled={viewState.kind === "loading"}
         >
@@ -189,16 +189,16 @@ export function AnalyticsPanel() {
       </form>
 
       {viewState.kind === "error" ? (
-        <div className="mt-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
+        <div className="mt-4 rounded-md border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
           {viewState.message}
         </div>
       ) : null}
 
       {viewState.kind === "success" && analytics ? (
         <div className="mt-6 grid gap-6">
-          <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-            <p className="text-sm font-medium text-zinc-900">Evento consultado</p>
-            <p className="mt-1 text-xs text-zinc-500">ID: {analytics.eventId}</p>
+          <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+            <p className="text-sm font-medium text-white">Evento consultado</p>
+            <p className="mt-1 text-xs text-zinc-400">ID: {analytics.eventId}</p>
           </div>
 
           <div className="grid gap-3 md:grid-cols-3">
@@ -217,11 +217,11 @@ export function AnalyticsPanel() {
           </div>
 
           <div className="grid gap-6 xl:grid-cols-2">
-            <section className="rounded-xl border border-zinc-200 p-4">
-              <h3 className="text-sm font-semibold text-zinc-900">Lotes</h3>
+            <section className="rounded-xl border border-white/10 p-4">
+              <h3 className="text-sm font-semibold text-white">Lotes</h3>
               <div className="mt-4 overflow-x-auto">
                 <table className="w-full min-w-[640px] text-left text-sm">
-                  <thead className="border-b border-zinc-200 text-xs uppercase tracking-wide text-zinc-500">
+                  <thead className="border-b border-white/10 text-xs uppercase tracking-wide text-zinc-400">
                     <tr>
                       <th className="py-2 pr-4">Lote</th>
                       <th className="py-2 pr-4">Vendidos</th>
@@ -233,25 +233,25 @@ export function AnalyticsPanel() {
                   <tbody>
                     {lots.length > 0 ? (
                       lots.map((lot) => (
-                        <tr key={lot.lotId} className="border-b border-zinc-100 last:border-0">
-                          <td className="py-3 pr-4 font-medium text-zinc-900">{lot.title}</td>
-                          <td className="py-3 pr-4 text-zinc-700">
+                        <tr key={lot.lotId} className="border-b border-white/5 last:border-0">
+                          <td className="py-3 pr-4 font-medium text-white">{lot.title}</td>
+                          <td className="py-3 pr-4 text-zinc-300">
                             {lot.soldTickets.toLocaleString("pt-BR")}
                           </td>
-                          <td className="py-3 pr-4 text-zinc-700">
+                          <td className="py-3 pr-4 text-zinc-300">
                             {lot.availableQuantity.toLocaleString("pt-BR")}
                           </td>
-                          <td className="py-3 pr-4 text-zinc-700">
+                          <td className="py-3 pr-4 text-zinc-300">
                             {formatPercentage(lot.occupancyPct)}%
                           </td>
-                          <td className="py-3 pr-4 text-zinc-700">
+                          <td className="py-3 pr-4 text-zinc-300">
                             {formatCurrencyPtBrFromCents(lot.revenue)}
                           </td>
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td className="py-3 text-sm text-zinc-500" colSpan={5}>
+                        <td className="py-3 text-sm text-zinc-400" colSpan={5}>
                           Nenhum lote cadastrado.
                         </td>
                       </tr>
@@ -261,8 +261,8 @@ export function AnalyticsPanel() {
               </div>
             </section>
 
-            <section className="rounded-xl border border-zinc-200 p-4">
-              <h3 className="text-sm font-semibold text-zinc-900">Cupons</h3>
+            <section className="rounded-xl border border-white/10 p-4">
+              <h3 className="text-sm font-semibold text-white">Cupons</h3>
               <div className="mt-4 grid gap-3">
                 {coupons.length > 0 ? (
                   coupons.map((coupon, index) => {
@@ -274,32 +274,32 @@ export function AnalyticsPanel() {
                     return (
                       <article
                         key={`${coupon.couponId}-${index}`}
-                        className="rounded-lg border border-zinc-200 bg-white p-4"
+                        className="rounded-lg border border-white/10 bg-white/5 p-4"
                       >
                         <div className="flex flex-wrap items-start justify-between gap-2">
                           <div>
-                            <p className="text-sm font-semibold text-zinc-900">
+                            <p className="text-sm font-semibold text-white">
                               Cupom {coupon.couponId}
                             </p>
                           </div>
-                          <p className="text-sm font-medium text-zinc-900">
+                          <p className="text-sm font-medium text-white">
                             {formatPercentage(usagePct)}% de uso
                           </p>
                         </div>
 
-                        <dl className="mt-3 grid gap-2 text-xs text-zinc-600 sm:grid-cols-2">
+                        <dl className="mt-3 grid gap-2 text-xs text-zinc-400 sm:grid-cols-2">
                           <div>
-                            <dt className="font-medium text-zinc-700">Usos</dt>
+                            <dt className="font-medium text-zinc-300">Usos</dt>
                             <dd>
                               {coupon.uses.toLocaleString("pt-BR")}
                             </dd>
                           </div>
                           <div>
-                            <dt className="font-medium text-zinc-700">Desconto total</dt>
+                            <dt className="font-medium text-zinc-300">Desconto total</dt>
                             <dd>{formatCurrencyPtBrFromCents(coupon.totalDiscount)}</dd>
                           </div>
                           <div>
-                            <dt className="font-medium text-zinc-700">Receita atribuída</dt>
+                            <dt className="font-medium text-zinc-300">Receita atribuída</dt>
                             <dd>{formatCurrencyPtBrFromCents(coupon.totalRevenue)}</dd>
                           </div>
                         </dl>
@@ -307,7 +307,7 @@ export function AnalyticsPanel() {
                     );
                   })
                 ) : (
-                  <p className="text-sm text-zinc-500">Nenhum cupom utilizado neste evento.</p>
+                  <p className="text-sm text-zinc-400">Nenhum cupom utilizado neste evento.</p>
                 )}
               </div>
             </section>
@@ -320,9 +320,9 @@ export function AnalyticsPanel() {
 
 function KpiCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
-      <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">{label}</p>
-      <p className="mt-2 text-2xl font-semibold text-zinc-900">{value}</p>
+    <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+      <p className="text-xs font-medium uppercase tracking-wide text-zinc-400">{label}</p>
+      <p className="mt-2 text-2xl font-semibold text-white">{value}</p>
     </div>
   );
 }

@@ -123,21 +123,21 @@ export function CheckinForm() {
   }, []);
 
   return (
-    <section className="w-full max-w-2xl rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
-      <h1 className="text-2xl font-semibold text-zinc-900">Check-in</h1>
-      <p className="mt-1 text-sm text-zinc-600">
+    <section className="w-full max-w-2xl rounded-xl border border-white/10 bg-white/5 p-6">
+      <h1 className="text-2xl font-semibold text-white">Check-in</h1>
+      <p className="mt-1 text-sm text-zinc-400">
         Escaneie o QR code do ingresso ou insira o código manualmente. A validação é feita no
         servidor.
       </p>
 
       <div className="mt-6">
         {cameraError ? (
-          <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          <div className="rounded-md border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-300">
             {cameraError}
           </div>
         ) : (
           <div className="mb-4">
-            <p className="mb-2 text-sm font-medium text-zinc-800">Câmera</p>
+            <p className="mb-2 text-sm font-medium text-zinc-300">Câmera</p>
             <QrScanner onScan={handleQrScan} onError={handleCameraError} />
           </div>
         )}
@@ -145,9 +145,9 @@ export function CheckinForm() {
 
       <form className="mt-4 grid gap-4" onSubmit={onSubmit}>
         <label className="grid gap-1">
-          <span className="text-sm font-medium text-zinc-800">Ticket ID</span>
+          <span className="text-sm font-medium text-zinc-300">Ticket ID</span>
           <input
-            className="rounded-md border border-zinc-300 px-3 py-2 text-base"
+            className="rounded-md border border-white/15 bg-zinc-900 px-3 py-2 text-base text-white"
             name="ticketId"
             value={values.ticketId}
             onChange={(nextEvent) =>
@@ -161,9 +161,9 @@ export function CheckinForm() {
         </label>
 
         <label className="grid gap-1">
-          <span className="text-sm font-medium text-zinc-800">Event ID</span>
+          <span className="text-sm font-medium text-zinc-300">Event ID</span>
           <input
-            className="rounded-md border border-zinc-300 px-3 py-2 text-base"
+            className="rounded-md border border-white/15 bg-zinc-900 px-3 py-2 text-base text-white"
             name="eventId"
             value={values.eventId}
             onChange={(nextEvent) =>
@@ -177,7 +177,7 @@ export function CheckinForm() {
         </label>
 
         <button
-          className="mt-2 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-2 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-md bg-white px-4 py-2 text-sm font-medium text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60"
           type="submit"
           disabled={viewState.kind === "submitting"}
         >
@@ -213,7 +213,7 @@ export function CheckinForm() {
       </form>
 
       {viewState.kind === "success" ? (
-        <div className="mt-6 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+        <div className="mt-6 rounded-md border border-green-500/20 bg-green-500/10 px-4 py-3 text-sm text-green-300">
           Check-in aprovado para o ingresso <strong>{viewState.data.ticketId}</strong> no evento{" "}
           <strong>{viewState.data.eventId}</strong>. Checker: {viewState.data.checkerId}. Validado
           em: {viewState.data.validatedAt}.
@@ -221,7 +221,7 @@ export function CheckinForm() {
       ) : null}
 
       {viewState.kind === "error" ? (
-        <div className="mt-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
+        <div className="mt-6 rounded-md border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
           {viewState.message}
         </div>
       ) : null}
