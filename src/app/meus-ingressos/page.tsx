@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { RevealWrapper } from "@/components/reveal-wrapper";
 import { TicketQr } from "@/features/tickets/ticket-qr";
 import { getServerBaseUrl, getServerCookieHeader } from "@/lib/server-api";
 
@@ -72,7 +73,10 @@ export default async function MyTicketsPage() {
   return (
     <div className="flex flex-1 justify-center overflow-x-hidden bg-zinc-950 px-4 py-10">
       <main className="flex w-full max-w-6xl flex-col">
-        <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <RevealWrapper
+          as="header"
+          className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
+        >
           <div>
             <h1 className="text-3xl font-semibold text-white">Meus Ingressos</h1>
             <p className="mt-1 text-sm text-zinc-400">
@@ -85,17 +89,20 @@ export default async function MyTicketsPage() {
           >
             Ver eventos
           </Link>
-        </header>
+        </RevealWrapper>
 
         {orders.length === 0 ? (
-          <section className="rounded-xl border border-dashed border-white/15 bg-white/5 px-6 py-10 text-center">
+          <RevealWrapper
+            as="section"
+            className="rounded-xl border border-dashed border-white/15 bg-white/5 px-6 py-10 text-center"
+          >
             <h2 className="text-lg font-semibold text-white">Você ainda não possui ingressos</h2>
             <p className="mt-2 text-sm text-zinc-400">
               Escolha um evento publicado e conclua seu checkout para gerar tickets com QR code.
             </p>
-          </section>
+          </RevealWrapper>
         ) : (
-          <section className="grid gap-5">
+          <RevealWrapper as="section" className="grid gap-5" childSelector="> article">
             {orders.map((order) => (
               <article key={order.id} className="rounded-xl border border-white/10 bg-white/5 p-5">
                 <div className="mb-4 grid gap-1 text-sm text-zinc-300 sm:grid-cols-2">
@@ -129,7 +136,7 @@ export default async function MyTicketsPage() {
                 </div>
               </article>
             ))}
-          </section>
+          </RevealWrapper>
         )}
       </main>
     </div>
