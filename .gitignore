@@ -59,3 +59,6 @@ next-env.d.ts
 
 # docs
 AGENTS.md.backup*
+
+# lock files
+package-lock.json
