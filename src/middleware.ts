@@ -31,7 +31,7 @@ function redirectToLogin(request: NextRequest, next: string): NextResponse {
 }
 
 export async function middleware(request: NextRequest): Promise<NextResponse> {
-  const { pathname } = request.nextUrl;
+  const pathname = new URL(request.url).pathname;
   const role = await getSessionRole(request);
 
   if (pathname.startsWith("/admin")) {
