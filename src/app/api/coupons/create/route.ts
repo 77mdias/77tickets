@@ -1,9 +1,8 @@
 import { createCreateCouponHandler } from "@/server/api/coupons/create-coupon.handler";
 import { createCreateCouponRouteAdapter } from "@/server/api/coupons/coupons.route-adapter";
-import { getDatabaseUrlOrThrow } from "@/server/api/orders/create-order.route-adapter";
 import { getSession } from "@/server/infrastructure/auth";
 import { createCreateCouponUseCase } from "@/server/application/use-cases";
-import { createDb } from "@/server/infrastructure/db/client";
+import { getDb } from "@/server/infrastructure/db";
 import {
   DrizzleCouponRepository,
   DrizzleEventRepository,
@@ -14,7 +13,7 @@ type PostCreateCouponRouteHandler = (request: Request) => Promise<Response>;
 let cachedPostCreateCouponRouteHandler: PostCreateCouponRouteHandler | null = null;
 
 const buildPostCreateCouponRouteHandler = (): PostCreateCouponRouteHandler => {
-  const db = createDb(getDatabaseUrlOrThrow());
+  const db = getDb();
   const couponRepository = new DrizzleCouponRepository(db);
   const eventRepository = new DrizzleEventRepository(db);
 

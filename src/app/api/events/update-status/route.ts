@@ -1,9 +1,8 @@
 import { createUpdateEventRouteAdapter } from "@/server/api/events/events.route-adapter";
 import { createUpdateEventHandler } from "@/server/api/events/update-event.handler";
-import { getDatabaseUrlOrThrow } from "@/server/api/orders/create-order.route-adapter";
 import { getSession } from "@/server/infrastructure/auth";
 import { createUpdateEventStatusUseCase } from "@/server/application/use-cases";
-import { createDb } from "@/server/infrastructure/db/client";
+import { getDb } from "@/server/infrastructure/db";
 import { DrizzleEventRepository } from "@/server/repositories/drizzle";
 
 type PostUpdateStatusRouteHandler = (request: Request) => Promise<Response>;
@@ -11,7 +10,7 @@ type PostUpdateStatusRouteHandler = (request: Request) => Promise<Response>;
 let cachedPostUpdateStatusRouteHandler: PostUpdateStatusRouteHandler | null = null;
 
 const buildPostUpdateStatusRouteHandler = (): PostUpdateStatusRouteHandler => {
-  const db = createDb(getDatabaseUrlOrThrow());
+  const db = getDb();
   const eventRepository = new DrizzleEventRepository(db);
 
   const handleUpdateEvent = createUpdateEventHandler({

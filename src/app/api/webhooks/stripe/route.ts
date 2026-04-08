@@ -4,7 +4,7 @@ import {
   createSendOrderConfirmationEmailUseCase,
 } from "@/server/application/use-cases";
 import { createValidationError, serializeAppError } from "@/server/application/errors";
-import { createDb } from "@/server/infrastructure/db/client";
+import { getDb } from "@/server/infrastructure/db";
 import {
   DrizzleCouponRepository,
   DrizzleEventRepository,
@@ -17,7 +17,6 @@ import { createStripePaymentProvider } from "@/server/payment/stripe.payment-pro
 import { createResendEmailProvider } from "@/server/email";
 import { toApiJsonResponse, withApiSecurityHeaders } from "@/server/api/security-response";
 import { mapAppErrorToResponse } from "@/server/api/error-mapper";
-import { getDatabaseUrlOrThrow } from "@/server/api/orders/create-order.route-adapter";
 
 const badRequest = (message: string): Response =>
   toApiJsonResponse(400, {
@@ -42,7 +41,7 @@ type StripeWebhookRouteHandler = (request: Request) => Promise<Response>;
 let cachedStripeWebhookRouteHandler: StripeWebhookRouteHandler | null = null;
 
 const buildStripeWebhookRouteHandler = (): StripeWebhookRouteHandler => {
-  const db = createDb(getDatabaseUrlOrThrow());
+  const db = getDb();
   const orderRepository = new DrizzleOrderRepository(db);
   const ticketRepository = new DrizzleTicketRepository(db);
   const emailProvider = createResendEmailProvider();

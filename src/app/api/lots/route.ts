@@ -1,9 +1,8 @@
 import { createCreateLotHandler } from "@/server/api/lots/create-lot.handler";
 import { createCreateLotRouteAdapter } from "@/server/api/lots/lots.route-adapter";
-import { getDatabaseUrlOrThrow } from "@/server/api/orders/create-order.route-adapter";
 import { getSession } from "@/server/infrastructure/auth";
 import { createCreateLotUseCase } from "@/server/application/use-cases";
-import { createDb } from "@/server/infrastructure/db/client";
+import { getDb } from "@/server/infrastructure/db";
 import { DrizzleEventRepository, DrizzleLotRepository } from "@/server/repositories/drizzle";
 
 type PostLotsRouteHandler = (request: Request) => Promise<Response>;
@@ -19,7 +18,7 @@ const generateUuid = (): string => {
 };
 
 const buildPostLotsRouteHandler = (): PostLotsRouteHandler => {
-  const db = createDb(getDatabaseUrlOrThrow());
+  const db = getDb();
   const eventRepository = new DrizzleEventRepository(db);
   const lotRepository = new DrizzleLotRepository(db);
 

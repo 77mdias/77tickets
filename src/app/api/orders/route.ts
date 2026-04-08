@@ -2,7 +2,6 @@ import { createCreateOrderHandler } from "@/server/api/orders/create-order.handl
 import type { CreateOrderHandlerResponse, CreateOrderRequest } from "@/server/api/orders/create-order.handler";
 import {
   createCreateOrderRouteAdapter,
-  getDatabaseUrlOrThrow,
 } from "@/server/api/orders/create-order.route-adapter";
 import { createOrderRateLimiter } from "@/server/api/middleware";
 import { getSession } from "@/server/infrastructure/auth";
@@ -10,7 +9,7 @@ import {
   createCreateOrderUseCase,
   createCreateStripeCheckoutSessionUseCase,
 } from "@/server/application/use-cases";
-import { createDb } from "@/server/infrastructure/db/client";
+import { getDb } from "@/server/infrastructure/db";
 import { createConsoleCheckoutObservability } from "@/server/infrastructure/observability";
 import {
   DrizzleCouponRepository,
@@ -41,7 +40,7 @@ const buildDemoCheckoutUrl = (orderId: string): string =>
   `/checkout/simulate?orderId=${encodeURIComponent(orderId)}`;
 
 const buildPostOrdersRouteHandler = (): PostOrdersRouteHandler => {
-  const db = createDb(getDatabaseUrlOrThrow());
+  const db = getDb();
   const observability = createConsoleCheckoutObservability();
   const orderRepository = new DrizzleOrderRepository(db);
 

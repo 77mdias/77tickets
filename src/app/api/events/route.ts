@@ -4,10 +4,9 @@ import {
 } from "@/server/api/events/events.route-adapter";
 import { createListEventsHandler } from "@/server/api/events/list-events.handler";
 import { createListEventsRouteAdapter } from "@/server/api/events/public-events.route-adapter";
-import { getDatabaseUrlOrThrow } from "@/server/api/orders/create-order.route-adapter";
 import { getSession } from "@/server/infrastructure/auth";
 import { createCreateEventUseCase, createListPublishedEventsUseCase } from "@/server/application/use-cases";
-import { createDb } from "@/server/infrastructure/db/client";
+import { getDb } from "@/server/infrastructure/db";
 import { DrizzleEventRepository } from "@/server/repositories/drizzle";
 
 type GetEventsRouteHandler = (request: Request) => Promise<Response>;
@@ -25,7 +24,7 @@ const generateUuid = (): string => {
 };
 
 const buildGetEventsRouteHandler = (): GetEventsRouteHandler => {
-  const db = createDb(getDatabaseUrlOrThrow());
+  const db = getDb();
   const eventRepository = new DrizzleEventRepository(db);
 
   const handleListEvents = createListEventsHandler({
@@ -40,7 +39,7 @@ const buildGetEventsRouteHandler = (): GetEventsRouteHandler => {
 };
 
 const buildPostEventsRouteHandler = (): PostEventsRouteHandler => {
-  const db = createDb(getDatabaseUrlOrThrow());
+  const db = getDb();
   const eventRepository = new DrizzleEventRepository(db);
 
   const handleCreateEvent = createCreateEventHandler({

@@ -1,12 +1,9 @@
 import { createValidateCheckinHandler } from "@/server/api/checkin/validate-checkin.handler";
-import {
-  createValidateCheckinRouteAdapter,
-  getDatabaseUrlOrThrow,
-} from "@/server/api/checkin/validate-checkin.route-adapter";
+import { createValidateCheckinRouteAdapter } from "@/server/api/checkin/validate-checkin.route-adapter";
 import { checkinRateLimiter } from "@/server/api/middleware";
 import { getSession } from "@/server/infrastructure/auth";
 import { createValidateCheckinUseCase } from "@/server/application/use-cases";
-import { createDb } from "@/server/infrastructure/db/client";
+import { getDb } from "@/server/infrastructure/db";
 import {
   DrizzleEventRepository,
   DrizzleOrderRepository,
@@ -19,7 +16,7 @@ let cachedPostCheckinRouteHandler: PostCheckinRouteHandler | null = null;
 const checkRateLimit = checkinRateLimiter();
 
 const buildPostCheckinRouteHandler = (): PostCheckinRouteHandler => {
-  const db = createDb(getDatabaseUrlOrThrow());
+  const db = getDb();
 
   const validateCheckin = createValidateCheckinUseCase({
     now: () => new Date(),

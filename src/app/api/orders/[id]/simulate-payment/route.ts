@@ -10,9 +10,8 @@ import {
 } from "@/server/application/errors";
 import { mapAppErrorToResponse } from "@/server/api/error-mapper";
 import { toApiJsonResponse } from "@/server/api/security-response";
-import { getDatabaseUrlOrThrow } from "@/server/api/orders/create-order.route-adapter";
 import { getSession } from "@/server/infrastructure/auth";
-import { createDb } from "@/server/infrastructure/db/client";
+import { getDb } from "@/server/infrastructure/db";
 import {
   DrizzleCouponRepository,
   DrizzleEventRepository,
@@ -53,7 +52,7 @@ const resolveOrderId = async (
 };
 
 const buildSimulatePaymentRouteHandler = (): SimulatePaymentRouteHandler => {
-  const db = createDb(getDatabaseUrlOrThrow());
+  const db = getDb();
   const orderRepository = new DrizzleOrderRepository(db);
   const ticketRepository = new DrizzleTicketRepository(db);
   const emailProvider = createResendEmailProvider();

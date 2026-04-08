@@ -1,9 +1,8 @@
 import { createListEventOrdersHandler } from "@/server/api/orders/list-event-orders.handler";
 import { createListEventOrdersRouteAdapter } from "@/server/api/orders/list-event-orders.route-adapter";
-import { getDatabaseUrlOrThrow } from "@/server/api/orders/create-order.route-adapter";
 import { getSession } from "@/server/infrastructure/auth";
 import { createListEventOrdersUseCase } from "@/server/application/use-cases";
-import { createDb } from "@/server/infrastructure/db/client";
+import { getDb } from "@/server/infrastructure/db";
 import { DrizzleEventRepository, DrizzleOrderRepository } from "@/server/repositories/drizzle";
 
 type GetEventOrdersRouteHandler = (
@@ -14,7 +13,7 @@ type GetEventOrdersRouteHandler = (
 let cachedGetEventOrdersRouteHandler: GetEventOrdersRouteHandler | null = null;
 
 const buildGetEventOrdersRouteHandler = (): GetEventOrdersRouteHandler => {
-  const db = createDb(getDatabaseUrlOrThrow());
+  const db = getDb();
   const eventRepository = new DrizzleEventRepository(db);
   const orderRepository = new DrizzleOrderRepository(db);
 
