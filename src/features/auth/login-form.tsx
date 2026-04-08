@@ -80,16 +80,16 @@ export function LoginForm({ nextPath }: LoginFormProps) {
   };
 
   return (
-    <section className="w-full max-w-md rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
-      <h1 className="text-2xl font-semibold text-zinc-900">Entrar</h1>
-      <p className="mt-1 text-sm text-zinc-600">
+    <section className="w-full max-w-md rounded-xl border border-white/10 bg-white/5 p-6">
+      <h1 className="text-2xl font-semibold text-white">Entrar</h1>
+      <p className="mt-1 text-sm text-zinc-400">
         Faça login para concluir compras e acessar seus ingressos.
       </p>
 
       <div className="mt-4 flex gap-2">
         <button
           className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-            mode === "signin" ? "bg-zinc-900 text-white" : "border border-zinc-300 text-zinc-700"
+            mode === "signin" ? "bg-white text-zinc-950" : "border border-white/20 text-zinc-400 hover:text-zinc-200"
           }`}
           type="button"
           onClick={() => setMode("signin")}
@@ -98,7 +98,7 @@ export function LoginForm({ nextPath }: LoginFormProps) {
         </button>
         <button
           className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-            mode === "signup" ? "bg-zinc-900 text-white" : "border border-zinc-300 text-zinc-700"
+            mode === "signup" ? "bg-white text-zinc-950" : "border border-white/20 text-zinc-400 hover:text-zinc-200"
           }`}
           type="button"
           onClick={() => setMode("signup")}
@@ -110,9 +110,9 @@ export function LoginForm({ nextPath }: LoginFormProps) {
       <form className="mt-5 grid gap-4" onSubmit={onSubmit}>
         {mode === "signup" ? (
           <label className="grid gap-1">
-            <span className="text-sm font-medium text-zinc-800">Nome</span>
+            <span className="text-sm font-medium text-zinc-300">Nome</span>
             <input
-              className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
+              className="rounded-md border border-white/15 bg-zinc-900 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/30"
               value={name}
               onChange={(event) => setName(event.target.value)}
               required
@@ -121,9 +121,9 @@ export function LoginForm({ nextPath }: LoginFormProps) {
         ) : null}
 
         <label className="grid gap-1">
-          <span className="text-sm font-medium text-zinc-800">E-mail</span>
+          <span className="text-sm font-medium text-zinc-300">E-mail</span>
           <input
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="rounded-md border border-white/15 bg-zinc-900 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/30"
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
@@ -132,9 +132,9 @@ export function LoginForm({ nextPath }: LoginFormProps) {
         </label>
 
         <label className="grid gap-1">
-          <span className="text-sm font-medium text-zinc-800">Senha</span>
+          <span className="text-sm font-medium text-zinc-300">Senha</span>
           <input
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="rounded-md border border-white/15 bg-zinc-900 px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
             type="password"
             minLength={8}
             value={password}
@@ -144,7 +144,7 @@ export function LoginForm({ nextPath }: LoginFormProps) {
         </label>
 
         <button
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="rounded-md bg-white px-4 py-2 text-sm font-medium text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60"
           type="submit"
           disabled={viewState.kind === "submitting"}
         >
@@ -157,7 +157,7 @@ export function LoginForm({ nextPath }: LoginFormProps) {
       </form>
 
       {viewState.kind === "error" ? (
-        <div className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+        <div className="mt-4 rounded-md border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm text-red-300">
           {viewState.message}
         </div>
       ) : null}

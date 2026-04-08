@@ -70,17 +70,17 @@ export default async function MyTicketsPage() {
   const orders = await loadCustomerOrders();
 
   return (
-    <div className="flex flex-1 justify-center overflow-x-hidden bg-zinc-50 px-4 py-10">
+    <div className="flex flex-1 justify-center overflow-x-hidden bg-zinc-950 px-4 py-10">
       <main className="flex w-full max-w-6xl flex-col">
         <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="text-3xl font-semibold text-zinc-900">Meus Ingressos</h1>
-            <p className="mt-1 text-sm text-zinc-600">
+            <h1 className="text-3xl font-semibold text-white">Meus Ingressos</h1>
+            <p className="mt-1 text-sm text-zinc-400">
               Acompanhe seus pedidos e apresente o QR code no check-in.
             </p>
           </div>
           <Link
-            className="inline-flex min-h-[44px] items-center rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700"
+            className="inline-flex min-h-[44px] items-center rounded-md border border-white/20 px-3 py-2 text-sm font-medium text-zinc-300 transition-colors hover:border-white/40 hover:text-white"
             href="/"
           >
             Ver eventos
@@ -88,38 +88,38 @@ export default async function MyTicketsPage() {
         </header>
 
         {orders.length === 0 ? (
-          <section className="rounded-xl border border-dashed border-zinc-300 bg-white px-6 py-10 text-center">
-            <h2 className="text-lg font-semibold text-zinc-900">Você ainda não possui ingressos</h2>
-            <p className="mt-2 text-sm text-zinc-600">
+          <section className="rounded-xl border border-dashed border-white/15 bg-white/5 px-6 py-10 text-center">
+            <h2 className="text-lg font-semibold text-white">Você ainda não possui ingressos</h2>
+            <p className="mt-2 text-sm text-zinc-400">
               Escolha um evento publicado e conclua seu checkout para gerar tickets com QR code.
             </p>
           </section>
         ) : (
           <section className="grid gap-5">
             {orders.map((order) => (
-              <article key={order.id} className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
-                <div className="mb-4 grid gap-1 text-sm text-zinc-700 sm:grid-cols-2">
+              <article key={order.id} className="rounded-xl border border-white/10 bg-white/5 p-5">
+                <div className="mb-4 grid gap-1 text-sm text-zinc-300 sm:grid-cols-2">
                   <p>
-                    <strong>Pedido:</strong> {order.id}
+                    <strong className="text-white">Pedido:</strong> {order.id}
                   </p>
                   <p>
-                    <strong>Evento:</strong> {order.eventId}
+                    <strong className="text-white">Evento:</strong> {order.eventId}
                   </p>
                   <p>
-                    <strong>Status:</strong> {order.status}
+                    <strong className="text-white">Status:</strong> {order.status}
                   </p>
                   <p>
-                    <strong>Total:</strong> {formatCurrency(order.totalInCents)}
+                    <strong className="text-white">Total:</strong> {formatCurrency(order.totalInCents)}
                   </p>
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {order.tickets.map((ticket) => (
-                    <div key={ticket.id} className="rounded-lg border border-zinc-200 p-4">
+                    <div key={ticket.id} className="rounded-lg border border-white/10 p-4">
                       <p className="text-xs uppercase tracking-wide text-zinc-500">Token</p>
-                      <p className="mt-1 break-all text-sm font-medium text-zinc-900">{ticket.token}</p>
-                      <p className="mt-1 text-sm text-zinc-700">
-                        Status: <strong>{statusLabel[ticket.status]}</strong>
+                      <p className="mt-1 break-all text-sm font-medium text-white">{ticket.token}</p>
+                      <p className="mt-1 text-sm text-zinc-300">
+                        Status: <strong className="text-white">{statusLabel[ticket.status]}</strong>
                       </p>
                       <div className="mt-3">
                         <TicketQr token={ticket.token} />

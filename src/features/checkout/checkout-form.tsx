@@ -91,18 +91,18 @@ export function CheckoutForm({
   };
 
   return (
-    <section className="w-full max-w-2xl rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
-      <h1 className="text-2xl font-semibold text-zinc-900">Checkout</h1>
-      <p className="mt-1 text-sm text-zinc-600">
+    <section className="w-full max-w-2xl rounded-xl border border-white/10 bg-white/5 p-6">
+      <h1 className="text-2xl font-semibold text-white">Checkout</h1>
+      <p className="mt-1 text-sm text-zinc-400">
         Formulário conectado ao <code>/api/orders</code>. Preço, estoque e identidade do comprador
         são sempre validados no servidor.
       </p>
 
       <form className="mt-6 grid gap-4" onSubmit={onSubmit}>
         <label className="grid gap-1">
-          <span className="text-sm font-medium text-zinc-800">Event ID</span>
+          <span className="text-sm font-medium text-zinc-300">Event ID</span>
           <input
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-base"
+            className="w-full rounded-md border border-white/15 bg-zinc-900 px-3 py-2 text-base text-white focus:outline-none focus:border-white/30"
             name="eventId"
             value={values.eventId}
             onChange={(event) => setValues((prev) => ({ ...prev, eventId: event.target.value }))}
@@ -111,9 +111,9 @@ export function CheckoutForm({
         </label>
 
         <label className="grid gap-1">
-          <span className="text-sm font-medium text-zinc-800">Lot ID</span>
+          <span className="text-sm font-medium text-zinc-300">Lot ID</span>
           <input
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-base"
+            className="w-full rounded-md border border-white/15 bg-zinc-900 px-3 py-2 text-base text-white focus:outline-none focus:border-white/30"
             name="lotId"
             value={values.lotId}
             onChange={(event) => setValues((prev) => ({ ...prev, lotId: event.target.value }))}
@@ -122,9 +122,9 @@ export function CheckoutForm({
         </label>
 
         <label className="grid gap-1">
-          <span className="text-sm font-medium text-zinc-800">Quantity</span>
+          <span className="text-sm font-medium text-zinc-300">Quantity</span>
           <input
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-base"
+            className="w-full rounded-md border border-white/15 bg-zinc-900 px-3 py-2 text-base text-white focus:outline-none focus:border-white/30"
             name="quantity"
             type="number"
             min={1}
@@ -136,9 +136,9 @@ export function CheckoutForm({
         </label>
 
         <label className="grid gap-1">
-          <span className="text-sm font-medium text-zinc-800">Coupon Code (optional)</span>
+          <span className="text-sm font-medium text-zinc-300">Coupon Code (optional)</span>
           <input
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-base"
+            className="w-full rounded-md border border-white/15 bg-zinc-900 px-3 py-2 text-base text-white focus:outline-none focus:border-white/30"
             name="couponCode"
             value={values.couponCode}
             onChange={(event) =>
@@ -148,7 +148,7 @@ export function CheckoutForm({
         </label>
 
         <button
-          className="mt-2 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-2 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-md bg-white px-4 py-2 text-sm font-medium text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60"
           type="submit"
           disabled={viewState.kind === "submitting"}
         >
@@ -173,7 +173,7 @@ export function CheckoutForm({
       </form>
 
       {viewState.kind === "error" ? (
-        <div className="mt-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
+        <div className="mt-6 rounded-md border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
           {viewState.message}
         </div>
       ) : null}
