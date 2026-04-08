@@ -703,22 +703,25 @@ Vitest is configured with `environment: "node"` [VERIFIED: vitest.config.ts]. GS
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **`skip` dep array vs stable dep array**
    - What we know: Hook uses `skip` in dep array so it re-runs when `isInitialLoading` becomes `false`
    - What's unclear: Does re-running the hook with `skip: false` after `skip: true` correctly pick up the newly-rendered DOM elements?
    - Recommendation: Test in Wave 1 — if DOM is updated before the effect re-runs, it works. If not, call `ScrollTrigger.refresh()` explicitly after data loads.
+   - **RESOLVED:** React's effect scheduling guarantees the DOM is committed before `useEffect` fires. When `isInitialLoading` flips to `false`, React renders the `<article>` elements and commits them to the DOM, *then* runs the effect. `ref.current.querySelectorAll("> article")` therefore finds all articles correctly. No `ScrollTrigger.refresh()` needed. `skip` is destructured before `useEffect` so it is a stable primitive value in the dep array — no stale closure issue.
 
 2. **EventCardSkeleton animation**
    - What we know: CONTEXT.md lists `EventCardSkeleton` as an element target, but `EventList` currently doesn't use `EventListSkeleton` during loading (uses a plain loading text section)
    - What's unclear: Should `EventCardSkeleton` be integrated into `EventList`'s loading state?
    - Recommendation: Implement skeleton integration as part of EventList changes; apply stagger reveal to skeleton cards the same as real cards. The `skip: isInitialLoading` pattern naturally handles this — skeletons appear instantly, real cards animate in.
+   - **RESOLVED:** `EventCardSkeleton` is rendered in a separate loading fallback branch (`isInitialLoading === true`). The `skip: isInitialLoading` pattern means the hook is a no-op during loading — skeletons are never targeted by GSAP and appear instantly. When real data loads (`isInitialLoading → false`), the hook fires, finds the real `<article>` cards in the grid, and animates them in. No skeleton animation integration is needed or desired.
 
 3. **Meus-ingressos server-rendered orders**
    - What we know: `<section className="grid gap-5">` with `<article>` children is entirely server-rendered
    - What's unclear: Does `<RevealWrapper childSelector="> article">` work when children are server-RSC-rendered?
    - Recommendation: This is standard App Router pattern — should work. If RSC serialization causes issues, extract order list to a client component that receives orders as a prop.
+   - **RESOLVED:** This is the standard App Router server-to-client boundary pattern. Server-rendered children are serialized as React element trees and passed as the `children` prop to the `RevealWrapper` client component. `RevealWrapper` renders them inside a plain DOM element (`<div>` or `as=` tag) — it does not inspect or re-render the children, so RSC serialization has no impact. Pattern is verified by GSAP community usage and is identical to how Next.js handles `<Layout>` + `{children}` in App Router.
 
 ---
 
