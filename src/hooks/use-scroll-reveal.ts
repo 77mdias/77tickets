@@ -33,6 +33,17 @@ export interface ScrollRevealOptions {
 }
 
 /**
+ * Ensures that a CSS selector starting with `>` is scoped correctly for use in
+ * `element.querySelectorAll()`. Browsers and JSDOM reject bare `> child`
+ * selectors — they require the `:scope` pseudo-class prefix.
+ *
+ * @example toScopedSelector("> article") // → ":scope > article"
+ * @example toScopedSelector(".card")     // → ".card" (unchanged)
+ */
+export const toScopedSelector = (selector: string): string =>
+  selector.trimStart().startsWith(">") ? `:scope ${selector}` : selector;
+
+/**
  * Attach a scroll-reveal entrance animation to a DOM element ref.
  * Respects prefers-reduced-motion — skips all GSAP if matched.
  * Cleanup: gsap.context().revert() kills tweens + ScrollTriggers on unmount.
@@ -79,8 +90,9 @@ export function useScrollReveal<T extends Element>(
 
     const ctx = gsap.context(() => {
       if (childSelector) {
-        // Stagger mode: animate matching child elements
-        const targets = el.querySelectorAll(childSelector);
+        // Prefix ">" with ":scope" so direct-child selectors work in all environments
+        // (JSDOM, older browsers). e.g. "> article" → ":scope > article".
+        const targets = el.querySelectorAll(toScopedSelector(childSelector));
         if (targets.length === 0) return;
         gsap.set(targets, { opacity: 0, y });
         ScrollTrigger.create({
