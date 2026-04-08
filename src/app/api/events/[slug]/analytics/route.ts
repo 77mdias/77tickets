@@ -2,13 +2,12 @@ import { createGetEventAnalyticsHandler } from "@/server/api/events/get-event-an
 import { createGetEventAnalyticsRouteAdapter } from "@/server/api/events/get-event-analytics.route-adapter";
 import { getSession } from "@/server/infrastructure/auth";
 import { createGetEventAnalyticsUseCase } from "@/server/application/use-cases";
-import { getDb } from "@/server/infrastructure/db";
 import {
-  DrizzleEventRepository,
-  DrizzleLotRepository,
-  DrizzleOrderRepository,
-  DrizzleTicketRepository,
-} from "@/server/repositories/drizzle";
+  getEventRepository,
+  getLotRepository,
+  getOrderRepository,
+  getTicketRepository,
+} from "@/server/composition-root";
 
 type GetEventAnalyticsRouteHandler = (
   request: Request,
@@ -18,11 +17,10 @@ type GetEventAnalyticsRouteHandler = (
 let cachedGetEventAnalyticsRouteHandler: GetEventAnalyticsRouteHandler | null = null;
 
 const buildGetEventAnalyticsRouteHandler = (): GetEventAnalyticsRouteHandler => {
-  const db = getDb();
-  const eventRepository = new DrizzleEventRepository(db);
-  const lotRepository = new DrizzleLotRepository(db);
-  const orderRepository = new DrizzleOrderRepository(db);
-  const ticketRepository = new DrizzleTicketRepository(db);
+  const eventRepository = getEventRepository();
+  const lotRepository = getLotRepository();
+  const orderRepository = getOrderRepository();
+  const ticketRepository = getTicketRepository();
 
   const handleGetEventAnalytics = createGetEventAnalyticsHandler({
     getEventAnalytics: createGetEventAnalyticsUseCase({

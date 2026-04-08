@@ -2,11 +2,7 @@ import { createUpdateCouponHandler } from "@/server/api/coupons/update-coupon.ha
 import { createUpdateCouponRouteAdapter } from "@/server/api/coupons/coupons.route-adapter";
 import { getSession } from "@/server/infrastructure/auth";
 import { createUpdateCouponUseCase } from "@/server/application/use-cases";
-import { getDb } from "@/server/infrastructure/db";
-import {
-  DrizzleCouponRepository,
-  DrizzleEventRepository,
-} from "@/server/repositories/drizzle";
+import { getCouponRepository, getEventRepository } from "@/server/composition-root";
 import { createMutationRateLimiter, withRateLimit } from "@/server/api/middleware";
 
 type PostUpdateCouponRouteHandler = (request: Request) => Promise<Response>;
@@ -16,9 +12,8 @@ let cachedPostUpdateCouponRouteHandler: PostUpdateCouponRouteHandler | null = nu
 const checkMutationRateLimit = createMutationRateLimiter();
 
 const buildPostUpdateCouponRouteHandler = (): PostUpdateCouponRouteHandler => {
-  const db = getDb();
-  const couponRepository = new DrizzleCouponRepository(db);
-  const eventRepository = new DrizzleEventRepository(db);
+  const couponRepository = getCouponRepository();
+  const eventRepository = getEventRepository();
 
   const handleUpdateCoupon = createUpdateCouponHandler({
     couponRepository,

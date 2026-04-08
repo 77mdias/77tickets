@@ -3,12 +3,11 @@ import { createSendEventReminderEmailUseCase } from "@/server/application/use-ca
 import { mapAppErrorToResponse } from "@/server/api/error-mapper";
 import { toApiJsonResponse, withApiSecurityHeaders } from "@/server/api/security-response";
 import { createResendEmailProvider } from "@/server/email";
-import { getDb } from "@/server/infrastructure/db";
 import {
-  DrizzleEventRepository,
-  DrizzleOrderRepository,
-  DrizzleUserRepository,
-} from "@/server/repositories/drizzle";
+  getEventRepository,
+  getOrderRepository,
+  getUserRepository,
+} from "@/server/composition-root";
 
 type EventRemindersRouteHandler = (request: Request) => Promise<Response>;
 
@@ -29,13 +28,12 @@ const validateCronAuthorization = (request: Request): void => {
 };
 
 const buildEventRemindersRouteHandler = (): EventRemindersRouteHandler => {
-  const db = getDb();
-  const eventRepository = new DrizzleEventRepository(db);
+  const eventRepository = getEventRepository();
 
   const sendEventReminderEmail = createSendEventReminderEmailUseCase({
-    orderRepository: new DrizzleOrderRepository(db),
+    orderRepository: getOrderRepository(),
     eventRepository,
-    userRepository: new DrizzleUserRepository(db),
+    userRepository: getUserRepository(),
     emailProvider: createResendEmailProvider(),
   });
 

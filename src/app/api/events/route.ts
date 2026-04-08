@@ -7,8 +7,7 @@ import { createListEventsRouteAdapter } from "@/server/api/events/public-events.
 import { getSession } from "@/server/infrastructure/auth";
 import { createCreateEventUseCase, createListPublishedEventsUseCase } from "@/server/application/use-cases";
 import { createMutationRateLimiter, withRateLimit } from "@/server/api/middleware";
-import { getDb } from "@/server/infrastructure/db";
-import { DrizzleEventRepository } from "@/server/repositories/drizzle";
+import { getEventRepository } from "@/server/composition-root";
 
 type GetEventsRouteHandler = (request: Request) => Promise<Response>;
 type PostEventsRouteHandler = (request: Request) => Promise<Response>;
@@ -27,8 +26,7 @@ const generateUuid = (): string => {
 };
 
 const buildGetEventsRouteHandler = (): GetEventsRouteHandler => {
-  const db = getDb();
-  const eventRepository = new DrizzleEventRepository(db);
+  const eventRepository = getEventRepository();
 
   const handleListEvents = createListEventsHandler({
     listPublishedEvents: createListPublishedEventsUseCase({
@@ -42,8 +40,7 @@ const buildGetEventsRouteHandler = (): GetEventsRouteHandler => {
 };
 
 const buildPostEventsRouteHandler = (): PostEventsRouteHandler => {
-  const db = getDb();
-  const eventRepository = new DrizzleEventRepository(db);
+  const eventRepository = getEventRepository();
 
   const handleCreateEvent = createCreateEventHandler({
     createEvent: createCreateEventUseCase({

@@ -2,16 +2,14 @@ import { createUpdateEventRouteAdapter } from "@/server/api/events/events.route-
 import { createUpdateEventHandler } from "@/server/api/events/update-event.handler";
 import { getSession } from "@/server/infrastructure/auth";
 import { createUpdateEventStatusUseCase } from "@/server/application/use-cases";
-import { getDb } from "@/server/infrastructure/db";
-import { DrizzleEventRepository } from "@/server/repositories/drizzle";
+import { getEventRepository } from "@/server/composition-root";
 
 type PostUpdateStatusRouteHandler = (request: Request) => Promise<Response>;
 
 let cachedPostUpdateStatusRouteHandler: PostUpdateStatusRouteHandler | null = null;
 
 const buildPostUpdateStatusRouteHandler = (): PostUpdateStatusRouteHandler => {
-  const db = getDb();
-  const eventRepository = new DrizzleEventRepository(db);
+  const eventRepository = getEventRepository();
 
   const handleUpdateEvent = createUpdateEventHandler({
     eventRepository,

@@ -2,19 +2,16 @@ import { createGetCustomerOrdersHandler } from "@/server/api/orders/get-customer
 import { createGetCustomerOrdersRouteAdapter } from "@/server/api/orders/get-customer-orders.route-adapter";
 import { getSession } from "@/server/infrastructure/auth";
 import { createGetCustomerOrdersUseCase } from "@/server/application/use-cases";
-import { getDb } from "@/server/infrastructure/db";
-import { DrizzleOrderRepository, DrizzleTicketRepository } from "@/server/repositories/drizzle";
+import { getOrderRepository, getTicketRepository } from "@/server/composition-root";
 
 type GetCustomerOrdersRouteHandler = (request: Request) => Promise<Response>;
 
 let cachedGetCustomerOrdersRouteHandler: GetCustomerOrdersRouteHandler | null = null;
 
 const buildGetCustomerOrdersRouteHandler = (): GetCustomerOrdersRouteHandler => {
-  const db = getDb();
-
   const getCustomerOrders = createGetCustomerOrdersUseCase({
-    orderRepository: new DrizzleOrderRepository(db),
-    ticketRepository: new DrizzleTicketRepository(db),
+    orderRepository: getOrderRepository(),
+    ticketRepository: getTicketRepository(),
   });
 
   const handleGetCustomerOrders = createGetCustomerOrdersHandler({
