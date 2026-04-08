@@ -4,10 +4,13 @@ import { getSession } from "@/server/infrastructure/auth";
 import { createCreateLotUseCase } from "@/server/application/use-cases";
 import { getDb } from "@/server/infrastructure/db";
 import { DrizzleEventRepository, DrizzleLotRepository } from "@/server/repositories/drizzle";
+import { createMutationRateLimiter, withRateLimit } from "@/server/api/middleware";
 
 type PostLotsRouteHandler = (request: Request) => Promise<Response>;
 
 let cachedPostLotsRouteHandler: PostLotsRouteHandler | null = null;
+
+const checkMutationRateLimit = createMutationRateLimiter();
 
 const generateUuid = (): string => {
   if (typeof globalThis.crypto?.randomUUID === "function") {
@@ -30,10 +33,12 @@ const buildPostLotsRouteHandler = (): PostLotsRouteHandler => {
     }),
   });
 
-  return createCreateLotRouteAdapter({
-    getSession,
-    handleCreateLot,
-  });
+  return withRateLimit("post-lots", 30, checkMutationRateLimit)(
+    createCreateLotRouteAdapter({
+      getSession,
+      handleCreateLot,
+    }),
+  );
 };
 
 const getPostLotsRouteHandler = (): PostLotsRouteHandler => {

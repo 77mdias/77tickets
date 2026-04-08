@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 import { RevealWrapper } from "@/components/reveal-wrapper";
 import { TicketQr } from "@/features/tickets/ticket-qr";
-import { getServerBaseUrl, getServerCookieHeader } from "@/lib/server-api";
+import { getServerBaseUrl, getServerCookieHeader } from "@/app/lib/server-api";
 
 interface CustomerTicket {
   id: string;

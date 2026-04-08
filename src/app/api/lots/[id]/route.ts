@@ -4,6 +4,7 @@ import { getSession } from "@/server/infrastructure/auth";
 import { createUpdateLotUseCase } from "@/server/application/use-cases";
 import { getDb } from "@/server/infrastructure/db";
 import { DrizzleEventRepository, DrizzleLotRepository } from "@/server/repositories/drizzle";
+import { createMutationRateLimiter, withRateLimit } from "@/server/api/middleware";
 
 type PutLotRouteHandler = (
   request: Request,
@@ -11,6 +12,8 @@ type PutLotRouteHandler = (
 ) => Promise<Response>;
 
 let cachedPutLotRouteHandler: PutLotRouteHandler | null = null;
+
+const checkMutationRateLimit = createMutationRateLimiter();
 
 const buildPutLotRouteHandler = (): PutLotRouteHandler => {
   const db = getDb();
@@ -24,10 +27,12 @@ const buildPutLotRouteHandler = (): PutLotRouteHandler => {
     }),
   });
 
-  return createUpdateLotRouteAdapter({
-    getSession,
-    handleUpdateLot,
-  });
+  return withRateLimit("put-lots", 30, checkMutationRateLimit)(
+    createUpdateLotRouteAdapter({
+      getSession,
+      handleUpdateLot,
+    }),
+  );
 };
 
 const getPutLotRouteHandler = (): PutLotRouteHandler => {

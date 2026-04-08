@@ -7,10 +7,13 @@ import {
   DrizzleCouponRepository,
   DrizzleEventRepository,
 } from "@/server/repositories/drizzle";
+import { createMutationRateLimiter, withRateLimit } from "@/server/api/middleware";
 
 type PostUpdateCouponRouteHandler = (request: Request) => Promise<Response>;
 
 let cachedPostUpdateCouponRouteHandler: PostUpdateCouponRouteHandler | null = null;
+
+const checkMutationRateLimit = createMutationRateLimiter();
 
 const buildPostUpdateCouponRouteHandler = (): PostUpdateCouponRouteHandler => {
   const db = getDb();
@@ -25,10 +28,12 @@ const buildPostUpdateCouponRouteHandler = (): PostUpdateCouponRouteHandler => {
     }),
   });
 
-  return createUpdateCouponRouteAdapter({
-    getSession,
-    handleUpdateCoupon,
-  });
+  return withRateLimit("post-coupons-update", 30, checkMutationRateLimit)(
+    createUpdateCouponRouteAdapter({
+      getSession,
+      handleUpdateCoupon,
+    }),
+  );
 };
 
 const getPostUpdateCouponRouteHandler = (): PostUpdateCouponRouteHandler => {

@@ -6,6 +6,7 @@ import { createListEventsHandler } from "@/server/api/events/list-events.handler
 import { createListEventsRouteAdapter } from "@/server/api/events/public-events.route-adapter";
 import { getSession } from "@/server/infrastructure/auth";
 import { createCreateEventUseCase, createListPublishedEventsUseCase } from "@/server/application/use-cases";
+import { createMutationRateLimiter, withRateLimit } from "@/server/api/middleware";
 import { getDb } from "@/server/infrastructure/db";
 import { DrizzleEventRepository } from "@/server/repositories/drizzle";
 
@@ -14,6 +15,8 @@ type PostEventsRouteHandler = (request: Request) => Promise<Response>;
 
 let cachedGetEventsRouteHandler: GetEventsRouteHandler | null = null;
 let cachedPostEventsRouteHandler: PostEventsRouteHandler | null = null;
+
+const checkMutationRateLimit = createMutationRateLimiter();
 
 const generateUuid = (): string => {
   if (typeof globalThis.crypto?.randomUUID === "function") {
@@ -49,10 +52,12 @@ const buildPostEventsRouteHandler = (): PostEventsRouteHandler => {
     }),
   });
 
-  return createCreateEventRouteAdapter({
-    getSession,
-    handleCreateEvent,
-  });
+  return withRateLimit("post-events", 30, checkMutationRateLimit)(
+    createCreateEventRouteAdapter({
+      getSession,
+      handleCreateEvent,
+    }),
+  );
 };
 
 const getGetEventsRouteHandler = (): GetEventsRouteHandler => {

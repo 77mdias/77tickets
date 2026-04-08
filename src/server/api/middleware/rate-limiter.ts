@@ -4,7 +4,6 @@
 // For production, replace the store with Cloudflare KV:
 //   const count = await env.RATE_LIMIT_KV.get(`rl:${key}`);
 //
-
 export interface RateLimiterConfig {
   maxRequests: number; // max requests allowed
   windowMs: number; // window in milliseconds
@@ -54,3 +53,5 @@ export function createRateLimiter(config: RateLimiterConfig, store?: RateLimitSt
 export const createOrderRateLimiter = () => createRateLimiter({ maxRequests: 10, windowMs: 60_000 });
 export const authLoginRateLimiter = () => createRateLimiter({ maxRequests: 5, windowMs: 60_000 });
 export const checkinRateLimiter = () => createRateLimiter({ maxRequests: 60, windowMs: 60_000 });
+// Organizer/admin mutation endpoints (create/update events, lots, coupons)
+export const createMutationRateLimiter = () => createRateLimiter({ maxRequests: 30, windowMs: 60_000 });

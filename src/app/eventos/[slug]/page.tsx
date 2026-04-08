@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import { LotSelector } from "@/features/checkout/lot-selector";
 import { RevealWrapper } from "@/components/reveal-wrapper";
-import { getServerBaseUrl } from "@/lib/server-api";
+import { getServerBaseUrl } from "@/app/lib/server-api";
 
 interface EventDetailPayload {
   event: {
