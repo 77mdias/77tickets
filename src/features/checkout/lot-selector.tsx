@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 interface LotOption {
   id: string;
@@ -27,6 +28,9 @@ export function LotSelector({ eventId, lots }: LotSelectorProps) {
   const [selectedLotId, setSelectedLotId] = useState(availableLots[0]?.id ?? "");
   const [quantity, setQuantity] = useState(1);
 
+  const sectionRef = useRef<HTMLElement>(null);
+  useScrollReveal(sectionRef);
+
   const selectedLot = useMemo(
     () => availableLots.find((lot) => lot.id === selectedLotId) ?? null,
     [availableLots, selectedLotId],
@@ -39,7 +43,7 @@ export function LotSelector({ eventId, lots }: LotSelectorProps) {
 
   if (availableLots.length === 0) {
     return (
-      <section className="rounded-xl border border-white/10 bg-white/5 p-5">
+      <section ref={sectionRef} className="rounded-xl border border-white/10 bg-white/5 p-5">
         <h2 className="text-lg font-semibold text-white">Checkout</h2>
         <p className="mt-2 text-sm text-zinc-400">
           Não há lotes disponíveis para compra no momento.
@@ -55,7 +59,7 @@ export function LotSelector({ eventId, lots }: LotSelectorProps) {
   });
 
   return (
-    <section className="rounded-xl border border-white/10 bg-white/5 p-5">
+    <section ref={sectionRef} className="rounded-xl border border-white/10 bg-white/5 p-5">
       <h2 className="text-lg font-semibold text-white">Selecionar Lote</h2>
       <p className="mt-1 text-sm text-zinc-400">
         Escolha o lote e a quantidade respeitando o limite por pedido.

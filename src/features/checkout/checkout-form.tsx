@@ -1,7 +1,8 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import { toast } from "sonner";
 
 import {
@@ -42,6 +43,9 @@ export function CheckoutForm({
     quantity: initialQuantity,
   });
   const [viewState, setViewState] = useState<CheckoutViewState>({ kind: "idle" });
+
+  const sectionRef = useRef<HTMLElement>(null);
+  useScrollReveal(sectionRef);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -91,7 +95,7 @@ export function CheckoutForm({
   };
 
   return (
-    <section className="w-full max-w-2xl rounded-xl border border-white/10 bg-white/5 p-6">
+    <section ref={sectionRef} className="w-full max-w-2xl rounded-xl border border-white/10 bg-white/5 p-6">
       <h1 className="text-2xl font-semibold text-white">Checkout</h1>
       <p className="mt-1 text-sm text-zinc-400">
         Formulário conectado ao <code>/api/orders</code>. Preço, estoque e identidade do comprador

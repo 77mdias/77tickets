@@ -1,7 +1,8 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 type AuthMode = "signin" | "signup";
 
@@ -42,6 +43,9 @@ export function LoginForm({ nextPath }: LoginFormProps) {
   const [password, setPassword] = useState("");
   const [viewState, setViewState] = useState<ViewState>({ kind: "idle" });
 
+  const sectionRef = useRef<HTMLElement>(null);
+  useScrollReveal(sectionRef);
+
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setViewState({ kind: "submitting" });
@@ -80,7 +84,7 @@ export function LoginForm({ nextPath }: LoginFormProps) {
   };
 
   return (
-    <section className="w-full max-w-md rounded-xl border border-white/10 bg-white/5 p-6">
+    <section ref={sectionRef} className="w-full max-w-md rounded-xl border border-white/10 bg-white/5 p-6">
       <h1 className="text-2xl font-semibold text-white">Entrar</h1>
       <p className="mt-1 text-sm text-zinc-400">
         Faça login para concluir compras e acessar seus ingressos.
