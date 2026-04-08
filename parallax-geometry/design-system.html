@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Parallax Design System</title>
+<title>Parallax Geometry — Design System</title>
 <script src="assets/gsap_4a57399e4113.js"></script>
 <script src="assets/ScrollTrigger_8669edfeb171.js"></script>
 <script src="assets/resource_3fa48481346f.js"></script>
@@ -123,14 +123,41 @@
             <h2 class="text-4xl font-bold mb-12 text-white/50">01. Typography</h2>
             
             <div class="space-y-16">
-                <!-- Heading 1 -->
+                <!-- Heading 1 — Hero -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-start pb-12 border-b border-white/5">
-                    <div class="text-zinc-500 font-mono text-sm pt-4">Heading 1</div>
+                    <div class="text-zinc-500 font-mono text-sm pt-4">Hero H1</div>
                     <div class="md:col-span-3">
                         <h1 class="text-8xl md:text-9xl font-bold leading-tight text-white tracking-tight">
                             Outlined<br/>Dimensions
                         </h1>
                         <p class="mt-4 text-zinc-500 font-mono text-sm">text-8xl md:text-9xl font-bold tracking-tight leading-tight</p>
+                    </div>
+                </div>
+
+                <!-- Page H1 -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-start pb-12 border-b border-white/5">
+                    <div class="text-zinc-500 font-mono text-sm pt-4">Page H1</div>
+                    <div class="md:col-span-3">
+                        <h1 class="text-3xl font-semibold text-white">Festival de Verão 2026</h1>
+                        <p class="mt-4 text-zinc-500 font-mono text-sm">text-3xl font-semibold text-white</p>
+                    </div>
+                </div>
+
+                <!-- Section H2 -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-start pb-12 border-b border-white/5">
+                    <div class="text-zinc-500 font-mono text-sm pt-4">Section H2</div>
+                    <div class="md:col-span-3">
+                        <h2 class="text-xl font-semibold text-white">Detalhes do evento</h2>
+                        <p class="mt-4 text-zinc-500 font-mono text-sm">text-xl font-semibold text-white</p>
+                    </div>
+                </div>
+
+                <!-- Card Heading -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-start pb-12 border-b border-white/5">
+                    <div class="text-zinc-500 font-mono text-sm pt-4">Card Heading</div>
+                    <div class="md:col-span-3">
+                        <h3 class="text-lg font-semibold text-white">Lote 1 — Pista</h3>
+                        <p class="mt-4 text-zinc-500 font-mono text-sm">text-lg font-semibold text-white</p>
                     </div>
                 </div>
 
@@ -146,13 +173,37 @@
                 </div>
 
                 <!-- Body Large -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-start">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-start pb-12 border-b border-white/5">
                     <div class="text-zinc-500 font-mono text-sm pt-4">Body Large</div>
                     <div class="md:col-span-3">
                         <p class="text-2xl md:text-3xl leading-relaxed text-zinc-300 font-medium">
                             Navigate through wireframe planes where each geometric form exists as pure outline.
                         </p>
                         <p class="mt-4 text-zinc-500 font-mono text-sm">text-2xl md:text-3xl leading-relaxed font-medium text-zinc-300</p>
+                    </div>
+                </div>
+
+                <!-- Body -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-start pb-12 border-b border-white/5">
+                    <div class="text-zinc-500 font-mono text-sm pt-4">Body</div>
+                    <div class="md:col-span-3">
+                        <p class="text-sm text-zinc-300 leading-6">
+                            Compre seus ingressos com segurança. Nossos ingressos são validados por QR code único no momento do check-in no evento.
+                        </p>
+                        <p class="mt-4 text-zinc-500 font-mono text-sm">text-sm text-zinc-300 leading-6</p>
+                    </div>
+                </div>
+
+                <!-- Caption / Label -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-start">
+                    <div class="text-zinc-500 font-mono text-sm pt-4">Caption / Label</div>
+                    <div class="md:col-span-3 space-y-4">
+                        <p class="text-xs font-medium uppercase tracking-wide text-zinc-400">Checkout concluído</p>
+                        <p class="text-xs font-mono text-zinc-500">ID: evt_01jz8r...</p>
+                        <p class="mt-4 text-zinc-500 font-mono text-sm">
+                            Caption: text-xs font-medium uppercase tracking-wide text-zinc-400<br>
+                            Mono label: text-xs font-mono text-zinc-500
+                        </p>
                     </div>
                 </div>
             </div>
@@ -162,30 +213,112 @@
         <section id="colors" class="ds-section">
             <h2 class="text-4xl font-bold mb-12 text-white/50">02. Colors & Surfaces</h2>
             
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <!-- Background -->
+            <div class="space-y-12">
+                <!-- Base palette -->
                 <div>
-                    <div class="ds-swatch bg-zinc-950"></div>
-                    <p class="text-white font-medium">Zinc 950</p>
-                    <p class="text-zinc-500 text-sm font-mono">#0a0a0a (Background)</p>
+                    <p class="text-zinc-500 font-mono text-sm mb-6">Base Palette</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        <div>
+                            <div class="ds-swatch bg-zinc-950"></div>
+                            <p class="text-white font-medium">Zinc 950</p>
+                            <p class="text-zinc-500 text-sm font-mono">#0a0a0a — Page canvas</p>
+                        </div>
+                        <div>
+                            <div class="ds-swatch bg-zinc-900"></div>
+                            <p class="text-white font-medium">Zinc 900</p>
+                            <p class="text-zinc-500 text-sm font-mono">#18181b — Input bg, Surface 2</p>
+                        </div>
+                        <div>
+                            <div class="ds-swatch" style="background: rgba(255,255,255,0.05)"></div>
+                            <p class="text-white font-medium">White / 5</p>
+                            <p class="text-zinc-500 text-sm font-mono">rgba(255,255,255,0.05) — Surface 1 (cards)</p>
+                        </div>
+                        <div>
+                            <div class="ds-swatch" style="background: rgba(255,255,255,0.1)"></div>
+                            <p class="text-white font-medium">White / 10</p>
+                            <p class="text-zinc-500 text-sm font-mono">rgba(255,255,255,0.1) — Card borders</p>
+                        </div>
+                    </div>
                 </div>
-                <!-- Text Primary -->
+
+                <!-- Text palette -->
                 <div>
-                    <div class="ds-swatch bg-white"></div>
-                    <p class="text-white font-medium">White</p>
-                    <p class="text-zinc-500 text-sm font-mono">#ffffff (Headings)</p>
+                    <p class="text-zinc-500 font-mono text-sm mb-6">Text Hierarchy</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        <div>
+                            <div class="ds-swatch bg-white"></div>
+                            <p class="text-white font-medium">White</p>
+                            <p class="text-zinc-500 text-sm font-mono">#ffffff — Headings, h1/h2/h3</p>
+                        </div>
+                        <div>
+                            <div class="ds-swatch bg-zinc-300"></div>
+                            <p class="text-zinc-300 font-medium">Zinc 300</p>
+                            <p class="text-zinc-500 text-sm font-mono">Body text, form labels</p>
+                        </div>
+                        <div>
+                            <div class="ds-swatch bg-zinc-400"></div>
+                            <p class="text-zinc-400 font-medium">Zinc 400</p>
+                            <p class="text-zinc-500 text-sm font-mono">Subtitles, captions, muted</p>
+                        </div>
+                        <div>
+                            <div class="ds-swatch bg-zinc-500"></div>
+                            <p class="text-zinc-500 font-medium">Zinc 500</p>
+                            <p class="text-zinc-500 text-sm font-mono">Metadata, placeholders</p>
+                        </div>
+                    </div>
                 </div>
-                <!-- Text Secondary -->
+
+                <!-- Accent palette -->
                 <div>
-                    <div class="ds-swatch bg-zinc-300"></div>
-                    <p class="text-zinc-300 font-medium">Zinc 300</p>
-                    <p class="text-zinc-500 text-sm font-mono">Text Body</p>
+                    <p class="text-zinc-500 font-mono text-sm mb-6">Accent Palette (from wireframe materials)</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        <div>
+                            <div class="ds-swatch bg-blue-400"></div>
+                            <p class="text-blue-400 font-medium">Blue 400</p>
+                            <p class="text-zinc-500 text-sm font-mono">#60a5fa — Active, info, accent geometry</p>
+                        </div>
+                        <div>
+                            <div class="ds-swatch bg-amber-400"></div>
+                            <p class="text-amber-400 font-medium">Amber 400</p>
+                            <p class="text-zinc-500 text-sm font-mono">#fbbf24 — Highlight, warning geometry</p>
+                        </div>
+                        <div>
+                            <div class="ds-swatch bg-green-400"></div>
+                            <p class="text-green-400 font-medium">Green 400</p>
+                            <p class="text-zinc-500 text-sm font-mono">Success states</p>
+                        </div>
+                        <div>
+                            <div class="ds-swatch bg-red-400"></div>
+                            <p class="text-red-400 font-medium">Red 400</p>
+                            <p class="text-zinc-500 text-sm font-mono">Error states</p>
+                        </div>
+                    </div>
                 </div>
-                <!-- Text Muted -->
-                <div>
-                    <div class="ds-swatch bg-zinc-400"></div>
-                    <p class="text-zinc-400 font-medium">Zinc 400</p>
-                    <p class="text-zinc-500 text-sm font-mono">Quotes / Accents</p>
+            </div>
+        </section>
+
+        <!-- Motion -->
+        <section id="motion" class="ds-section min-h-screen flex flex-col justify-center">
+            <h2 class="text-4xl font-bold mb-12 text-white/50">03. Motion Principles</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+                <div class="gsap-reveal-trigger">
+                    <h3 class="text-4xl font-bold mb-6 text-white gsap-reveal">Scroll Reveal</h3>
+                    <p class="text-xl text-zinc-300 gsap-reveal">
+                        Elements enter from the bottom (y: 48px) with opacity fading from 0 to 1. 
+                        The duration is 0.9s with "power3.out" easing.
+                    </p>
+                </div>
+                
+                <div class="p-8 border border-white/10 rounded-xl bg-white/5">
+                    <p class="text-zinc-400 font-mono text-sm mb-4">Code Pattern</p>
+                    <pre class="text-sm text-zinc-300 overflow-x-auto">
+gsap.to(element, { 
+  opacity: 1, 
+  y: 0, 
+  duration: 0.9, 
+  ease: "power3.out" 
+});</pre>
                 </div>
             </div>
         </section>
@@ -230,7 +363,7 @@
                 </div>
 
                 <!-- Destructive -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-start">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-start pb-12 border-b border-white/5">
                     <div class="text-zinc-500 font-mono text-sm pt-4">Destructive</div>
                     <div class="md:col-span-3 flex flex-wrap gap-4 items-center">
                         <button class="rounded-md border border-red-500/30 px-4 py-2 text-sm font-medium text-red-400 transition-colors hover:border-red-400/60 hover:text-red-300">
@@ -238,6 +371,32 @@
                         </button>
                         <p class="w-full mt-4 text-zinc-500 font-mono text-sm">
                             border border-red-500/30 text-red-400 rounded-md px-4 py-2 text-sm font-medium
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Loading/Submitting -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-start">
+                    <div class="text-zinc-500 font-mono text-sm pt-4">Loading State</div>
+                    <div class="md:col-span-3 flex flex-wrap gap-4 items-center">
+                        <button class="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-md bg-white px-4 py-2 text-sm font-medium text-zinc-950 opacity-70 cursor-not-allowed" disabled>
+                            <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" fill="currentColor"/>
+                            </svg>
+                            Processando...
+                        </button>
+                        <button class="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-md border border-white/20 px-4 py-2 text-sm font-medium text-zinc-300 opacity-70 cursor-not-allowed" disabled>
+                            <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" fill="currentColor"/>
+                            </svg>
+                            Carregando...
+                        </button>
+                        <p class="w-full mt-4 text-zinc-500 font-mono text-sm">
+                            Adds: inline-flex items-center gap-2 min-h-[44px]<br>
+                            Spinner: h-4 w-4 animate-spin — opacity-25 circle / opacity-75 path<br>
+                            State: disabled opacity-60 cursor-not-allowed
                         </p>
                     </div>
                 </div>
@@ -350,6 +509,27 @@
                     </div>
                 </div>
 
+                <!-- Panel / Form Card -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-start pb-12 border-b border-white/5">
+                    <div class="text-zinc-500 font-mono text-sm pt-4">Panel / Form Card</div>
+                    <div class="md:col-span-3">
+                        <div class="rounded-xl border border-white/10 bg-white/5 p-6 max-w-md">
+                            <h2 class="text-xl font-semibold text-white">Entrar</h2>
+                            <p class="mt-1 text-sm text-zinc-400">Acesse sua conta para ver seus ingressos.</p>
+                            <div class="mt-4 grid gap-3">
+                                <label class="grid gap-1">
+                                    <span class="text-sm font-medium text-zinc-300">E-mail</span>
+                                    <input class="rounded-md border border-white/15 bg-zinc-900 px-3 py-2 text-sm text-white placeholder:text-zinc-500" placeholder="voce@exemplo.com" type="email" />
+                                </label>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-zinc-500 font-mono text-sm">
+                            rounded-xl border border-white/10 bg-white/5 p-6<br>
+                            Use rounded-xl for forms and panels; rounded-2xl for event/content cards
+                        </p>
+                    </div>
+                </div>
+
                 <!-- Empty State -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-start">
                     <div class="text-zinc-500 font-mono text-sm pt-4">Empty State</div>
@@ -440,32 +620,6 @@
                             h-4 w-4 animate-spin — opacity-25/75 circle/path
                         </p>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Motion -->
-        <section id="motion" class="ds-section min-h-screen flex flex-col justify-center">
-            <h2 class="text-4xl font-bold mb-12 text-white/50">03. Motion Principles</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-                <div class="gsap-reveal-trigger">
-                    <h3 class="text-4xl font-bold mb-6 text-white gsap-reveal">Scroll Reveal</h3>
-                    <p class="text-xl text-zinc-300 gsap-reveal">
-                        Elements enter from the bottom (y: 48px) with opacity fading from 0 to 1. 
-                        The duration is 0.9s with "power3.out" easing.
-                    </p>
-                </div>
-                
-                <div class="p-8 border border-white/10 rounded-xl bg-white/5">
-                    <p class="text-zinc-400 font-mono text-sm mb-4">Code Pattern</p>
-                    <pre class="text-sm text-zinc-300 overflow-x-auto">
-gsap.to(element, { 
-  opacity: 1, 
-  y: 0, 
-  duration: 0.9, 
-  ease: "power3.out" 
-});</pre>
                 </div>
             </div>
         </section>
