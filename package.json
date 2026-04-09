@@ -2,6 +2,7 @@
   "name": "77ticket",
   "version": "0.1.0",
   "private": true,
+  "workspaces": ["packages/*"],
   "scripts": {
     "dev": "vinext dev",
     "build": "vinext build",
