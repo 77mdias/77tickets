@@ -38,7 +38,9 @@ export const GET_EVENT_ANALYTICS_USE_CASE = 'GET_EVENT_ANALYTICS_USE_CASE';
 export const GET_EVENT_DETAIL_USE_CASE = 'GET_EVENT_DETAIL_USE_CASE';
 export const LIST_EVENT_ORDERS_USE_CASE = 'LIST_EVENT_ORDERS_USE_CASE';
 export const LIST_PUBLISHED_EVENTS_USE_CASE = 'LIST_PUBLISHED_EVENTS_USE_CASE';
-export const PUBLISH_EVENT_USE_CASE = 'PUBLISH_EVENT_USE_CASE';
+// createPublishEventUseCase requires organizerId at construction time (per-request).
+// Controllers inject this factory and call it with the authenticated user's ID.
+export const CREATE_PUBLISH_EVENT_FOR_ORGANIZER = 'CREATE_PUBLISH_EVENT_FOR_ORGANIZER';
 export const SEND_EVENT_REMINDER_EMAIL_USE_CASE = 'SEND_EVENT_REMINDER_EMAIL_USE_CASE';
 export const SEND_ORDER_CONFIRMATION_EMAIL_USE_CASE = 'SEND_ORDER_CONFIRMATION_EMAIL_USE_CASE';
 export const SIMULATE_PAYMENT_USE_CASE = 'SIMULATE_PAYMENT_USE_CASE';
@@ -162,16 +164,11 @@ export const VALIDATE_CHECKIN_USE_CASE = 'VALIDATE_CHECKIN_USE_CASE';
         createListPublishedEventsUseCase({ eventRepository }),
     },
     {
-      // organizerId is a per-request concern; handlers must create their own instance.
-      // This singleton exists for DI graph completeness only.
-      provide: PUBLISH_EVENT_USE_CASE,
+      provide: CREATE_PUBLISH_EVENT_FOR_ORGANIZER,
       inject: [EVENT_REPOSITORY, LOT_REPOSITORY],
       useFactory: (eventRepository: any, lotRepository: any) =>
-        createPublishEventUseCase({
-          organizerId: '',
-          eventRepository,
-          lotRepository,
-        }),
+        (organizerId: string) =>
+          createPublishEventUseCase({ organizerId, eventRepository, lotRepository }),
     },
     {
       provide: SEND_EVENT_REMINDER_EMAIL_USE_CASE,
@@ -232,7 +229,7 @@ export const VALIDATE_CHECKIN_USE_CASE = 'VALIDATE_CHECKIN_USE_CASE';
     GET_EVENT_DETAIL_USE_CASE,
     LIST_EVENT_ORDERS_USE_CASE,
     LIST_PUBLISHED_EVENTS_USE_CASE,
-    PUBLISH_EVENT_USE_CASE,
+    CREATE_PUBLISH_EVENT_FOR_ORGANIZER,
     SEND_EVENT_REMINDER_EMAIL_USE_CASE,
     SEND_ORDER_CONFIRMATION_EMAIL_USE_CASE,
     SIMULATE_PAYMENT_USE_CASE,
