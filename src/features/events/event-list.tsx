@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import type { DiscoveryFilters } from "./event-filters";
 
 interface DiscoveryEvent {
@@ -106,11 +107,14 @@ const loadDiscoveryEvents = async (input: {
 
 export function EventList({ filters }: EventListProps) {
   const requestIdRef = useRef(0);
+  const gridRef = useRef<HTMLDivElement>(null);
   const [events, setEvents] = useState<DiscoveryEvent[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useScrollReveal(gridRef, { childSelector: "> article", skip: isInitialLoading });
 
   const hasActiveFilters = Boolean(
     filters.q.trim() || filters.date.trim() || filters.location.trim() || filters.category.trim(),
@@ -206,15 +210,15 @@ export function EventList({ filters }: EventListProps) {
 
   if (isInitialLoading) {
     return (
-      <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-        <p className="text-sm text-zinc-600">Carregando eventos publicados...</p>
+      <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <p className="text-sm text-zinc-400">Carregando eventos publicados...</p>
       </section>
     );
   }
 
   if (errorMessage && events.length === 0) {
     return (
-      <section className="rounded-2xl border border-red-200 bg-red-50 p-5 text-red-900 shadow-sm">
+      <section className="rounded-2xl border border-red-500/20 bg-red-500/10 p-5 text-red-300">
         <p className="text-sm font-medium">{errorMessage}</p>
       </section>
     );
@@ -222,9 +226,9 @@ export function EventList({ filters }: EventListProps) {
 
   if (events.length === 0) {
     return (
-      <section className="rounded-2xl border border-dashed border-zinc-300 bg-white p-6 text-center shadow-sm">
-        <h2 className="text-lg font-semibold text-zinc-900">Nenhum evento encontrado</h2>
-        <p className="mt-2 text-sm text-zinc-600">
+      <section className="rounded-2xl border border-dashed border-white/15 bg-white/5 p-6 text-center">
+        <h2 className="text-lg font-semibold text-white">Nenhum evento encontrado</h2>
+        <p className="mt-2 text-sm text-zinc-400">
           {hasActiveFilters
             ? "Ajuste os filtros para ampliar a busca."
             : "Ainda não há eventos publicados para exibir."}
@@ -236,30 +240,30 @@ export function EventList({ filters }: EventListProps) {
   return (
     <section className="space-y-4">
       {errorMessage ? (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
+        <div className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
           {errorMessage}
         </div>
       ) : null}
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div ref={gridRef} className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {events.map((event) => (
           <article
             key={event.id}
-            className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm"
+            className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 transition-colors hover:border-white/20"
           >
             {event.imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img alt={event.title} className="h-40 w-full object-cover" src={event.imageUrl} />
             ) : (
-              <div className="h-40 w-full bg-zinc-100" />
+              <div className="h-40 w-full bg-white/10" />
             )}
 
             <div className="p-4">
-              <h2 className="text-lg font-semibold text-zinc-900">{event.title}</h2>
-              <p className="mt-1 text-sm text-zinc-600">{formatDateTime(event.startsAt)}</p>
+              <h2 className="text-lg font-semibold text-white">{event.title}</h2>
+              <p className="mt-1 text-sm text-zinc-400">{formatDateTime(event.startsAt)}</p>
               <p className="mt-1 text-sm text-zinc-500">{event.location ?? "Local a definir"}</p>
               <Link
-                className="mt-4 inline-flex min-h-[44px] items-center rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white"
+                className="mt-4 inline-flex min-h-[44px] items-center rounded-md bg-white px-3 py-2 text-sm font-medium text-zinc-950 transition-opacity hover:opacity-90"
                 href={`/eventos/${event.slug}`}
               >
                 Ver detalhes
@@ -272,7 +276,7 @@ export function EventList({ filters }: EventListProps) {
       {nextCursor ? (
         <div className="flex justify-center pt-2">
           <button
-            className="rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-md border border-white/20 bg-transparent px-4 py-2 text-sm font-medium text-zinc-300 transition-colors hover:border-white/40 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
             type="button"
             onClick={onLoadMore}
             disabled={isLoadingMore}

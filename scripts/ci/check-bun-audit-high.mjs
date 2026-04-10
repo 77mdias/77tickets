@@ -1,5 +1,34 @@
 #!/usr/bin/env node
 import { spawnSync } from "node:child_process";
+import { createRequire } from "node:module";
+import { existsSync } from "node:fs";
+
+const require = createRequire(import.meta.url);
+
+function getInstalledVersion(packageName) {
+  try {
+    const pkgPath = new URL(`../../node_modules/${packageName}/package.json`, import.meta.url);
+    if (!existsSync(pkgPath)) return null;
+    const pkg = require(pkgPath.pathname);
+    return pkg.version ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function isInstalledVersionVulnerable(packageName, vulnerableVersionsRange) {
+  if (!vulnerableVersionsRange) return true; // assume vulnerable if no range given
+  const installedVersion = getInstalledVersion(packageName);
+  if (!installedVersion) return true; // assume vulnerable if can't determine
+
+  try {
+    const semver = require("semver");
+    return semver.satisfies(installedVersion, vulnerableVersionsRange, { includePrerelease: false });
+  } catch {
+    // If semver check fails, conservatively assume vulnerable
+    return true;
+  }
+}
 
 const ANSI_PATTERN = /\u001b\[[0-9;]*m/g;
 const BLOCKING_SEVERITIES = new Set(["high", "critical"]);
@@ -97,8 +126,14 @@ for (const [packageName, advisories] of Object.entries(report)) {
       continue;
     }
 
+    const vulnerableVersions = String(advisory?.vulnerable_versions ?? "");
+    if (!isInstalledVersionVulnerable(packageName, vulnerableVersions)) {
+      continue;
+    }
+
     blockingFindings.push({
       packageName,
+      installedVersion: getInstalledVersion(packageName) ?? "unknown",
       severity,
       title: String(advisory?.title ?? "Untitled advisory"),
       id: String(advisory?.id ?? "unknown"),
@@ -117,8 +152,9 @@ console.error("Blocking high/critical advisories found:");
 for (const finding of blockingFindings) {
   const link = finding.url ? ` (${finding.url})` : "";
   const range = finding.vulnerableVersions ? ` | vulnerable: ${finding.vulnerableVersions}` : "";
+  const installed = finding.installedVersion ? ` | installed: ${finding.installedVersion}` : "";
   console.error(
-    `- [${finding.severity}] ${finding.packageName} :: ${finding.title} [${finding.id}]${range}${link}`,
+    `- [${finding.severity}] ${finding.packageName} :: ${finding.title} [${finding.id}]${range}${installed}${link}`,
   );
 }
 

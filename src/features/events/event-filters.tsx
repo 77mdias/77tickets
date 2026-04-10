@@ -12,7 +12,7 @@ export interface EventFiltersProps {
   onChange: <K extends keyof DiscoveryFilters>(key: K, value: DiscoveryFilters[K]) => void;
 }
 
-const fieldClassName = "rounded-md border border-zinc-300 px-3 py-2 text-sm";
+const fieldClassName = "rounded-md border border-white/15 bg-zinc-900 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/30";
 const CATEGORY_OPTIONS = [
   { value: "", label: "Todas" },
   { value: "shows", label: "Shows" },
@@ -25,11 +25,11 @@ const CATEGORY_OPTIONS = [
 
 export function EventFilters({ filters, onChange }: EventFiltersProps) {
   return (
-    <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+    <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-zinc-900">Descoberta</p>
-          <p className="mt-1 text-sm text-zinc-600">
+          <p className="text-sm font-semibold text-white">Descoberta</p>
+          <p className="mt-1 text-sm text-zinc-400">
             Filtre os eventos por termo, data, local e categoria.
           </p>
         </div>
@@ -37,7 +37,7 @@ export function EventFilters({ filters, onChange }: EventFiltersProps) {
 
       <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <label className="grid gap-1">
-          <span className="text-sm font-medium text-zinc-800">Buscar</span>
+          <span className="text-sm font-medium text-zinc-300">Buscar</span>
           <input
             className={fieldClassName}
             name="q"
@@ -49,7 +49,7 @@ export function EventFilters({ filters, onChange }: EventFiltersProps) {
         </label>
 
         <label className="grid gap-1">
-          <span className="text-sm font-medium text-zinc-800">Data</span>
+          <span className="text-sm font-medium text-zinc-300">Data</span>
           <input
             className={fieldClassName}
             name="date"
@@ -60,7 +60,7 @@ export function EventFilters({ filters, onChange }: EventFiltersProps) {
         </label>
 
         <label className="grid gap-1">
-          <span className="text-sm font-medium text-zinc-800">Local</span>
+          <span className="text-sm font-medium text-zinc-300">Local</span>
           <input
             className={fieldClassName}
             name="location"
@@ -72,7 +72,7 @@ export function EventFilters({ filters, onChange }: EventFiltersProps) {
         </label>
 
         <label className="grid gap-1">
-          <span className="text-sm font-medium text-zinc-800">Categoria</span>
+          <span className="text-sm font-medium text-zinc-300">Categoria</span>
           <select
             className={fieldClassName}
             name="category"

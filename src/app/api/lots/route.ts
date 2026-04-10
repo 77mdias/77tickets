@@ -1,14 +1,15 @@
 import { createCreateLotHandler } from "@/server/api/lots/create-lot.handler";
 import { createCreateLotRouteAdapter } from "@/server/api/lots/lots.route-adapter";
-import { getDatabaseUrlOrThrow } from "@/server/api/orders/create-order.route-adapter";
 import { getSession } from "@/server/infrastructure/auth";
 import { createCreateLotUseCase } from "@/server/application/use-cases";
-import { createDb } from "@/server/infrastructure/db/client";
-import { DrizzleEventRepository, DrizzleLotRepository } from "@/server/repositories/drizzle";
+import { getEventRepository, getLotRepository } from "@/server/composition-root";
+import { createMutationRateLimiter, withRateLimit } from "@/server/api/middleware";
 
 type PostLotsRouteHandler = (request: Request) => Promise<Response>;
 
 let cachedPostLotsRouteHandler: PostLotsRouteHandler | null = null;
+
+const checkMutationRateLimit = createMutationRateLimiter();
 
 const generateUuid = (): string => {
   if (typeof globalThis.crypto?.randomUUID === "function") {
@@ -19,9 +20,8 @@ const generateUuid = (): string => {
 };
 
 const buildPostLotsRouteHandler = (): PostLotsRouteHandler => {
-  const db = createDb(getDatabaseUrlOrThrow());
-  const eventRepository = new DrizzleEventRepository(db);
-  const lotRepository = new DrizzleLotRepository(db);
+  const eventRepository = getEventRepository();
+  const lotRepository = getLotRepository();
 
   const handleCreateLot = createCreateLotHandler({
     createLot: createCreateLotUseCase({
@@ -31,10 +31,12 @@ const buildPostLotsRouteHandler = (): PostLotsRouteHandler => {
     }),
   });
 
-  return createCreateLotRouteAdapter({
-    getSession,
-    handleCreateLot,
-  });
+  return withRateLimit("post-lots", 30, checkMutationRateLimit)(
+    createCreateLotRouteAdapter({
+      getSession,
+      handleCreateLot,
+    }),
+  );
 };
 
 const getPostLotsRouteHandler = (): PostLotsRouteHandler => {

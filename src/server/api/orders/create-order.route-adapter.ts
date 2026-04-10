@@ -1,5 +1,4 @@
 import {
-  createInternalError,
   createValidationError,
   type AppErrorPayload,
 } from "../../application/errors";
@@ -76,12 +75,3 @@ export const createCreateOrderRouteAdapter = (
     }
   };
 
-export const getDatabaseUrlOrThrow = (): string => {
-  const databaseUrl = process.env.DATABASE_URL?.trim();
-
-  if (!databaseUrl) {
-    throw createInternalError("Database is not configured");
-  }
-
-  return databaseUrl;
-};

@@ -1,9 +1,7 @@
 import { createGetEventHandler } from "@/server/api/events/get-event.handler";
 import { createGetEventRouteAdapter } from "@/server/api/events/public-events.route-adapter";
-import { getDatabaseUrlOrThrow } from "@/server/api/orders/create-order.route-adapter";
 import { createGetEventDetailUseCase } from "@/server/application/use-cases";
-import { createDb } from "@/server/infrastructure/db/client";
-import { DrizzleEventRepository, DrizzleLotRepository } from "@/server/repositories/drizzle";
+import { getEventRepository, getLotRepository } from "@/server/composition-root";
 
 type GetEventBySlugRouteHandler = (
   request: Request,
@@ -13,9 +11,8 @@ type GetEventBySlugRouteHandler = (
 let cachedGetEventBySlugRouteHandler: GetEventBySlugRouteHandler | null = null;
 
 const buildGetEventBySlugRouteHandler = (): GetEventBySlugRouteHandler => {
-  const db = createDb(getDatabaseUrlOrThrow());
-  const eventRepository = new DrizzleEventRepository(db);
-  const lotRepository = new DrizzleLotRepository(db);
+  const eventRepository = getEventRepository();
+  const lotRepository = getLotRepository();
 
   const handleGetEvent = createGetEventHandler({
     getEventDetail: createGetEventDetailUseCase({

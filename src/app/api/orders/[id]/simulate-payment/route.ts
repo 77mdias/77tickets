@@ -10,16 +10,14 @@ import {
 } from "@/server/application/errors";
 import { mapAppErrorToResponse } from "@/server/api/error-mapper";
 import { toApiJsonResponse } from "@/server/api/security-response";
-import { getDatabaseUrlOrThrow } from "@/server/api/orders/create-order.route-adapter";
 import { getSession } from "@/server/infrastructure/auth";
-import { createDb } from "@/server/infrastructure/db/client";
 import {
-  DrizzleCouponRepository,
-  DrizzleEventRepository,
-  DrizzleOrderRepository,
-  DrizzleTicketRepository,
-  DrizzleUserRepository,
-} from "@/server/repositories/drizzle";
+  getCouponRepository,
+  getEventRepository,
+  getOrderRepository,
+  getTicketRepository,
+  getUserRepository,
+} from "@/server/composition-root";
 import { createResendEmailProvider } from "@/server/email";
 
 interface SimulatePaymentRouteParams {
@@ -53,23 +51,22 @@ const resolveOrderId = async (
 };
 
 const buildSimulatePaymentRouteHandler = (): SimulatePaymentRouteHandler => {
-  const db = createDb(getDatabaseUrlOrThrow());
-  const orderRepository = new DrizzleOrderRepository(db);
-  const ticketRepository = new DrizzleTicketRepository(db);
+  const orderRepository = getOrderRepository();
+  const ticketRepository = getTicketRepository();
   const emailProvider = createResendEmailProvider();
 
   const sendOrderConfirmationEmail = createSendOrderConfirmationEmailUseCase({
     orderRepository,
     ticketRepository,
-    eventRepository: new DrizzleEventRepository(db),
-    userRepository: new DrizzleUserRepository(db),
+    eventRepository: getEventRepository(),
+    userRepository: getUserRepository(),
     emailProvider,
   });
 
   const confirmOrderPayment = createConfirmOrderPaymentUseCase({
     orderRepository,
     ticketRepository,
-    couponRepository: new DrizzleCouponRepository(db),
+    couponRepository: getCouponRepository(),
     sendOrderConfirmationEmail,
   });
 

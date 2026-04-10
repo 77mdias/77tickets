@@ -42,11 +42,12 @@ type NormalizedOrder = {
   itemsCount: number;
 };
 
-const FIELD_CLASS = "rounded-md border border-zinc-300 px-3 py-2 text-sm";
+const FIELD_CLASS =
+  "rounded-md border border-white/15 bg-zinc-900 px-3 py-2 text-sm text-white placeholder:text-zinc-500";
 const TEXTAREA_CLASS = `${FIELD_CLASS} min-h-[96px] resize-y`;
-const CARD_CLASS = "rounded-lg border border-zinc-200 p-4";
+const CARD_CLASS = "rounded-lg border border-white/10 bg-white/5 p-4";
 const BUTTON_CLASS =
-  "mt-4 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60";
+  "mt-4 rounded-md bg-white px-4 py-2 text-sm font-medium text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60";
 
 const INITIAL_ACTOR: ManagementActorValues = {
   actorId: "",
@@ -193,7 +194,7 @@ const getVisibleOrders = (data: unknown, statusFilter: OrderStatusFilter): Norma
 const renderOperationFeedback = (state: OperationViewState) => {
   if (state.kind === "success") {
     return (
-      <div className="mt-3 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+      <div className="mt-3 rounded-md border border-green-500/20 bg-green-500/10 px-3 py-2 text-sm text-green-300">
         {state.message}
       </div>
     );
@@ -201,7 +202,7 @@ const renderOperationFeedback = (state: OperationViewState) => {
 
   if (state.kind === "error") {
     return (
-      <div className="mt-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-900">
+      <div className="mt-3 rounded-md border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm text-red-300">
         {state.message}
       </div>
     );
@@ -211,32 +212,32 @@ const renderOperationFeedback = (state: OperationViewState) => {
 };
 
 const renderOrderSummary = (order: NormalizedOrder) => (
-  <div key={order.id} className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm">
+  <div key={order.id} className="rounded-lg border border-white/10 bg-white/5 p-4">
     <div className="flex flex-wrap items-center justify-between gap-2">
       <div>
-        <p className="text-sm font-semibold text-zinc-900">Order {order.id}</p>
+        <p className="text-sm font-semibold text-white">Order {order.id}</p>
         <p className="text-xs text-zinc-500">Status: {order.status}</p>
       </div>
-      <p className="text-sm font-medium text-zinc-900">
+      <p className="text-sm font-medium text-white">
         {typeof order.totalInCents === "number" ? `${order.totalInCents} cents` : "Total unavailable"}
       </p>
     </div>
 
-    <dl className="mt-3 grid gap-2 text-xs text-zinc-600 md:grid-cols-2">
+    <dl className="mt-3 grid gap-2 text-xs text-zinc-400 md:grid-cols-2">
       <div>
-        <dt className="font-medium text-zinc-700">Items</dt>
+        <dt className="font-medium text-zinc-300">Items</dt>
         <dd>{order.itemsCount}</dd>
       </div>
       <div>
-        <dt className="font-medium text-zinc-700">Created at</dt>
+        <dt className="font-medium text-zinc-300">Created at</dt>
         <dd>{order.createdAt ?? "Unavailable"}</dd>
       </div>
       <div>
-        <dt className="font-medium text-zinc-700">Subtotal</dt>
+        <dt className="font-medium text-zinc-300">Subtotal</dt>
         <dd>{typeof order.subtotalInCents === "number" ? `${order.subtotalInCents} cents` : "Unavailable"}</dd>
       </div>
       <div>
-        <dt className="font-medium text-zinc-700">Discount</dt>
+        <dt className="font-medium text-zinc-300">Discount</dt>
         <dd>{typeof order.discountInCents === "number" ? `${order.discountInCents} cents` : "Unavailable"}</dd>
       </div>
     </dl>
@@ -439,21 +440,21 @@ export function AdminManagementForm() {
   };
 
   return (
-    <section className="w-full max-w-6xl rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
-      <h1 className="text-2xl font-semibold text-zinc-900">Organizer/Admin Management</h1>
-      <p className="mt-1 text-sm text-zinc-600">
+    <section className="w-full max-w-6xl rounded-xl border border-white/10 bg-white/5 p-6">
+      <h1 className="text-2xl font-semibold text-white">Organizer/Admin Management</h1>
+      <p className="mt-1 text-sm text-zinc-400">
         Minimal operational UI for event creation, lot management, order lookup, event status
         changes, and coupon governance. All ownership, RBAC, and business rules remain server-side.
       </p>
 
-      <div className="mt-6 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-        <h2 className="text-sm font-semibold text-zinc-900">Actor Context</h2>
-        <p className="mt-1 text-xs text-zinc-600">
+      <div className="mt-6 rounded-lg border border-white/10 bg-white/5 p-4">
+        <h2 className="text-sm font-semibold text-white">Actor Context</h2>
+        <p className="mt-1 text-xs text-zinc-400">
           Required by admin endpoints through request headers.
         </p>
         <div className="mt-3 grid gap-3 md:grid-cols-2">
           <label className="grid gap-1">
-            <span className="text-sm font-medium text-zinc-800">Actor ID</span>
+            <span className="text-sm font-medium text-zinc-300">Actor ID</span>
             <input
               className={FIELD_CLASS}
               name="actorId"
@@ -467,7 +468,7 @@ export function AdminManagementForm() {
           </label>
 
           <label className="grid gap-1">
-            <span className="text-sm font-medium text-zinc-800">Role</span>
+            <span className="text-sm font-medium text-zinc-300">Role</span>
             <select
               className={FIELD_CLASS}
               value={actor.role}
@@ -487,11 +488,11 @@ export function AdminManagementForm() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <form className={CARD_CLASS} onSubmit={onCreateEventSubmit}>
-          <h3 className="text-sm font-semibold text-zinc-900">Create Event</h3>
-          <p className="mt-1 text-xs text-zinc-600">Creates the shell event. Ownership remains server-derived.</p>
+          <h3 className="text-sm font-semibold text-white">Create Event</h3>
+          <p className="mt-1 text-xs text-zinc-400">Creates the shell event. Ownership remains server-derived.</p>
           <div className="mt-3 grid gap-3">
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-zinc-800">Title</span>
+              <span className="text-sm font-medium text-zinc-300">Title</span>
               <input
                 className={FIELD_CLASS}
                 value={createEventValues.title}
@@ -503,7 +504,7 @@ export function AdminManagementForm() {
             </label>
 
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-zinc-800">Description</span>
+              <span className="text-sm font-medium text-zinc-300">Description</span>
               <textarea
                 className={TEXTAREA_CLASS}
                 value={createEventValues.description}
@@ -518,7 +519,7 @@ export function AdminManagementForm() {
 
             <div className="grid gap-3 md:grid-cols-2">
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Location</span>
+                <span className="text-sm font-medium text-zinc-300">Location</span>
                 <input
                   className={FIELD_CLASS}
                   value={createEventValues.location}
@@ -532,7 +533,7 @@ export function AdminManagementForm() {
               </label>
 
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Image URL</span>
+                <span className="text-sm font-medium text-zinc-300">Image URL</span>
                 <input
                   className={FIELD_CLASS}
                   value={createEventValues.imageUrl}
@@ -548,7 +549,7 @@ export function AdminManagementForm() {
 
             <div className="grid gap-3 md:grid-cols-2">
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Starts at</span>
+                <span className="text-sm font-medium text-zinc-300">Starts at</span>
                 <input
                   className={FIELD_CLASS}
                   type="datetime-local"
@@ -564,7 +565,7 @@ export function AdminManagementForm() {
               </label>
 
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Ends at</span>
+                <span className="text-sm font-medium text-zinc-300">Ends at</span>
                 <input
                   className={FIELD_CLASS}
                   type="datetime-local"
@@ -591,11 +592,11 @@ export function AdminManagementForm() {
         </form>
 
         <form className={CARD_CLASS} onSubmit={onCreateLotSubmit}>
-          <h3 className="text-sm font-semibold text-zinc-900">Create Lot</h3>
-          <p className="mt-1 text-xs text-zinc-600">Client sends lot inputs only. Availability rules stay on the server.</p>
+          <h3 className="text-sm font-semibold text-white">Create Lot</h3>
+          <p className="mt-1 text-xs text-zinc-400">Client sends lot inputs only. Availability rules stay on the server.</p>
           <div className="mt-3 grid gap-3">
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-zinc-800">Event ID</span>
+              <span className="text-sm font-medium text-zinc-300">Event ID</span>
               <input
                 className={FIELD_CLASS}
                 value={createLotValues.eventId}
@@ -607,7 +608,7 @@ export function AdminManagementForm() {
             </label>
 
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-zinc-800">Title</span>
+              <span className="text-sm font-medium text-zinc-300">Title</span>
               <input
                 className={FIELD_CLASS}
                 value={createLotValues.title}
@@ -620,7 +621,7 @@ export function AdminManagementForm() {
 
             <div className="grid gap-3 md:grid-cols-2">
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Price in cents</span>
+                <span className="text-sm font-medium text-zinc-300">Price in cents</span>
                 <input
                   className={FIELD_CLASS}
                   type="number"
@@ -638,7 +639,7 @@ export function AdminManagementForm() {
               </label>
 
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Total quantity</span>
+                <span className="text-sm font-medium text-zinc-300">Total quantity</span>
                 <input
                   className={FIELD_CLASS}
                   type="number"
@@ -658,7 +659,7 @@ export function AdminManagementForm() {
 
             <div className="grid gap-3 md:grid-cols-2">
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Max per order</span>
+                <span className="text-sm font-medium text-zinc-300">Max per order</span>
                 <input
                   className={FIELD_CLASS}
                   type="number"
@@ -676,7 +677,7 @@ export function AdminManagementForm() {
               </label>
 
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Status</span>
+                <span className="text-sm font-medium text-zinc-300">Status</span>
                 <select
                   className={FIELD_CLASS}
                   value={createLotValues.status}
@@ -697,7 +698,7 @@ export function AdminManagementForm() {
 
             <div className="grid gap-3 md:grid-cols-2">
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Sale starts at</span>
+                <span className="text-sm font-medium text-zinc-300">Sale starts at</span>
                 <input
                   className={FIELD_CLASS}
                   type="datetime-local"
@@ -713,7 +714,7 @@ export function AdminManagementForm() {
               </label>
 
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Sale ends at</span>
+                <span className="text-sm font-medium text-zinc-300">Sale ends at</span>
                 <input
                   className={FIELD_CLASS}
                   type="datetime-local"
@@ -735,11 +736,11 @@ export function AdminManagementForm() {
         </form>
 
         <form className={CARD_CLASS} onSubmit={onUpdateLotSubmit}>
-          <h3 className="text-sm font-semibold text-zinc-900">Update Lot</h3>
-          <p className="mt-1 text-xs text-zinc-600">Updates lot metadata without letting the client control inventory logic.</p>
+          <h3 className="text-sm font-semibold text-white">Update Lot</h3>
+          <p className="mt-1 text-xs text-zinc-400">Updates lot metadata without letting the client control inventory logic.</p>
           <div className="mt-3 grid gap-3">
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-zinc-800">Lot ID</span>
+              <span className="text-sm font-medium text-zinc-300">Lot ID</span>
               <input
                 className={FIELD_CLASS}
                 value={updateLotValues.lotId}
@@ -751,7 +752,7 @@ export function AdminManagementForm() {
             </label>
 
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-zinc-800">Title</span>
+              <span className="text-sm font-medium text-zinc-300">Title</span>
               <input
                 className={FIELD_CLASS}
                 value={updateLotValues.title}
@@ -764,7 +765,7 @@ export function AdminManagementForm() {
 
             <div className="grid gap-3 md:grid-cols-2">
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Price in cents</span>
+                <span className="text-sm font-medium text-zinc-300">Price in cents</span>
                 <input
                   className={FIELD_CLASS}
                   type="number"
@@ -782,7 +783,7 @@ export function AdminManagementForm() {
               </label>
 
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Total quantity</span>
+                <span className="text-sm font-medium text-zinc-300">Total quantity</span>
                 <input
                   className={FIELD_CLASS}
                   type="number"
@@ -802,7 +803,7 @@ export function AdminManagementForm() {
 
             <div className="grid gap-3 md:grid-cols-2">
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Max per order</span>
+                <span className="text-sm font-medium text-zinc-300">Max per order</span>
                 <input
                   className={FIELD_CLASS}
                   type="number"
@@ -820,7 +821,7 @@ export function AdminManagementForm() {
               </label>
 
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Status</span>
+                <span className="text-sm font-medium text-zinc-300">Status</span>
                 <select
                   className={FIELD_CLASS}
                   value={updateLotValues.status}
@@ -841,7 +842,7 @@ export function AdminManagementForm() {
 
             <div className="grid gap-3 md:grid-cols-2">
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Sale starts at</span>
+                <span className="text-sm font-medium text-zinc-300">Sale starts at</span>
                 <input
                   className={FIELD_CLASS}
                   type="datetime-local"
@@ -857,7 +858,7 @@ export function AdminManagementForm() {
               </label>
 
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Sale ends at</span>
+                <span className="text-sm font-medium text-zinc-300">Sale ends at</span>
                 <input
                   className={FIELD_CLASS}
                   type="datetime-local"
@@ -879,13 +880,13 @@ export function AdminManagementForm() {
         </form>
 
         <section className={CARD_CLASS}>
-          <h3 className="text-sm font-semibold text-zinc-900">List Orders by Event</h3>
-          <p className="mt-1 text-xs text-zinc-600">
+          <h3 className="text-sm font-semibold text-white">List Orders by Event</h3>
+          <p className="mt-1 text-xs text-zinc-400">
             Fetches event orders once, then filters the visible list on the client by status.
           </p>
           <form className="mt-3 grid gap-3" onSubmit={onListOrdersSubmit}>
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-zinc-800">Event ID</span>
+              <span className="text-sm font-medium text-zinc-300">Event ID</span>
               <input
                 className={FIELD_CLASS}
                 value={listOrdersValues.eventId}
@@ -897,7 +898,7 @@ export function AdminManagementForm() {
             </label>
 
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-zinc-800">Status filter</span>
+              <span className="text-sm font-medium text-zinc-300">Status filter</span>
               <select
                 className={FIELD_CLASS}
                 value={listOrdersValues.status}
@@ -923,27 +924,27 @@ export function AdminManagementForm() {
 
           {renderOperationFeedback(listOrdersState)}
 
-          <div className="mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
+          <div className="mt-4 rounded-lg border border-white/10 bg-white/5 p-4">
             <div className="flex items-center justify-between gap-3">
-              <h4 className="text-sm font-semibold text-zinc-900">Visible orders</h4>
-              <span className="text-xs text-zinc-600">{visibleOrders.length} shown</span>
+              <h4 className="text-sm font-semibold text-white">Visible orders</h4>
+              <span className="text-xs text-zinc-400">{visibleOrders.length} shown</span>
             </div>
 
             <div className="mt-3 grid gap-3">
               {visibleOrders.length > 0 ? (
                 visibleOrders.map(renderOrderSummary)
               ) : (
-                <p className="text-sm text-zinc-600">No orders loaded for the current filter.</p>
+                <p className="text-sm text-zinc-400">No orders loaded for the current filter.</p>
               )}
             </div>
           </div>
         </section>
 
         <form className={CARD_CLASS} onSubmit={onPublishSubmit}>
-          <h3 className="text-sm font-semibold text-zinc-900">Publish Event</h3>
+          <h3 className="text-sm font-semibold text-white">Publish Event</h3>
           <div className="mt-3 grid gap-3">
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-zinc-800">Event ID</span>
+              <span className="text-sm font-medium text-zinc-300">Event ID</span>
               <input
                 className={FIELD_CLASS}
                 value={publishEventId}
@@ -959,10 +960,10 @@ export function AdminManagementForm() {
         </form>
 
         <form className={CARD_CLASS} onSubmit={onUpdateEventSubmit}>
-          <h3 className="text-sm font-semibold text-zinc-900">Update Event Status</h3>
+          <h3 className="text-sm font-semibold text-white">Update Event Status</h3>
           <div className="mt-3 grid gap-3">
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-zinc-800">Event ID</span>
+              <span className="text-sm font-medium text-zinc-300">Event ID</span>
               <input
                 className={FIELD_CLASS}
                 value={updateEventValues.eventId}
@@ -977,7 +978,7 @@ export function AdminManagementForm() {
             </label>
 
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-zinc-800">Target status</span>
+              <span className="text-sm font-medium text-zinc-300">Target status</span>
               <select
                 className={FIELD_CLASS}
                 value={updateEventValues.targetStatus}
@@ -1003,10 +1004,10 @@ export function AdminManagementForm() {
         </form>
 
         <form className={CARD_CLASS} onSubmit={onCreateCouponSubmit}>
-          <h3 className="text-sm font-semibold text-zinc-900">Create Coupon</h3>
+          <h3 className="text-sm font-semibold text-white">Create Coupon</h3>
           <div className="mt-3 grid gap-3">
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-zinc-800">Event ID</span>
+              <span className="text-sm font-medium text-zinc-300">Event ID</span>
               <input
                 className={FIELD_CLASS}
                 value={createCouponValues.eventId}
@@ -1021,7 +1022,7 @@ export function AdminManagementForm() {
             </label>
 
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-zinc-800">Code</span>
+              <span className="text-sm font-medium text-zinc-300">Code</span>
               <input
                 className={FIELD_CLASS}
                 value={createCouponValues.code}
@@ -1034,7 +1035,7 @@ export function AdminManagementForm() {
 
             <div className="grid gap-3 md:grid-cols-2">
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Discount type</span>
+                <span className="text-sm font-medium text-zinc-300">Discount type</span>
                 <select
                   className={FIELD_CLASS}
                   value={createCouponValues.discountType}
@@ -1051,7 +1052,7 @@ export function AdminManagementForm() {
               </label>
 
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">
+                <span className="text-sm font-medium text-zinc-300">
                   {discountInputLabel(createCouponValues.discountType)}
                 </span>
                 <input
@@ -1077,7 +1078,7 @@ export function AdminManagementForm() {
             </div>
 
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-zinc-800">Max redemptions</span>
+              <span className="text-sm font-medium text-zinc-300">Max redemptions</span>
               <input
                 className={FIELD_CLASS}
                 type="number"
@@ -1096,7 +1097,7 @@ export function AdminManagementForm() {
 
             <div className="grid gap-3 md:grid-cols-2">
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Valid from</span>
+                <span className="text-sm font-medium text-zinc-300">Valid from</span>
                 <input
                   className={FIELD_CLASS}
                   type="datetime-local"
@@ -1112,7 +1113,7 @@ export function AdminManagementForm() {
               </label>
 
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Valid until</span>
+                <span className="text-sm font-medium text-zinc-300">Valid until</span>
                 <input
                   className={FIELD_CLASS}
                   type="datetime-local"
@@ -1136,10 +1137,10 @@ export function AdminManagementForm() {
         </form>
 
         <form className={CARD_CLASS} onSubmit={onUpdateCouponSubmit}>
-          <h3 className="text-sm font-semibold text-zinc-900">Update Coupon</h3>
+          <h3 className="text-sm font-semibold text-white">Update Coupon</h3>
           <div className="mt-3 grid gap-3">
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-zinc-800">Coupon ID</span>
+              <span className="text-sm font-medium text-zinc-300">Coupon ID</span>
               <input
                 className={FIELD_CLASS}
                 value={updateCouponValues.couponId}
@@ -1154,7 +1155,7 @@ export function AdminManagementForm() {
             </label>
 
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-zinc-800">Code</span>
+              <span className="text-sm font-medium text-zinc-300">Code</span>
               <input
                 className={FIELD_CLASS}
                 value={updateCouponValues.code}
@@ -1167,7 +1168,7 @@ export function AdminManagementForm() {
 
             <div className="grid gap-3 md:grid-cols-2">
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Discount type</span>
+                <span className="text-sm font-medium text-zinc-300">Discount type</span>
                 <select
                   className={FIELD_CLASS}
                   value={updateCouponValues.discountType}
@@ -1184,7 +1185,7 @@ export function AdminManagementForm() {
               </label>
 
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">
+                <span className="text-sm font-medium text-zinc-300">
                   {discountInputLabel(updateCouponValues.discountType)}
                 </span>
                 <input
@@ -1210,7 +1211,7 @@ export function AdminManagementForm() {
             </div>
 
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-zinc-800">Max redemptions</span>
+              <span className="text-sm font-medium text-zinc-300">Max redemptions</span>
               <input
                 className={FIELD_CLASS}
                 type="number"
@@ -1229,7 +1230,7 @@ export function AdminManagementForm() {
 
             <div className="grid gap-3 md:grid-cols-2">
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Valid from</span>
+                <span className="text-sm font-medium text-zinc-300">Valid from</span>
                 <input
                   className={FIELD_CLASS}
                   type="datetime-local"
@@ -1245,7 +1246,7 @@ export function AdminManagementForm() {
               </label>
 
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-zinc-800">Valid until</span>
+                <span className="text-sm font-medium text-zinc-300">Valid until</span>
                 <input
                   className={FIELD_CLASS}
                   type="datetime-local"

@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { LotSelector } from "@/features/checkout/lot-selector";
-import { getServerBaseUrl } from "@/lib/server-api";
+import { RevealWrapper } from "@/components/reveal-wrapper";
+import { getServerBaseUrl } from "@/app/lib/server-api";
 
 interface EventDetailPayload {
   event: {
@@ -65,9 +66,12 @@ export default async function EventDetailPage({
   const data = await loadEventDetail(slug);
 
   return (
-    <div className="flex flex-1 justify-center bg-zinc-50 px-6 py-10">
+    <div className="flex flex-1 justify-center bg-zinc-950 px-6 py-10">
       <main className="flex w-full max-w-5xl flex-col gap-6">
-        <section className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm">
+        <RevealWrapper
+          as="section"
+          className="overflow-hidden rounded-xl border border-white/10 bg-white/5"
+        >
           {data.event.imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -76,39 +80,42 @@ export default async function EventDetailPage({
               src={data.event.imageUrl}
             />
           ) : (
-            <div className="h-56 w-full bg-zinc-100" />
+            <div className="h-56 w-full bg-white/10" />
           )}
 
           <div className="p-6">
-            <h1 className="text-3xl font-semibold text-zinc-900">{data.event.title}</h1>
-            <p className="mt-2 text-sm text-zinc-600">{data.event.description ?? "Sem descrição."}</p>
-            <div className="mt-4 grid gap-2 text-sm text-zinc-700 sm:grid-cols-2">
+            <h1 className="text-3xl font-semibold text-white">{data.event.title}</h1>
+            <p className="mt-2 text-sm text-zinc-400">{data.event.description ?? "Sem descrição."}</p>
+            <div className="mt-4 grid gap-2 text-sm text-zinc-300 sm:grid-cols-2">
               <p>
-                <strong>Data:</strong> {formatDateTime(data.event.startsAt)}
+                <strong className="text-white">Data:</strong> {formatDateTime(data.event.startsAt)}
               </p>
               <p>
-                <strong>Local:</strong> {data.event.location ?? "A definir"}
+                <strong className="text-white">Local:</strong> {data.event.location ?? "A definir"}
               </p>
             </div>
           </div>
-        </section>
+        </RevealWrapper>
 
-        <section className="rounded-xl border border-zinc-200 bg-white p-5">
-          <h2 className="text-lg font-semibold text-zinc-900">Lotes</h2>
+        <RevealWrapper
+          as="section"
+          className="rounded-xl border border-white/10 bg-white/5 p-5"
+        >
+          <h2 className="text-lg font-semibold text-white">Lotes</h2>
           <ul className="mt-4 grid gap-3">
             {data.lots.map((lot) => (
               <li
                 key={lot.id}
-                className="grid gap-1 rounded-md border border-zinc-200 px-4 py-3 text-sm sm:grid-cols-4 sm:items-center"
+                className="grid gap-1 rounded-md border border-white/10 px-4 py-3 text-sm sm:grid-cols-4 sm:items-center"
               >
-                <span className="font-medium text-zinc-900">{lot.title}</span>
-                <span className="text-zinc-700">{formatCurrency(lot.priceInCents)}</span>
-                <span className="text-zinc-700">Disponíveis: {lot.available}</span>
+                <span className="font-medium text-white">{lot.title}</span>
+                <span className="text-zinc-300">{formatCurrency(lot.priceInCents)}</span>
+                <span className="text-zinc-300">Disponíveis: {lot.available}</span>
                 <span className="text-zinc-500">Máx/pedido: {lot.maxPerOrder}</span>
               </li>
             ))}
           </ul>
-        </section>
+        </RevealWrapper>
 
         <LotSelector
           eventId={data.event.id}

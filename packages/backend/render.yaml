@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: 77ticket-backend
+    env: node
+    region: oregon
+    plan: free
+    rootDir: packages/backend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: DATABASE_URL
+        sync: false
+      - key: BETTER_AUTH_SECRET
+        sync: false
+      - key: BETTER_AUTH_BASE_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: PAYMENT_MODE
+        value: stripe
+      - key: APP_BASE_URL
+        sync: false
+      - key: CRON_SECRET
+        sync: false

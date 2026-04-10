@@ -1,8 +1,7 @@
-import { createCreateOrderHandler } from "@/server/api/create-order.handler";
-import type { CreateOrderHandlerResponse, CreateOrderRequest } from "@/server/api/create-order.handler";
+import { createCreateOrderHandler } from "@/server/api/orders/create-order.handler";
+import type { CreateOrderHandlerResponse, CreateOrderRequest } from "@/server/api/orders/create-order.handler";
 import {
   createCreateOrderRouteAdapter,
-  getDatabaseUrlOrThrow,
 } from "@/server/api/orders/create-order.route-adapter";
 import { createOrderRateLimiter } from "@/server/api/middleware";
 import { getSession } from "@/server/infrastructure/auth";
@@ -10,13 +9,8 @@ import {
   createCreateOrderUseCase,
   createCreateStripeCheckoutSessionUseCase,
 } from "@/server/application/use-cases";
-import { createDb } from "@/server/infrastructure/db/client";
 import { createConsoleCheckoutObservability } from "@/server/infrastructure/observability";
-import {
-  DrizzleCouponRepository,
-  DrizzleLotRepository,
-  DrizzleOrderRepository,
-} from "@/server/repositories/drizzle";
+import { getCouponRepository, getLotRepository, getOrderRepository } from "@/server/composition-root";
 import { createStripePaymentProvider } from "@/server/payment/stripe.payment-provider";
 
 type PostOrdersRouteHandler = (request: Request) => Promise<Response>;
@@ -41,16 +35,15 @@ const buildDemoCheckoutUrl = (orderId: string): string =>
   `/checkout/simulate?orderId=${encodeURIComponent(orderId)}`;
 
 const buildPostOrdersRouteHandler = (): PostOrdersRouteHandler => {
-  const db = createDb(getDatabaseUrlOrThrow());
   const observability = createConsoleCheckoutObservability();
-  const orderRepository = new DrizzleOrderRepository(db);
+  const orderRepository = getOrderRepository();
 
   const createOrder = createCreateOrderUseCase({
     now: () => new Date(),
     generateOrderId: generateUuid,
     orderRepository,
-    lotRepository: new DrizzleLotRepository(db),
-    couponRepository: new DrizzleCouponRepository(db),
+    lotRepository: getLotRepository(),
+    couponRepository: getCouponRepository(),
     observability,
   });
 

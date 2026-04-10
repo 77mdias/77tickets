@@ -1,285 +1,142 @@
-import { describe, expect, test, vi } from "vitest";
+import { describe, test, expect, beforeAll, afterAll, beforeEach } from 'vitest';
+import request from 'supertest';
+import { createTestingApp, cleanDatabase, createTestDb, type TestApp, TEST_USER_IDS } from '../../setup';
+import { createEventFixture, createLotFixture } from '../../../fixtures';
 
-import { createCreateLotHandler } from "../../../../src/server/api/lots/create-lot.handler";
-import { createUpdateLotHandler } from "../../../../src/server/api/lots/update-lot.handler";
-import { createCreateLotUseCase } from "../../../../src/server/application/use-cases/create-lot.use-case";
-import { createUpdateLotUseCase } from "../../../../src/server/application/use-cases/update-lot.use-case";
-import type { SecurityActor } from "../../../../src/server/application/security";
+const EVENT_ID = '2f180791-a8f5-4cf8-b703-0f220a44f7c8';
+const ORGANIZER_A = TEST_USER_IDS.organizer1;
+const ORGANIZER_B = TEST_USER_IDS.organizer2;
 
-const EVENT_ID = "2f180791-a8f5-4cf8-b703-0f220a44f7c8";
-const LOT_ID = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
-const ORGANIZER_A = "00000000-0000-0000-0000-000000000001";
-const ORGANIZER_B = "00000000-0000-0000-0000-000000000002";
+describe.skipIf(!process.env.TEST_DATABASE_URL)('lots auth integration', () => {
+  let testApp: TestApp;
+  const db = createTestDb();
 
-const buildActor = (role: SecurityActor["role"], userId: string): SecurityActor => ({
-  role,
-  userId,
-});
+  beforeAll(async () => { testApp = await createTestingApp(); });
+  afterAll(async () => testApp.close());
+  beforeEach(async () => cleanDatabase(db));
 
-const createEventRepository = (organizerId: string | null = ORGANIZER_A) => ({
-  findById: vi.fn(async () => {
-    if (organizerId === null) {
-      return null;
-    }
-
-    return {
-      id: EVENT_ID,
-      organizerId,
-      slug: "lots-auth-event",
-      title: "Lots Auth Event",
-      status: "draft" as const,
-      startsAt: new Date("2027-06-01T10:00:00.000Z"),
-      endsAt: null,
-    };
-  }),
-});
-
-const createLotRepository = () => ({
-  findById: vi.fn(async () => ({
-    id: LOT_ID,
-    eventId: EVENT_ID,
-    title: "Lote Basico",
+  const validCreateBody = (eventId: string) => ({
+    eventId,
+    title: 'Lote Basico',
     priceInCents: 5000,
     totalQuantity: 100,
-    availableQuantity: 80,
     maxPerOrder: 5,
-    saleStartsAt: new Date("2027-01-01T00:00:00.000Z"),
-    saleEndsAt: null,
-    status: "active" as const,
-  })),
-  save: vi.fn(async () => undefined),
-});
-
-const validCreateLotBody = {
-  eventId: EVENT_ID,
-  title: "Lote Basico",
-  priceInCents: 5000,
-  totalQuantity: 100,
-  maxPerOrder: 5,
-  saleStartsAt: "2027-01-01T00:00:00.000Z",
-  saleEndsAt: "2027-05-01T00:00:00.000Z",
-};
-
-const validUpdateLotBody = {
-  lotId: LOT_ID,
-  title: "Lote Atualizado",
-  priceInCents: 7000,
-  totalQuantity: 120,
-  maxPerOrder: 10,
-  saleStartsAt: "2027-01-01T00:00:00.000Z",
-  saleEndsAt: "2027-05-01T00:00:00.000Z",
-  status: "active" as const,
-};
-
-describe("lots auth integration", () => {
-  test("create-lot blocks customer role", async () => {
-    const eventRepository = createEventRepository(ORGANIZER_A);
-    const lotRepository = createLotRepository();
-
-    const useCase = createCreateLotUseCase({
-      generateLotId: () => LOT_ID,
-      eventRepository,
-      lotRepository,
-    });
-
-    const handler = createCreateLotHandler({ createLot: useCase });
-
-    const response = await handler({
-      actor: buildActor("customer", "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5"),
-      body: validCreateLotBody,
-    });
-
-    expect(response.status).toBe(403);
-    expect(response.body.error.code).toBe("authorization");
-    expect(lotRepository.save).not.toHaveBeenCalled();
+    saleStartsAt: '2027-01-01T00:00:00.000Z',
+    saleEndsAt: '2027-05-01T00:00:00.000Z',
   });
 
-  test("create-lot blocks checker role", async () => {
-    const eventRepository = createEventRepository(ORGANIZER_A);
-    const lotRepository = createLotRepository();
+  // ── create-lot ───────────────────────────────────────────────────────────────
 
-    const useCase = createCreateLotUseCase({
-      generateLotId: () => LOT_ID,
-      eventRepository,
-      lotRepository,
-    });
-
-    const handler = createCreateLotHandler({ createLot: useCase });
-
-    const response = await handler({
-      actor: buildActor("checker", "00000000-0000-0000-0000-000000000011"),
-      body: validCreateLotBody,
-    });
-
-    expect(response.status).toBe(403);
-    expect(response.body.error.code).toBe("authorization");
-    expect(lotRepository.save).not.toHaveBeenCalled();
+  test('create-lot blocks customer role', async () => {
+    const event = await createEventFixture(db, { id: EVENT_ID, organizerId: ORGANIZER_A, status: 'draft' });
+    const res = await request(testApp.app.getHttpServer())
+      .post('/api/lots')
+      .set('x-test-user-id', TEST_USER_IDS.customerA)
+      .set('x-test-role', 'customer')
+      .send(validCreateBody(event.id));
+    expect(res.status).toBe(403);
+    expect(res.body.error.code).toBe('authorization');
   });
 
-  test("create-lot blocks organizer outside ownership scope", async () => {
-    const eventRepository = createEventRepository(ORGANIZER_A);
-    const lotRepository = createLotRepository();
-
-    const useCase = createCreateLotUseCase({
-      generateLotId: () => LOT_ID,
-      eventRepository,
-      lotRepository,
-    });
-
-    const handler = createCreateLotHandler({ createLot: useCase });
-
-    const response = await handler({
-      actor: buildActor("organizer", ORGANIZER_B),
-      body: validCreateLotBody,
-    });
-
-    expect(response.status).toBe(403);
-    expect(response.body.error.code).toBe("authorization");
-    expect(lotRepository.save).not.toHaveBeenCalled();
+  test('create-lot blocks checker role', async () => {
+    const event = await createEventFixture(db, { id: EVENT_ID, organizerId: ORGANIZER_A, status: 'draft' });
+    const res = await request(testApp.app.getHttpServer())
+      .post('/api/lots')
+      .set('x-test-user-id', TEST_USER_IDS.checker)
+      .set('x-test-role', 'checker')
+      .send(validCreateBody(event.id));
+    expect(res.status).toBe(403);
+    expect(res.body.error.code).toBe('authorization');
   });
 
-  test("create-lot allows organizer within ownership scope", async () => {
-    const eventRepository = createEventRepository(ORGANIZER_A);
-    const lotRepository = createLotRepository();
-
-    const useCase = createCreateLotUseCase({
-      generateLotId: () => LOT_ID,
-      eventRepository,
-      lotRepository,
-    });
-
-    const handler = createCreateLotHandler({ createLot: useCase });
-
-    const response = await handler({
-      actor: buildActor("organizer", ORGANIZER_A),
-      body: validCreateLotBody,
-    });
-
-    expect(response.status).toBe(201);
-    expect(lotRepository.save).toHaveBeenCalled();
+  test('create-lot blocks organizer outside ownership scope', async () => {
+    const event = await createEventFixture(db, { id: EVENT_ID, organizerId: ORGANIZER_A, status: 'draft' });
+    const res = await request(testApp.app.getHttpServer())
+      .post('/api/lots')
+      .set('x-test-user-id', ORGANIZER_B)
+      .set('x-test-role', 'organizer')
+      .send(validCreateBody(event.id));
+    expect(res.status).toBe(403);
+    expect(res.body.error.code).toBe('authorization');
   });
 
-  test("create-lot allows admin globally", async () => {
-    const eventRepository = createEventRepository(ORGANIZER_A);
-    const lotRepository = createLotRepository();
-
-    const useCase = createCreateLotUseCase({
-      generateLotId: () => LOT_ID,
-      eventRepository,
-      lotRepository,
-    });
-
-    const handler = createCreateLotHandler({ createLot: useCase });
-
-    const response = await handler({
-      actor: buildActor("admin", "00000000-0000-0000-0000-000000000099"),
-      body: validCreateLotBody,
-    });
-
-    expect(response.status).toBe(201);
-    expect(lotRepository.save).toHaveBeenCalled();
+  test('create-lot allows organizer within ownership scope', async () => {
+    const event = await createEventFixture(db, { id: EVENT_ID, organizerId: ORGANIZER_A, status: 'draft' });
+    const res = await request(testApp.app.getHttpServer())
+      .post('/api/lots')
+      .set('x-test-user-id', ORGANIZER_A)
+      .set('x-test-role', 'organizer')
+      .send(validCreateBody(event.id));
+    expect(res.status).toBe(201);
   });
 
-  test("update-lot blocks customer role", async () => {
-    const eventRepository = createEventRepository(ORGANIZER_A);
-    const lotRepository = createLotRepository();
-
-    const useCase = createUpdateLotUseCase({
-      eventRepository,
-      lotRepository,
-    });
-
-    const handler = createUpdateLotHandler({ updateLot: useCase });
-
-    const response = await handler({
-      actor: buildActor("customer", "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5"),
-      body: validUpdateLotBody,
-    });
-
-    expect(response.status).toBe(403);
-    expect(response.body.error.code).toBe("authorization");
-    expect(lotRepository.save).not.toHaveBeenCalled();
+  test('create-lot allows admin globally', async () => {
+    const event = await createEventFixture(db, { organizerId: ORGANIZER_A, status: 'draft' });
+    const res = await request(testApp.app.getHttpServer())
+      .post('/api/lots')
+      .set('x-test-user-id', TEST_USER_IDS.admin)
+      .set('x-test-role', 'admin')
+      .send(validCreateBody(event.id));
+    expect(res.status).toBe(201);
   });
 
-  test("update-lot blocks checker role", async () => {
-    const eventRepository = createEventRepository(ORGANIZER_A);
-    const lotRepository = createLotRepository();
+  // ── update-lot ───────────────────────────────────────────────────────────────
 
-    const useCase = createUpdateLotUseCase({
-      eventRepository,
-      lotRepository,
-    });
-
-    const handler = createUpdateLotHandler({ updateLot: useCase });
-
-    const response = await handler({
-      actor: buildActor("checker", "00000000-0000-0000-0000-000000000011"),
-      body: validUpdateLotBody,
-    });
-
-    expect(response.status).toBe(403);
-    expect(response.body.error.code).toBe("authorization");
-    expect(lotRepository.save).not.toHaveBeenCalled();
+  test('update-lot blocks customer role', async () => {
+    const event = await createEventFixture(db, { id: EVENT_ID, organizerId: ORGANIZER_A, status: 'draft' });
+    const lot = await createLotFixture(db, event.id);
+    const res = await request(testApp.app.getHttpServer())
+      .put(`/api/lots/${lot.id}`)
+      .set('x-test-user-id', TEST_USER_IDS.customerA)
+      .set('x-test-role', 'customer')
+      .send({ title: 'Updated', priceInCents: 7000, totalQuantity: 120, maxPerOrder: 10, saleStartsAt: '2027-01-01T00:00:00.000Z', saleEndsAt: '2027-05-01T00:00:00.000Z', status: 'active' });
+    expect(res.status).toBe(403);
+    expect(res.body.error.code).toBe('authorization');
   });
 
-  test("update-lot blocks organizer outside ownership scope", async () => {
-    const eventRepository = createEventRepository(ORGANIZER_A);
-    const lotRepository = createLotRepository();
-
-    const useCase = createUpdateLotUseCase({
-      eventRepository,
-      lotRepository,
-    });
-
-    const handler = createUpdateLotHandler({ updateLot: useCase });
-
-    const response = await handler({
-      actor: buildActor("organizer", ORGANIZER_B),
-      body: validUpdateLotBody,
-    });
-
-    expect(response.status).toBe(403);
-    expect(response.body.error.code).toBe("authorization");
-    expect(lotRepository.save).not.toHaveBeenCalled();
+  test('update-lot blocks checker role', async () => {
+    const event = await createEventFixture(db, { id: EVENT_ID, organizerId: ORGANIZER_A, status: 'draft' });
+    const lot = await createLotFixture(db, event.id);
+    const res = await request(testApp.app.getHttpServer())
+      .put(`/api/lots/${lot.id}`)
+      .set('x-test-user-id', TEST_USER_IDS.checker)
+      .set('x-test-role', 'checker')
+      .send({ title: 'Updated', priceInCents: 7000, totalQuantity: 120, maxPerOrder: 10, saleStartsAt: '2027-01-01T00:00:00.000Z', saleEndsAt: '2027-05-01T00:00:00.000Z', status: 'active' });
+    expect(res.status).toBe(403);
+    expect(res.body.error.code).toBe('authorization');
   });
 
-  test("update-lot allows organizer within ownership scope", async () => {
-    const eventRepository = createEventRepository(ORGANIZER_A);
-    const lotRepository = createLotRepository();
-
-    const useCase = createUpdateLotUseCase({
-      eventRepository,
-      lotRepository,
-    });
-
-    const handler = createUpdateLotHandler({ updateLot: useCase });
-
-    const response = await handler({
-      actor: buildActor("organizer", ORGANIZER_A),
-      body: validUpdateLotBody,
-    });
-
-    expect(response.status).toBe(200);
-    expect(lotRepository.save).toHaveBeenCalled();
+  test('update-lot blocks organizer outside ownership scope', async () => {
+    const event = await createEventFixture(db, { id: EVENT_ID, organizerId: ORGANIZER_A, status: 'draft' });
+    const lot = await createLotFixture(db, event.id);
+    const res = await request(testApp.app.getHttpServer())
+      .put(`/api/lots/${lot.id}`)
+      .set('x-test-user-id', ORGANIZER_B)
+      .set('x-test-role', 'organizer')
+      .send({ title: 'Updated', priceInCents: 7000, totalQuantity: 120, maxPerOrder: 10, saleStartsAt: '2027-01-01T00:00:00.000Z', saleEndsAt: '2027-05-01T00:00:00.000Z', status: 'active' });
+    expect(res.status).toBe(403);
+    expect(res.body.error.code).toBe('authorization');
   });
 
-  test("update-lot allows admin globally", async () => {
-    const eventRepository = createEventRepository(ORGANIZER_A);
-    const lotRepository = createLotRepository();
+  test('update-lot allows organizer within ownership scope', async () => {
+    const event = await createEventFixture(db, { id: EVENT_ID, organizerId: ORGANIZER_A, status: 'draft' });
+    const lot = await createLotFixture(db, event.id);
+    const res = await request(testApp.app.getHttpServer())
+      .put(`/api/lots/${lot.id}`)
+      .set('x-test-user-id', ORGANIZER_A)
+      .set('x-test-role', 'organizer')
+      .send({ title: 'Updated', priceInCents: 7000, totalQuantity: 120, maxPerOrder: 10, saleStartsAt: '2027-01-01T00:00:00.000Z', saleEndsAt: '2027-05-01T00:00:00.000Z', status: 'active' });
+    expect(res.status).toBe(200);
+  });
 
-    const useCase = createUpdateLotUseCase({
-      eventRepository,
-      lotRepository,
-    });
-
-    const handler = createUpdateLotHandler({ updateLot: useCase });
-
-    const response = await handler({
-      actor: buildActor("admin", "00000000-0000-0000-0000-000000000099"),
-      body: validUpdateLotBody,
-    });
-
-    expect(response.status).toBe(200);
-    expect(lotRepository.save).toHaveBeenCalled();
+  test('update-lot allows admin globally', async () => {
+    const event = await createEventFixture(db, { organizerId: ORGANIZER_A, status: 'draft' });
+    const lot = await createLotFixture(db, event.id);
+    const res = await request(testApp.app.getHttpServer())
+      .put(`/api/lots/${lot.id}`)
+      .set('x-test-user-id', TEST_USER_IDS.admin)
+      .set('x-test-role', 'admin')
+      .send({ title: 'Updated', priceInCents: 7000, totalQuantity: 120, maxPerOrder: 10, saleStartsAt: '2027-01-01T00:00:00.000Z', saleEndsAt: '2027-05-01T00:00:00.000Z', status: 'active' });
+    expect(res.status).toBe(200);
   });
 });

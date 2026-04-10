@@ -21,6 +21,10 @@ const eslintConfig = defineConfig([
     // Build artifacts for Vinext/Vite output.
     "dist/**",
     "next-env.d.ts",
+    // packages/ are independent workspaces with their own ESLint configs.
+    "packages/**",
+    // Pre-built design system assets (minified GSAP/ScrollTrigger bundles).
+    "parallax-geometry/**",
   ]),
   {
     files: ["src/app/**/*.{ts,tsx}", "src/components/**/*.{ts,tsx}", "src/features/**/*.{ts,tsx}"],

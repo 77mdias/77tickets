@@ -5,7 +5,7 @@ const mocks = vi.hoisted(() => ({
   baseHandleCreateOrder: vi.fn(),
 }));
 
-vi.mock("@/server/api/create-order.handler", () => ({
+vi.mock("@/server/api/orders/create-order.handler", () => ({
   createCreateOrderHandler: () => mocks.baseHandleCreateOrder,
 }));
 
@@ -43,6 +43,14 @@ vi.mock("@/server/application/use-cases", () => ({
 
 vi.mock("@/server/infrastructure/db/client", () => ({
   createDb: () => ({}) as Record<string, never>,
+  createHttpDb: () => ({}) as Record<string, never>,
+}));
+
+vi.mock("@/server/infrastructure/db", () => ({
+  createDb: () => ({}) as Record<string, never>,
+  createHttpDb: () => ({}) as Record<string, never>,
+  getDb: () => ({}) as Record<string, never>,
+  getHttpDb: () => ({}) as Record<string, never>,
 }));
 
 vi.mock("@/server/infrastructure/observability", () => ({

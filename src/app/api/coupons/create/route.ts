@@ -1,22 +1,19 @@
 import { createCreateCouponHandler } from "@/server/api/coupons/create-coupon.handler";
 import { createCreateCouponRouteAdapter } from "@/server/api/coupons/coupons.route-adapter";
-import { getDatabaseUrlOrThrow } from "@/server/api/orders/create-order.route-adapter";
 import { getSession } from "@/server/infrastructure/auth";
 import { createCreateCouponUseCase } from "@/server/application/use-cases";
-import { createDb } from "@/server/infrastructure/db/client";
-import {
-  DrizzleCouponRepository,
-  DrizzleEventRepository,
-} from "@/server/repositories/drizzle";
+import { getCouponRepository, getEventRepository } from "@/server/composition-root";
+import { createMutationRateLimiter, withRateLimit } from "@/server/api/middleware";
 
 type PostCreateCouponRouteHandler = (request: Request) => Promise<Response>;
 
 let cachedPostCreateCouponRouteHandler: PostCreateCouponRouteHandler | null = null;
 
+const checkMutationRateLimit = createMutationRateLimiter();
+
 const buildPostCreateCouponRouteHandler = (): PostCreateCouponRouteHandler => {
-  const db = createDb(getDatabaseUrlOrThrow());
-  const couponRepository = new DrizzleCouponRepository(db);
-  const eventRepository = new DrizzleEventRepository(db);
+  const couponRepository = getCouponRepository();
+  const eventRepository = getEventRepository();
 
   const handleCreateCoupon = createCreateCouponHandler({
     eventRepository,
@@ -25,10 +22,12 @@ const buildPostCreateCouponRouteHandler = (): PostCreateCouponRouteHandler => {
     }),
   });
 
-  return createCreateCouponRouteAdapter({
-    getSession,
-    handleCreateCoupon,
-  });
+  return withRateLimit("post-coupons", 30, checkMutationRateLimit)(
+    createCreateCouponRouteAdapter({
+      getSession,
+      handleCreateCoupon,
+    }),
+  );
 };
 
 const getPostCreateCouponRouteHandler = (): PostCreateCouponRouteHandler => {

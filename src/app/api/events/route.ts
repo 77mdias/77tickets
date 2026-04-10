@@ -4,17 +4,18 @@ import {
 } from "@/server/api/events/events.route-adapter";
 import { createListEventsHandler } from "@/server/api/events/list-events.handler";
 import { createListEventsRouteAdapter } from "@/server/api/events/public-events.route-adapter";
-import { getDatabaseUrlOrThrow } from "@/server/api/orders/create-order.route-adapter";
 import { getSession } from "@/server/infrastructure/auth";
 import { createCreateEventUseCase, createListPublishedEventsUseCase } from "@/server/application/use-cases";
-import { createDb } from "@/server/infrastructure/db/client";
-import { DrizzleEventRepository } from "@/server/repositories/drizzle";
+import { createMutationRateLimiter, withRateLimit } from "@/server/api/middleware";
+import { getEventRepository } from "@/server/composition-root";
 
 type GetEventsRouteHandler = (request: Request) => Promise<Response>;
 type PostEventsRouteHandler = (request: Request) => Promise<Response>;
 
 let cachedGetEventsRouteHandler: GetEventsRouteHandler | null = null;
 let cachedPostEventsRouteHandler: PostEventsRouteHandler | null = null;
+
+const checkMutationRateLimit = createMutationRateLimiter();
 
 const generateUuid = (): string => {
   if (typeof globalThis.crypto?.randomUUID === "function") {
@@ -25,8 +26,7 @@ const generateUuid = (): string => {
 };
 
 const buildGetEventsRouteHandler = (): GetEventsRouteHandler => {
-  const db = createDb(getDatabaseUrlOrThrow());
-  const eventRepository = new DrizzleEventRepository(db);
+  const eventRepository = getEventRepository();
 
   const handleListEvents = createListEventsHandler({
     listPublishedEvents: createListPublishedEventsUseCase({
@@ -40,8 +40,7 @@ const buildGetEventsRouteHandler = (): GetEventsRouteHandler => {
 };
 
 const buildPostEventsRouteHandler = (): PostEventsRouteHandler => {
-  const db = createDb(getDatabaseUrlOrThrow());
-  const eventRepository = new DrizzleEventRepository(db);
+  const eventRepository = getEventRepository();
 
   const handleCreateEvent = createCreateEventHandler({
     createEvent: createCreateEventUseCase({
@@ -50,10 +49,12 @@ const buildPostEventsRouteHandler = (): PostEventsRouteHandler => {
     }),
   });
 
-  return createCreateEventRouteAdapter({
-    getSession,
-    handleCreateEvent,
-  });
+  return withRateLimit("post-events", 30, checkMutationRateLimit)(
+    createCreateEventRouteAdapter({
+      getSession,
+      handleCreateEvent,
+    }),
+  );
 };
 
 const getGetEventsRouteHandler = (): GetEventsRouteHandler => {

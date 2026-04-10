@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 interface LotOption {
   id: string;
@@ -27,6 +28,9 @@ export function LotSelector({ eventId, lots }: LotSelectorProps) {
   const [selectedLotId, setSelectedLotId] = useState(availableLots[0]?.id ?? "");
   const [quantity, setQuantity] = useState(1);
 
+  const sectionRef = useRef<HTMLElement>(null);
+  useScrollReveal(sectionRef);
+
   const selectedLot = useMemo(
     () => availableLots.find((lot) => lot.id === selectedLotId) ?? null,
     [availableLots, selectedLotId],
@@ -39,9 +43,9 @@ export function LotSelector({ eventId, lots }: LotSelectorProps) {
 
   if (availableLots.length === 0) {
     return (
-      <section className="rounded-xl border border-zinc-200 bg-white p-5">
-        <h2 className="text-lg font-semibold text-zinc-900">Checkout</h2>
-        <p className="mt-2 text-sm text-zinc-600">
+      <section ref={sectionRef} className="rounded-xl border border-white/10 bg-white/5 p-5">
+        <h2 className="text-lg font-semibold text-white">Checkout</h2>
+        <p className="mt-2 text-sm text-zinc-400">
           Não há lotes disponíveis para compra no momento.
         </p>
       </section>
@@ -55,17 +59,17 @@ export function LotSelector({ eventId, lots }: LotSelectorProps) {
   });
 
   return (
-    <section className="rounded-xl border border-zinc-200 bg-white p-5">
-      <h2 className="text-lg font-semibold text-zinc-900">Selecionar Lote</h2>
-      <p className="mt-1 text-sm text-zinc-600">
+    <section ref={sectionRef} className="rounded-xl border border-white/10 bg-white/5 p-5">
+      <h2 className="text-lg font-semibold text-white">Selecionar Lote</h2>
+      <p className="mt-1 text-sm text-zinc-400">
         Escolha o lote e a quantidade respeitando o limite por pedido.
       </p>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <label className="grid gap-1">
-          <span className="text-sm font-medium text-zinc-800">Lote</span>
+          <span className="text-sm font-medium text-zinc-300">Lote</span>
           <select
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-base"
+            className="w-full rounded-md border border-white/15 bg-zinc-900 px-3 py-2 text-base text-white focus:outline-none focus:border-white/30"
             value={selectedLot?.id ?? ""}
             onChange={(event) => {
               setSelectedLotId(event.target.value);
@@ -81,9 +85,9 @@ export function LotSelector({ eventId, lots }: LotSelectorProps) {
         </label>
 
         <label className="grid gap-1">
-          <span className="text-sm font-medium text-zinc-800">Quantidade</span>
+          <span className="text-sm font-medium text-zinc-300">Quantidade</span>
           <input
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-base"
+            className="w-full rounded-md border border-white/15 bg-zinc-900 px-3 py-2 text-base text-white focus:outline-none focus:border-white/30"
             type="number"
             min={1}
             max={maxQuantity}
@@ -105,7 +109,7 @@ export function LotSelector({ eventId, lots }: LotSelectorProps) {
       </div>
 
       <Link
-        className="mt-5 inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white sm:w-auto"
+        className="mt-5 inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium text-zinc-950 transition-opacity hover:opacity-90 sm:w-auto"
         href={`/checkout?${checkoutParams.toString()}`}
       >
         Comprar
