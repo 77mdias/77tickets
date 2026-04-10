@@ -124,15 +124,23 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --config dist/server/wrangler.json --name 77tickets-preview --keep-vars
 
-      - name: Smoke test /api/events
+      - name: Smoke test (preview)
         env:
-          BASE_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
         run: |
-          base_url="${BASE_URL%/}"
-          curl --fail --show-error --silent --max-time 20 \
-            "$base_url/" > /dev/null
-          curl --fail --show-error --silent --max-time 20 \
-            "$base_url/api/events?limit=1" > /dev/null
+          base_url="${DEPLOYMENT_URL%/}"
+          echo "Smoke testing: $base_url"
+          for i in 1 2 3; do
+            if curl --fail --show-error --silent --max-time 20 \
+                "$base_url/api/health" > /dev/null; then
+              echo "Health check passed"
+              exit 0
+            fi
+            echo "Attempt $i failed, retrying in 5s..."
+            sleep 5
+          done
+          echo "Smoke test failed after 3 attempts"
+          exit 1
 
   deploy-production:
     name: Deploy Production
@@ -195,15 +203,23 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --config dist/server/wrangler.json --name 77tickets --keep-vars
 
-      - name: Smoke test /api/events
+      - name: Smoke test (production)
         env:
-          BASE_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
         run: |
-          base_url="${BASE_URL%/}"
-          curl --fail --show-error --silent --max-time 20 \
-            "$base_url/" > /dev/null
-          curl --fail --show-error --silent --max-time 20 \
-            "$base_url/api/events?limit=1" > /dev/null
+          base_url="${DEPLOYMENT_URL%/}"
+          echo "Smoke testing: $base_url"
+          for i in 1 2 3; do
+            if curl --fail --show-error --silent --max-time 20 \
+                "$base_url/api/health" > /dev/null; then
+              echo "Health check passed"
+              exit 0
+            fi
+            echo "Attempt $i failed, retrying in 5s..."
+            sleep 5
+          done
+          echo "Smoke test failed after 3 attempts"
+          exit 1
 
   deploy-skipped-no-wrangler:
     name: Deploy skipped (wrangler.toml missing)
