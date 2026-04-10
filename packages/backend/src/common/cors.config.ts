@@ -13,7 +13,8 @@ export function configureCors(app: INestApplication) {
       const origins = getFrontendOrigins();
       // Allow requests with no Origin (e.g. direct API calls, tests)
       if (!origin) return callback(null, true);
-      if (origins.some(o => origin.startsWith(o))) return callback(null, true);
+      const allowedOrigins = new Set(origins);
+      if (allowedOrigins.has(origin)) return callback(null, true);
       callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
