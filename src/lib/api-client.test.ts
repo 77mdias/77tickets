@@ -15,7 +15,7 @@ afterEach(() => {
 
 describe('apiFetch', () => {
   it('composes URL with API_BASE_URL', async () => {
-    (fetch as any).mockResolvedValue(new Response('{"ok": true}', { status: 200 }));
+    vi.mocked(fetch).mockResolvedValue(new Response('{"ok": true}', { status: 200 }));
     await apiFetch('/api/events');
     expect(fetch).toHaveBeenCalledWith(`${API_BASE_URL}/api/events`, expect.objectContaining({
       credentials: 'include',
@@ -23,7 +23,7 @@ describe('apiFetch', () => {
   });
 
   it('always includes credentials: include', async () => {
-    (fetch as any).mockResolvedValue(new Response('{"ok": true}', { status: 200 }));
+    vi.mocked(fetch).mockResolvedValue(new Response('{"ok": true}', { status: 200 }));
     await apiFetch('/api/events');
     expect(fetch).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({
       credentials: 'include',
@@ -31,7 +31,7 @@ describe('apiFetch', () => {
   });
 
   it('includes Content-Type header by default', async () => {
-    (fetch as any).mockResolvedValue(new Response('{"ok": true}', { status: 200 }));
+    vi.mocked(fetch).mockResolvedValue(new Response('{"ok": true}', { status: 200 }));
     await apiFetch('/api/events');
     expect(fetch).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({
       headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
@@ -39,7 +39,7 @@ describe('apiFetch', () => {
   });
 
   it('throws UnauthorizedError on 401', async () => {
-    (fetch as any).mockResolvedValue(new Response('{"message":"Unauthorized"}', { status: 401 }));
+    vi.mocked(fetch).mockResolvedValue(new Response('{"message":"Unauthorized"}', { status: 401 }));
     await expect(apiFetch('/api/protected')).rejects.toThrow(ApiError);
     await expect(apiFetch('/api/protected')).rejects.toMatchObject({
       code: 'unauthorized',
@@ -48,7 +48,7 @@ describe('apiFetch', () => {
   });
 
   it('throws ForbiddenError on 403', async () => {
-    (fetch as any).mockResolvedValue(new Response('{"message":"Forbidden"}', { status: 403 }));
+    vi.mocked(fetch).mockResolvedValue(new Response('{"message":"Forbidden"}', { status: 403 }));
     await expect(apiFetch('/api/admin')).rejects.toMatchObject({
       code: 'forbidden',
       statusCode: 403,
@@ -56,7 +56,7 @@ describe('apiFetch', () => {
   });
 
   it('throws ConflictError on 409', async () => {
-    (fetch as any).mockResolvedValue(new Response('{"message":"Conflict"}', { status: 409 }));
+    vi.mocked(fetch).mockResolvedValue(new Response('{"message":"Conflict"}', { status: 409 }));
     await expect(apiFetch('/api/checkin')).rejects.toMatchObject({
       code: 'conflict',
       statusCode: 409,
@@ -64,7 +64,7 @@ describe('apiFetch', () => {
   });
 
   it('throws ServerError on 5xx', async () => {
-    (fetch as any).mockResolvedValue(new Response('{"message":"Error"}', { status: 500 }));
+    vi.mocked(fetch).mockResolvedValue(new Response('{"message":"Error"}', { status: 500 }));
     await expect(apiFetch('/api/events')).rejects.toMatchObject({
       code: 'server-error',
       statusCode: 500,
@@ -73,13 +73,13 @@ describe('apiFetch', () => {
 
   it('returns parsed JSON on success', async () => {
     const data = { events: [{ id: '1', name: 'Test' }] };
-    (fetch as any).mockResolvedValue(new Response(JSON.stringify(data), { status: 200 }));
+    vi.mocked(fetch).mockResolvedValue(new Response(JSON.stringify(data), { status: 200 }));
     const result = await apiFetch('/api/events');
     expect(result).toEqual(data);
   });
 
   it('returns undefined on 204 No Content', async () => {
-    (fetch as any).mockResolvedValue(new Response(null, { status: 204 }));
+    vi.mocked(fetch).mockResolvedValue(new Response(null, { status: 204 }));
     const result = await apiFetch('/api/events/1', { method: 'DELETE' });
     expect(result).toBeUndefined();
   });
@@ -90,7 +90,7 @@ describe('apiFetch', () => {
   });
 
   it('passes through custom headers', async () => {
-    (fetch as any).mockResolvedValue(new Response('{"ok": true}', { status: 200 }));
+    vi.mocked(fetch).mockResolvedValue(new Response('{"ok": true}', { status: 200 }));
     await apiFetch('/api/events', { headers: { 'X-Custom': 'value' } });
     expect(fetch).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({
       headers: expect.objectContaining({ 'X-Custom': 'value', 'Content-Type': 'application/json' }),
@@ -98,7 +98,7 @@ describe('apiFetch', () => {
   });
 
   it('throws NetworkError on fetch failure', async () => {
-    (fetch as any).mockRejectedValue(new TypeError('Failed to fetch'));
+    vi.mocked(fetch).mockRejectedValue(new TypeError('Failed to fetch'));
     await expect(apiFetch('/api/events')).rejects.toMatchObject({
       code: 'network-error',
     });
