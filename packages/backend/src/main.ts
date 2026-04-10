@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
-import { AppModule } from './app.module';
+import { AppModule, frontendOrigins } from './app.module';
 import { AppExceptionFilter } from './common/app-exception.filter';
 
 async function bootstrap() {
@@ -12,8 +12,16 @@ async function bootstrap() {
 
   app.use(helmet());
   app.enableCors({
-    origin: process.env.FRONTEND_URL ?? 'http://localhost:3000',
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+      // Allow requests with no Origin (e.g. direct API calls, tests)
+      if (!origin) return callback(null, true);
+      if (frontendOrigins.some(o => origin.startsWith(o))) return callback(null, true);
+      callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-actor-id', 'x-actor-role', 'x-test-user-id', 'x-test-role', 'x-test-email'],
+    exposedHeaders: ['Set-Cookie'],
   });
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, transform: true }),
