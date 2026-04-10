@@ -16,8 +16,19 @@ export const createAuth = (db: HttpDb) =>
       schema,
     }),
     emailAndPassword: { enabled: true },
-    trustedOrigins: [process.env.BETTER_AUTH_URL ?? "http://localhost:3000"],
+    trustedOrigins: [
+      process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
+      ...(process.env.CF_WORKERS_DOMAIN ? [process.env.CF_WORKERS_DOMAIN] : []),
+    ],
     advanced: {
+      cookies: {
+        session_token: {
+          attributes: {
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: process.env.NODE_ENV === 'production',
+          },
+        },
+      },
       // The Drizzle adapter resolves IDs via advanced.database.generateId.
       // Setting it to a UUID factory ensures UUIDs are used for all user/session IDs.
       database: {

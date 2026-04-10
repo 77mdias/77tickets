@@ -17,6 +17,16 @@ import { DatabaseModule } from '../infrastructure/database/database.module';
           baseURL: config.getOrThrow('BETTER_AUTH_BASE_URL'),
           secret: config.getOrThrow('BETTER_AUTH_SECRET'),
           database: { provider: 'pg', url: config.getOrThrow('DATABASE_URL') },
+          advanced: {
+            cookies: {
+              session_token: {
+                attributes: {
+                  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+                  secure: process.env.NODE_ENV === 'production',
+                },
+              },
+            },
+          },
         } as any);
 
         const resolveSession = (headers: Record<string, string>) =>
