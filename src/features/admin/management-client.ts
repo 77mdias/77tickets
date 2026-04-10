@@ -1,3 +1,5 @@
+import { apiFetch } from "@/lib/api-client";
+
 export type ManagementActorRole = "organizer" | "admin";
 
 export interface ManagementActorValues {
@@ -305,42 +307,31 @@ export const postManagementOperation = async <TPayload>(input: {
 }): Promise<ManagementOperationResult> => {
   try {
     const method = input.method ?? "POST";
-    const response = await fetch(appendQuery(input.endpoint, input.query), {
+    const url = appendQuery(input.endpoint, input.query);
+    const options: RequestInit = {
       method,
       headers: buildManagementActorHeaders(input.actor),
       ...(method === "GET" || input.payload === undefined
         ? {}
         : { body: JSON.stringify(input.payload) }),
-    });
+    };
 
-    const parsed = await readJsonSafely(response);
-
-    if (!response.ok) {
-      return {
-        ok: false,
-        status: response.status,
-        data: parsed,
-        message: extractManagementErrorMessage(parsed),
-      };
-    }
-
-    const data =
-      typeof parsed === "object" && parsed !== null
-        ? (parsed as { data?: unknown }).data
-        : undefined;
+    const data = await apiFetch<unknown>(url, options);
 
     return {
       ok: true,
-      status: response.status,
+      status: 200,
       data,
       message: formatSuccessMessage(data),
     };
-  } catch {
+  } catch (error) {
+    const message =
+      error instanceof Error && error.message ? error.message : FALLBACK_NETWORK_MESSAGE;
     return {
       ok: false,
       status: 0,
       data: null,
-      message: FALLBACK_NETWORK_MESSAGE,
+      message,
     };
   }
 };

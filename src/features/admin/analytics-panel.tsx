@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent, useMemo, useState } from "react";
+import { apiFetch } from "@/lib/api-client";
 
 type AnalyticsLot = {
   lotId: string;
@@ -121,37 +122,19 @@ export function AnalyticsPanel() {
     setViewState({ kind: "loading" });
 
     try {
-      const response = await fetch(`/api/events/${encodeURIComponent(trimmedSlug)}/analytics`, {
-        cache: "no-store",
-      });
-      const payload = (await response.json()) as unknown;
-
-      if (!response.ok) {
-        setAnalytics(null);
-        setViewState({
-          kind: "error",
-          message: extractAnalyticsErrorMessage(payload),
-        });
-        return;
-      }
-
-      const data = extractAnalyticsData(payload);
-      if (!data) {
-        setAnalytics(null);
-        setViewState({
-          kind: "error",
-          message: FALLBACK_ERROR_MESSAGE,
-        });
-        return;
-      }
+      const data = await apiFetch<EventAnalyticsResponse>(
+        `/api/events/${encodeURIComponent(trimmedSlug)}/analytics`,
+      );
 
       setAnalytics(data);
       setViewState({ kind: "success" });
-    } catch {
+    } catch (error) {
       setAnalytics(null);
+      const message =
+        error instanceof Error && error.message ? error.message : FALLBACK_ERROR_MESSAGE;
       setViewState({
         kind: "error",
-        message: FALLBACK_ERROR_MESSAGE,
+        message,
       });
     }
   };
