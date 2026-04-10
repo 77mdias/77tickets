@@ -4,6 +4,7 @@ import { type FormEvent, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import { toast } from "sonner";
+import { apiFetch, ApiError } from "@/lib/api-client";
 
 import {
   buildCheckoutPayload,
@@ -52,22 +53,10 @@ export function CheckoutForm({
     setViewState({ kind: "submitting" });
 
     try {
-      const response = await fetch("/api/orders", {
+      const payload = await apiFetch<unknown>("/api/orders", {
         method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
         body: JSON.stringify(buildCheckoutPayload(values)),
       });
-
-      const payload = (await response.json()) as unknown;
-
-      if (!response.ok) {
-        const errorMessage = extractCheckoutErrorMessage(payload);
-        setViewState({ kind: "error", message: errorMessage });
-        toast.error("Erro ao processar pagamento. Tente novamente.");
-        return;
-      }
 
       const redirectTarget = extractCheckoutRedirectTarget(payload);
 
@@ -87,9 +76,9 @@ export function CheckoutForm({
 
       router.push(redirectTarget.checkoutUrl);
       router.refresh();
-    } catch {
-      const errorMessage = "Could not complete checkout. Please review your input and try again.";
-      setViewState({ kind: "error", message: errorMessage });
+    } catch (error) {
+      const message = error instanceof ApiError ? extractCheckoutErrorMessage(error.details) : "Could not complete checkout. Please review your input and try again.";
+      setViewState({ kind: "error", message });
       toast.error("Erro ao processar pagamento. Tente novamente.");
     }
   };

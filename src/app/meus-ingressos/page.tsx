@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 import { RevealWrapper } from "@/components/reveal-wrapper";
 import { TicketQr } from "@/features/tickets/ticket-qr";
-import { getServerBaseUrl, getServerCookieHeader } from "@/app/lib/server-api";
+import { apiFetch, ApiError } from "@/lib/api-client";
 
 interface CustomerTicket {
   id: string;
@@ -43,28 +43,17 @@ const statusLabel: Record<CustomerTicket["status"], string> = {
 };
 
 const loadCustomerOrders = async (): Promise<CustomerOrder[]> => {
-  const baseUrl = await getServerBaseUrl();
-  const cookieHeader = await getServerCookieHeader();
-
-  const response = await fetch(`${baseUrl}/api/orders/mine`, {
-    cache: "no-store",
-    headers: cookieHeader
-      ? {
-          cookie: cookieHeader,
-        }
-      : undefined,
-  });
-
-  if (response.status === 401) {
-    redirect("/login?next=/meus-ingressos");
+  try {
+    const payload = await apiFetch<{ data?: { orders?: CustomerOrder[] } }>("/api/orders/mine", {
+      cache: "no-store",
+    });
+    return payload.data?.orders ?? [];
+  } catch (error) {
+    if (error instanceof ApiError && error.code === "unauthorized") {
+      redirect("/login?next=/meus-ingressos");
+    }
+    throw error;
   }
-
-  if (!response.ok) {
-    throw new Error("Could not load customer orders");
-  }
-
-  const payload = (await response.json()) as { data?: { orders?: CustomerOrder[] } };
-  return payload.data?.orders ?? [];
 };
 
 export default async function MyTicketsPage() {
