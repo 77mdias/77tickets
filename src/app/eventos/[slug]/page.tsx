@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 
+import { apiFetch, ApiError } from "@/lib/api-client";
 import { LotSelector } from "@/features/checkout/lot-selector";
 import { RevealWrapper } from "@/components/reveal-wrapper";
-import { getServerBaseUrl } from "@/app/lib/server-api";
 
 interface EventDetailPayload {
   event: {
@@ -40,21 +40,14 @@ const formatCurrency = (valueInCents: number): string =>
   }).format(valueInCents / 100);
 
 const loadEventDetail = async (slug: string): Promise<EventDetailPayload> => {
-  const baseUrl = await getServerBaseUrl();
-  const response = await fetch(`${baseUrl}/api/events/${slug}`, {
-    cache: "no-store",
-  });
-
-  if (response.status === 404) {
-    notFound();
+  try {
+    return await apiFetch<EventDetailPayload>(`/api/events/${slug}`);
+  } catch (error) {
+    if (error instanceof ApiError && error.statusCode === 404) {
+      notFound();
+    }
+    throw error;
   }
-
-  if (!response.ok) {
-    throw new Error("Could not load event detail");
-  }
-
-  const payload = (await response.json()) as { data: EventDetailPayload };
-  return payload.data;
 };
 
 export default async function EventDetailPage({
