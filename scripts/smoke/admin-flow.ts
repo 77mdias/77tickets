@@ -2,7 +2,7 @@
  * Smoke script: admin-flow
  *
  * Prerequisites:
- *   - Server running at SMOKE_BASE_URL (default: http://localhost:3000)
+ *   - NestJS running at SMOKE_BASE_URL (default: http://localhost:3001)
  *   - SMOKE_ADMIN_COOKIE: session cookie for a user with admin role
  *
  * Exit 0: flow succeeded
