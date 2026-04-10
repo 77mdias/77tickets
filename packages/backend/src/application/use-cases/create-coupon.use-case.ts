@@ -1,10 +1,12 @@
 import type { CouponGovernanceResult, CreateCouponInput } from "../coupons";
-import type { CouponRepository } from "../../repositories";
+import type { CouponRepository, EventRepository } from "../../repositories";
 import {
   assertCouponCodeIsUniqueForEvent,
   normalizeCouponCode,
   validateCouponGovernanceInput,
 } from "../coupons/coupon-governance.validation";
+import { assertEventManagementAccess } from "../security";
+import { createNotFoundError } from "../errors";
 
 export type CreateCouponUseCase = (
   input: CreateCouponInput,
@@ -12,12 +14,21 @@ export type CreateCouponUseCase = (
 
 export interface CreateCouponUseCaseDependencies {
   couponRepository: Pick<CouponRepository, "findByCodeForEvent" | "create">;
+  eventRepository: Pick<EventRepository, "findById">;
 }
 
 export const createCreateCouponUseCase = (
   dependencies: CreateCouponUseCaseDependencies,
 ): CreateCouponUseCase => {
   return async (input) => {
+    const event = await dependencies.eventRepository.findById(input.eventId);
+    if (!event) throw createNotFoundError("Event not found");
+
+    assertEventManagementAccess({
+      actor: { userId: input.actor.userId, role: input.actor.role as any },
+      eventOrganizerId: event.organizerId,
+    });
+
     validateCouponGovernanceInput(input);
 
     const normalizedCode = normalizeCouponCode(input.code);

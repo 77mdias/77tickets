@@ -2,12 +2,13 @@ import type { CouponGovernanceResult, UpdateCouponInput } from "../coupons";
 import {
   createNotFoundError,
 } from "../errors";
-import type { CouponRepository } from "../../repositories";
+import type { CouponRepository, EventRepository } from "../../repositories";
 import {
   assertCouponCodeIsUniqueForEvent,
   normalizeCouponCode,
   validateCouponGovernanceInput,
 } from "../coupons/coupon-governance.validation";
+import { assertEventManagementAccess } from "../security";
 
 export type UpdateCouponUseCase = (
   input: UpdateCouponInput,
@@ -18,6 +19,7 @@ export interface UpdateCouponUseCaseDependencies {
     CouponRepository,
     "findById" | "findByCodeForEvent" | "update"
   >;
+  eventRepository: Pick<EventRepository, "findById">;
 }
 
 export const createUpdateCouponUseCase = (
@@ -31,6 +33,14 @@ export const createUpdateCouponUseCase = (
     if (!existingCoupon) {
       throw createNotFoundError("Coupon not found");
     }
+
+    const event = await dependencies.eventRepository.findById(existingCoupon.eventId);
+    if (!event) throw createNotFoundError("Event not found");
+
+    assertEventManagementAccess({
+      actor: { userId: input.actor.userId, role: input.actor.role as any },
+      eventOrganizerId: event.organizerId,
+    });
 
     validateCouponGovernanceInput(input);
 

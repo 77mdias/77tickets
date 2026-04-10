@@ -59,7 +59,7 @@ const updateEventSchema = z
 const listEventsQuerySchema = z
   .object({
     q: z.string().trim().min(1).optional(),
-    date: z.string().optional(),
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format (YYYY-MM-DD expected)').optional(),
     location: z.string().trim().min(1).optional(),
     category: z.string().trim().min(1).optional(),
     cursor: z.string().optional(),

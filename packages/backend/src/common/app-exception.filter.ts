@@ -1,5 +1,6 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
-import { mapUnknownErrorToAppError, serializeAppError } from '../application/errors';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, ForbiddenException, UnauthorizedException } from '@nestjs/common';
+import { ZodError } from 'zod';
+import { mapUnknownErrorToAppError, serializeAppError, createAuthorizationError, createUnauthenticatedError, createValidationError } from '../application/errors';
 import type { AppErrorCode } from '../application/errors';
 
 const HTTP_STATUS_BY_ERROR_CODE: Record<AppErrorCode, number> = {
@@ -17,6 +18,28 @@ export class AppExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
+
+    if (exception instanceof ForbiddenException) {
+      const appError = createAuthorizationError('Permissão insuficiente');
+      response.status(403).json({ error: serializeAppError(appError) });
+      return;
+    }
+
+    if (exception instanceof UnauthorizedException) {
+      const appError = createUnauthenticatedError('Não autenticado');
+      response.status(401).json({ error: serializeAppError(appError) });
+      return;
+    }
+
+    if (exception instanceof ZodError) {
+      const issues = exception.issues.map((issue) => ({
+        path: issue.path.join('.'),
+        message: issue.message,
+      }));
+      const appError = createValidationError('Invalid request payload', { details: { issues } });
+      response.status(400).json({ error: serializeAppError(appError) });
+      return;
+    }
 
     if (exception instanceof HttpException) {
       const status = exception.getStatus();

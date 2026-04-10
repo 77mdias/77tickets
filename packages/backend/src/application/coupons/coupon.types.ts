@@ -12,10 +12,12 @@ export interface CouponGovernanceInputBase {
 
 export interface CreateCouponInput extends CouponGovernanceInputBase {
   eventId: string;
+  actor: { userId: string; role: string };
 }
 
 export interface UpdateCouponInput extends CouponGovernanceInputBase {
   couponId: string;
+  actor: { userId: string; role: string };
 }
 
 export interface CouponGovernanceResult {

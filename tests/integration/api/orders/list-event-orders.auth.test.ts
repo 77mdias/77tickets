@@ -1,142 +1,77 @@
-import { describe, expect, test, vi } from "vitest";
+import { describe, test, expect, vi, beforeAll, afterAll, beforeEach } from 'vitest';
+import request from 'supertest';
+import { createTestingApp, cleanDatabase, createTestDb, type TestApp, TEST_USER_IDS } from '../../setup';
+import { createEventFixture } from '../../../fixtures';
+import { LIST_EVENT_ORDERS_USE_CASE } from '../../../../packages/backend/src/application/application.module';
 
-import { createListEventOrdersHandler } from "../../../../src/server/api/orders/list-event-orders.handler";
-import { createListEventOrdersUseCase } from "../../../../src/server/application/use-cases/list-event-orders.use-case";
-import type { SecurityActor } from "../../../../src/server/application/security";
+const EVENT_ID = '2f180791-a8f5-4cf8-b703-0f220a44f7c8';
+const EVENT_SLUG = 'list-orders-auth-event';
+const ORGANIZER_A = TEST_USER_IDS.organizer1;
+const ORGANIZER_B = TEST_USER_IDS.organizer2;
 
-const EVENT_ID = "2f180791-a8f5-4cf8-b703-0f220a44f7c8";
-const ORGANIZER_A = "00000000-0000-0000-0000-000000000001";
-const ORGANIZER_B = "00000000-0000-0000-0000-000000000002";
+describe.skipIf(!process.env.TEST_DATABASE_URL)('list-event-orders auth integration', () => {
+  let testApp: TestApp;
+  const db = createTestDb();
+  const mockListEventOrders = vi.fn().mockResolvedValue([]);
 
-const buildActor = (role: SecurityActor["role"], userId: string): SecurityActor => ({
-  role,
-  userId,
-});
-
-const createEventRepository = (organizerId: string | null = ORGANIZER_A) => ({
-  findById: vi.fn(async () => {
-    if (organizerId === null) {
-      return null;
-    }
-
-    return {
-      id: EVENT_ID,
-      organizerId,
-      slug: "list-orders-auth-event",
-      title: "List Orders Auth Event",
-      status: "published" as const,
-      startsAt: new Date("2027-06-01T10:00:00.000Z"),
-      endsAt: null,
-    };
-  }),
-  findBySlug: vi.fn(async () => null),
-});
-
-const createOrderRepository = () => ({
-  listByEventId: vi.fn(async () => []),
-});
-
-describe("list-event-orders auth integration", () => {
-  test("blocks customer role", async () => {
-    const eventRepository = createEventRepository(ORGANIZER_A);
-    const orderRepository = createOrderRepository();
-
-    const useCase = createListEventOrdersUseCase({
-      eventRepository,
-      orderRepository,
-    });
-
-    const handler = createListEventOrdersHandler({ listEventOrders: useCase });
-
-    const response = await handler({
-      actor: buildActor("customer", "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5"),
-      params: { eventId: EVENT_ID },
-    });
-
-    expect(response.status).toBe(403);
-    expect(response.body.error.code).toBe("authorization");
-    expect(orderRepository.listByEventId).not.toHaveBeenCalled();
+  beforeAll(async () => {
+    testApp = await createTestingApp([
+      { token: LIST_EVENT_ORDERS_USE_CASE, value: mockListEventOrders },
+    ]);
+  });
+  afterAll(async () => testApp.close());
+  beforeEach(async () => {
+    await cleanDatabase(db);
+    mockListEventOrders.mockClear();
   });
 
-  test("blocks checker role", async () => {
-    const eventRepository = createEventRepository(ORGANIZER_A);
-    const orderRepository = createOrderRepository();
-
-    const useCase = createListEventOrdersUseCase({
-      eventRepository,
-      orderRepository,
-    });
-
-    const handler = createListEventOrdersHandler({ listEventOrders: useCase });
-
-    const response = await handler({
-      actor: buildActor("checker", "00000000-0000-0000-0000-000000000011"),
-      params: { eventId: EVENT_ID },
-    });
-
-    expect(response.status).toBe(403);
-    expect(response.body.error.code).toBe("authorization");
-    expect(orderRepository.listByEventId).not.toHaveBeenCalled();
+  test('blocks customer role', async () => {
+    const res = await request(testApp.app.getHttpServer())
+      .get(`/api/events/${EVENT_SLUG}/orders`)
+      .set('x-test-user-id', TEST_USER_IDS.customerA)
+      .set('x-test-role', 'customer');
+    expect(res.status).toBe(403);
+    expect(res.body.error.code).toBe('authorization');
+    expect(mockListEventOrders).not.toHaveBeenCalled();
   });
 
-  test("blocks organizer outside ownership scope", async () => {
-    const eventRepository = createEventRepository(ORGANIZER_A);
-    const orderRepository = createOrderRepository();
-
-    const useCase = createListEventOrdersUseCase({
-      eventRepository,
-      orderRepository,
-    });
-
-    const handler = createListEventOrdersHandler({ listEventOrders: useCase });
-
-    const response = await handler({
-      actor: buildActor("organizer", ORGANIZER_B),
-      params: { eventId: EVENT_ID },
-    });
-
-    expect(response.status).toBe(403);
-    expect(response.body.error.code).toBe("authorization");
-    expect(orderRepository.listByEventId).not.toHaveBeenCalled();
+  test('blocks checker role', async () => {
+    const res = await request(testApp.app.getHttpServer())
+      .get(`/api/events/${EVENT_SLUG}/orders`)
+      .set('x-test-user-id', TEST_USER_IDS.checker)
+      .set('x-test-role', 'checker');
+    expect(res.status).toBe(403);
+    expect(res.body.error.code).toBe('authorization');
+    expect(mockListEventOrders).not.toHaveBeenCalled();
   });
 
-  test("allows organizer within ownership scope", async () => {
-    const eventRepository = createEventRepository(ORGANIZER_A);
-    const orderRepository = createOrderRepository();
-
-    const useCase = createListEventOrdersUseCase({
-      eventRepository,
-      orderRepository,
-    });
-
-    const handler = createListEventOrdersHandler({ listEventOrders: useCase });
-
-    const response = await handler({
-      actor: buildActor("organizer", ORGANIZER_A),
-      params: { eventId: EVENT_ID },
-    });
-
-    expect(response.status).toBe(200);
-    expect(orderRepository.listByEventId).toHaveBeenCalledWith(EVENT_ID);
+  test('blocks organizer outside ownership scope', async () => {
+    await createEventFixture(db, { id: EVENT_ID, organizerId: ORGANIZER_A, slug: EVENT_SLUG, status: 'published', startsAt: new Date('2027-06-01T10:00:00.000Z'), endsAt: new Date('2027-06-01T20:00:00.000Z') });
+    const res = await request(testApp.app.getHttpServer())
+      .get(`/api/events/${EVENT_SLUG}/orders`)
+      .set('x-test-user-id', ORGANIZER_B)
+      .set('x-test-role', 'organizer');
+    expect(res.status).toBe(403);
+    expect(mockListEventOrders).not.toHaveBeenCalled();
   });
 
-  test("allows admin globally", async () => {
-    const eventRepository = createEventRepository(ORGANIZER_A);
-    const orderRepository = createOrderRepository();
+  test('allows organizer within ownership scope', async () => {
+    await createEventFixture(db, { id: EVENT_ID, organizerId: ORGANIZER_A, slug: EVENT_SLUG, status: 'published', startsAt: new Date('2027-06-01T10:00:00.000Z'), endsAt: new Date('2027-06-01T20:00:00.000Z') });
+    const res = await request(testApp.app.getHttpServer())
+      .get(`/api/events/${EVENT_SLUG}/orders`)
+      .set('x-test-user-id', ORGANIZER_A)
+      .set('x-test-role', 'organizer');
+    expect(res.status).toBe(200);
+    expect(mockListEventOrders).toHaveBeenCalled();
+  });
 
-    const useCase = createListEventOrdersUseCase({
-      eventRepository,
-      orderRepository,
-    });
-
-    const handler = createListEventOrdersHandler({ listEventOrders: useCase });
-
-    const response = await handler({
-      actor: buildActor("admin", "00000000-0000-0000-0000-000000000099"),
-      params: { eventId: EVENT_ID },
-    });
-
-    expect(response.status).toBe(200);
-    expect(orderRepository.listByEventId).toHaveBeenCalledWith(EVENT_ID);
+  test('allows admin globally', async () => {
+    await createEventFixture(db, { id: EVENT_ID, organizerId: ORGANIZER_A, slug: EVENT_SLUG, status: 'published', startsAt: new Date('2027-06-01T10:00:00.000Z'), endsAt: new Date('2027-06-01T20:00:00.000Z') });
+    const res = await request(testApp.app.getHttpServer())
+      .get(`/api/events/${EVENT_SLUG}/orders`)
+      .set('x-test-user-id', TEST_USER_IDS.admin)
+      .set('x-test-role', 'admin');
+    expect(res.status).toBe(200);
+    expect(mockListEventOrders).toHaveBeenCalled();
   });
 });

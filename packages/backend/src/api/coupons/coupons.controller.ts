@@ -19,6 +19,7 @@ import { SessionGuard } from '../../auth/session.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { OwnershipGuard } from '../../auth/ownership.guard';
 import { Roles } from '../../auth/roles.decorator';
+import { CurrentUser } from '../../auth/current-user.decorator';
 
 const couponBodySchema = z
   .object({
@@ -49,16 +50,20 @@ export class CouponsController {
   @Post()
   @UseGuards(SessionGuard, RolesGuard, OwnershipGuard)
   @Roles('organizer')
-  async create(@Body() body: unknown) {
+  async create(@Body() body: unknown, @CurrentUser() user: { id: string; role: string }) {
     const input = createCouponSchema.parse(body);
-    return this.createCoupon(input);
+    return this.createCoupon({ ...input, actor: { userId: user.id, role: user.role } });
   }
 
   @Put(':id')
   @UseGuards(SessionGuard, RolesGuard)
   @Roles('organizer')
-  async update(@Param('id') couponId: string, @Body() body: unknown) {
+  async update(
+    @Param('id') couponId: string,
+    @Body() body: unknown,
+    @CurrentUser() user: { id: string; role: string },
+  ) {
     const input = updateCouponSchema.parse(body);
-    return this.updateCoupon({ ...input, couponId });
+    return this.updateCoupon({ ...input, couponId, actor: { userId: user.id, role: user.role } });
   }
 }

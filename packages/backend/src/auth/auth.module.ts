@@ -28,6 +28,6 @@ import { DatabaseModule } from '../infrastructure/database/database.module';
     RolesGuard,
     OwnershipGuard,
   ],
-  exports: [SessionGuard, RolesGuard, OwnershipGuard],
+  exports: [SessionGuard, RolesGuard, OwnershipGuard, DatabaseModule],
 })
 export class AuthModule {}

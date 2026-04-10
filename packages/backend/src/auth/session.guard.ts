@@ -28,6 +28,8 @@ export class SessionGuard implements CanActivate {
         };
         return true;
       }
+      // In test mode without a test user header, deny access directly
+      throw new UnauthorizedException('Sessão inválida ou expirada');
     }
 
     const session = await this.resolveSession(request.headers);

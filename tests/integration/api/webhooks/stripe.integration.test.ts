@@ -1,128 +1,81 @@
-import { beforeEach, expect, test, vi } from "vitest";
+import { describe, test, expect, vi, beforeAll, afterAll, beforeEach } from 'vitest';
+import request from 'supertest';
+import { createTestingApp, type TestApp } from '../../setup';
+import { PAYMENT_PROVIDER } from '../../../../packages/backend/src/payment/payment.module';
+import {
+  CONFIRM_ORDER_PAYMENT_USE_CASE,
+  CANCEL_ORDER_ON_PAYMENT_FAILURE_USE_CASE,
+} from '../../../../packages/backend/src/application/application.module';
 
-const mocks = vi.hoisted(() => ({
-  constructWebhookEvent: vi.fn(),
-  confirmOrderPayment: vi.fn(),
-  cancelOrderOnPaymentFailure: vi.fn(),
-}));
+describe.skipIf(!process.env.TEST_DATABASE_URL)('Stripe webhook integration', () => {
+  let testApp: TestApp;
+  const mockConstructEvent = vi.fn();
+  const mockConfirmPayment = vi.fn().mockResolvedValue({ outcome: 'confirmed' });
+  const mockCancelPayment = vi.fn().mockResolvedValue({ outcome: 'cancelled' });
 
-vi.mock("@/server/payment/stripe.payment-provider", () => ({
-  createStripePaymentProvider: () => ({
-    constructWebhookEvent: mocks.constructWebhookEvent,
-    createCheckoutSession: vi.fn(),
-  }),
-}));
-
-vi.mock("@/server/application/use-cases", () => ({
-  createConfirmOrderPaymentUseCase: () => mocks.confirmOrderPayment,
-  createCancelOrderOnPaymentFailureUseCase: () => mocks.cancelOrderOnPaymentFailure,
-  createSendOrderConfirmationEmailUseCase: () => vi.fn(),
-}));
-
-vi.mock("@/server/email", () => ({
-  createResendEmailProvider: () => ({
-    sendOrderConfirmation: vi.fn(),
-    sendEventReminder: vi.fn(),
-  }),
-}));
-
-beforeEach(() => {
-  mocks.constructWebhookEvent.mockReset();
-  mocks.confirmOrderPayment.mockReset();
-  mocks.cancelOrderOnPaymentFailure.mockReset();
-});
-
-async function loadRoute(): Promise<(request: Request) => Promise<Response>> {
-  const importedModule = await import("../../../../src/app/api/webhooks/stripe/route");
-  const handler = (importedModule as { POST?: unknown }).POST;
-
-  if (typeof handler !== "function") {
-    throw new Error("PAY-014 RED: expected POST export from webhook route");
-  }
-
-  return handler as (request: Request) => Promise<Response>;
-}
-
-test("PAY-014 RED: returns 400 for invalid Stripe signatures", async () => {
-  const post = await loadRoute();
-  mocks.constructWebhookEvent.mockImplementationOnce(() => {
-    throw new Error("invalid signature");
+  beforeAll(async () => {
+    testApp = await createTestingApp([
+      { token: PAYMENT_PROVIDER, value: { constructEvent: mockConstructEvent, createCheckoutSession: vi.fn() } },
+      { token: CONFIRM_ORDER_PAYMENT_USE_CASE, value: mockConfirmPayment },
+      { token: CANCEL_ORDER_ON_PAYMENT_FAILURE_USE_CASE, value: mockCancelPayment },
+    ]);
+  });
+  afterAll(async () => testApp.close());
+  beforeEach(() => {
+    mockConstructEvent.mockReset();
+    mockConfirmPayment.mockReset();
+    mockCancelPayment.mockReset();
   });
 
-  const response = await post(
-    new Request("https://example.test/api/webhooks/stripe", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "stripe-signature": "invalid",
-      },
-      body: JSON.stringify({ type: "checkout.session.completed" }),
-    }),
-  );
-
-  expect(response.status).toBe(400);
-  expect(mocks.confirmOrderPayment).not.toHaveBeenCalled();
-  expect(mocks.cancelOrderOnPaymentFailure).not.toHaveBeenCalled();
-});
-
-test("PAY-014 RED: dispatches checkout.session.completed to confirm use-case", async () => {
-  const post = await loadRoute();
-  mocks.constructWebhookEvent.mockReturnValueOnce({
-    type: "checkout.session.completed",
-    data: {
-      object: {
-        metadata: {
-          orderId: "ord_100",
-        },
-      },
-    },
+  test('returns 400 for invalid Stripe signatures', async () => {
+    mockConstructEvent.mockImplementationOnce(() => { throw new Error('invalid signature'); });
+    const res = await request(testApp.app.getHttpServer())
+      .post('/api/webhooks/stripe')
+      .set('stripe-signature', 'invalid')
+      .set('content-type', 'application/json')
+      .send('{"type":"checkout.session.completed"}');
+    expect(res.status).toBe(400);
+    expect(mockConfirmPayment).not.toHaveBeenCalled();
+    expect(mockCancelPayment).not.toHaveBeenCalled();
   });
-  mocks.confirmOrderPayment.mockResolvedValueOnce({ outcome: "confirmed" });
 
-  const response = await post(
-    new Request("https://example.test/api/webhooks/stripe", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "stripe-signature": "valid",
-      },
-      body: JSON.stringify({ type: "checkout.session.completed" }),
-    }),
-  );
+  test('dispatches checkout.session.completed to confirm use-case', async () => {
+    const sessionId = 'cs_test_abc123';
+    mockConstructEvent.mockReturnValueOnce({
+      type: 'checkout.session.completed',
+      data: { object: { id: sessionId } },
+    });
+    mockConfirmPayment.mockResolvedValueOnce({ outcome: 'confirmed' });
 
-  expect(response.status).toBe(200);
-  expect(await response.json()).toEqual({ received: true });
-  expect(mocks.confirmOrderPayment).toHaveBeenCalledWith({ orderId: "ord_100" });
-  expect(mocks.cancelOrderOnPaymentFailure).not.toHaveBeenCalled();
-});
+    const res = await request(testApp.app.getHttpServer())
+      .post('/api/webhooks/stripe')
+      .set('stripe-signature', 'valid')
+      .set('content-type', 'application/json')
+      .send(JSON.stringify({ type: 'checkout.session.completed' }));
 
-test("PAY-014 RED: dispatches payment_intent.payment_failed to cancel use-case", async () => {
-  const post = await loadRoute();
-  mocks.constructWebhookEvent.mockReturnValueOnce({
-    type: "payment_intent.payment_failed",
-    data: {
-      object: {
-        metadata: {
-          orderId: "ord_101",
-        },
-      },
-    },
+    expect(res.status).toBe(201);
+    expect(res.body).toEqual({ received: true });
+    expect(mockConfirmPayment).toHaveBeenCalledWith({ stripeSessionId: sessionId });
+    expect(mockCancelPayment).not.toHaveBeenCalled();
   });
-  mocks.cancelOrderOnPaymentFailure.mockResolvedValueOnce({ outcome: "cancelled" });
 
-  const response = await post(
-    new Request("https://example.test/api/webhooks/stripe", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "stripe-signature": "valid",
-      },
-      body: JSON.stringify({ type: "payment_intent.payment_failed" }),
-    }),
-  );
+  test('dispatches payment_intent.payment_failed to cancel use-case', async () => {
+    const intentId = 'pi_test_xyz456';
+    mockConstructEvent.mockReturnValueOnce({
+      type: 'payment_intent.payment_failed',
+      data: { object: { id: intentId } },
+    });
+    mockCancelPayment.mockResolvedValueOnce({ outcome: 'cancelled' });
 
-  expect(response.status).toBe(200);
-  expect(await response.json()).toEqual({ received: true });
-  expect(mocks.cancelOrderOnPaymentFailure).toHaveBeenCalledWith({ orderId: "ord_101" });
-  expect(mocks.confirmOrderPayment).not.toHaveBeenCalled();
+    const res = await request(testApp.app.getHttpServer())
+      .post('/api/webhooks/stripe')
+      .set('stripe-signature', 'valid')
+      .set('content-type', 'application/json')
+      .send(JSON.stringify({ type: 'payment_intent.payment_failed' }));
+
+    expect(res.status).toBe(201);
+    expect(res.body).toEqual({ received: true });
+    expect(mockCancelPayment).toHaveBeenCalledWith({ stripeSessionId: intentId });
+    expect(mockConfirmPayment).not.toHaveBeenCalled();
+  });
 });

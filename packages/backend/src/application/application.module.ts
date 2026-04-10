@@ -83,9 +83,9 @@ export const VALIDATE_CHECKIN_USE_CASE = 'VALIDATE_CHECKIN_USE_CASE';
     },
     {
       provide: CREATE_COUPON_USE_CASE,
-      inject: [COUPON_REPOSITORY],
-      useFactory: (couponRepository: any) =>
-        createCreateCouponUseCase({ couponRepository }),
+      inject: [COUPON_REPOSITORY, EVENT_REPOSITORY],
+      useFactory: (couponRepository: any, eventRepository: any) =>
+        createCreateCouponUseCase({ couponRepository, eventRepository }),
     },
     {
       provide: CREATE_EVENT_USE_CASE,
@@ -189,9 +189,9 @@ export const VALIDATE_CHECKIN_USE_CASE = 'VALIDATE_CHECKIN_USE_CASE';
     },
     {
       provide: UPDATE_COUPON_USE_CASE,
-      inject: [COUPON_REPOSITORY],
-      useFactory: (couponRepository: any) =>
-        createUpdateCouponUseCase({ couponRepository }),
+      inject: [COUPON_REPOSITORY, EVENT_REPOSITORY],
+      useFactory: (couponRepository: any, eventRepository: any) =>
+        createUpdateCouponUseCase({ couponRepository, eventRepository }),
     },
     {
       provide: UPDATE_EVENT_STATUS_USE_CASE,
