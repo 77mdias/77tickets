@@ -3,6 +3,7 @@
 import { type FormEvent, useCallback, useState } from "react";
 import { toast } from "sonner";
 
+import { apiFetch, ApiError } from "@/lib/api-client";
 import {
   buildCheckinPayload,
   extractCheckinErrorMessage,
@@ -29,12 +30,10 @@ const INITIAL_VALUES: CheckinFormValues = {
 };
 
 const submitCheckin = async (values: CheckinFormValues) => {
-  const response = await fetch("/api/checkin", {
+  return apiFetch<CheckinSuccessState>("/api/checkin", {
     method: "POST",
-    headers: { "content-type": "application/json" },
     body: JSON.stringify(buildCheckinPayload(values)),
   });
-  return response;
 };
 
 export function CheckinForm() {
@@ -42,33 +41,14 @@ export function CheckinForm() {
   const [viewState, setViewState] = useState<CheckinViewState>({ kind: "idle" });
   const [cameraError, setCameraError] = useState<string | null>(null);
 
-  const handleCheckinResponse = async (response: Response) => {
-    const payload = (await response.json()) as unknown;
-    if (!response.ok) {
-      const errorMessage = extractCheckinErrorMessage(payload);
-      setViewState({ kind: "error", message: errorMessage });
-      toast.error(`Falha no check-in: ${errorMessage}`);
-      return;
-    }
-
-    const data = (
-      payload as {
-        data?: {
-          ticketId?: string;
-          eventId?: string;
-          checkerId?: string;
-          validatedAt?: string;
-        };
-      }
-    ).data;
-
+  const handleCheckinResponse = (data: CheckinSuccessState) => {
     setViewState({
       kind: "success",
       data: {
-        ticketId: data?.ticketId ?? "unknown",
-        eventId: data?.eventId ?? "unknown",
-        checkerId: data?.checkerId ?? "unknown",
-        validatedAt: data?.validatedAt ?? "unknown",
+        ticketId: data.ticketId ?? "unknown",
+        eventId: data.eventId ?? "unknown",
+        checkerId: data.checkerId ?? "unknown",
+        validatedAt: data.validatedAt ?? "unknown",
       },
     });
     toast.success("Check-in realizado com sucesso!");
@@ -79,39 +59,38 @@ export function CheckinForm() {
     setViewState({ kind: "submitting" });
 
     try {
-      const response = await submitCheckin(values);
-      await handleCheckinResponse(response);
-    } catch {
-      setViewState({
-        kind: "error",
-        message: "Could not validate ticket. Please review your input and try again.",
-      });
-      toast.error("Falha no check-in. Verifique os dados e tente novamente.");
+      const data = await submitCheckin(values);
+      handleCheckinResponse(data);
+    } catch (error) {
+      const message =
+        error instanceof ApiError
+          ? extractCheckinErrorMessage(error.details as Record<string, unknown>)
+          : "Could not validate ticket. Please review your input and try again.";
+      setViewState({ kind: "error", message });
+      toast.error(`Falha no check-in: ${message}`);
     }
   };
 
   const handleQrScan = useCallback(
     async (code: string) => {
-      // QR code from TicketQR is the ticket token. We need ticketId and eventId separately.
-      // The token encodes the ticketId; eventId comes from the form field.
-      // Auto-fill ticketId and submit if eventId is present.
       const nextValues: CheckinFormValues = { ...values, ticketId: code };
       setValues(nextValues);
 
       if (!nextValues.eventId.trim()) {
-        return; // User still needs to fill eventId
+        return;
       }
 
       setViewState({ kind: "submitting" });
       try {
-        const response = await submitCheckin(nextValues);
-        await handleCheckinResponse(response);
-      } catch {
-        setViewState({
-          kind: "error",
-          message: "Could not validate ticket. Please review your input and try again.",
-        });
-        toast.error("Falha no check-in. Verifique os dados e tente novamente.");
+        const data = await submitCheckin(nextValues);
+        handleCheckinResponse(data);
+      } catch (error) {
+        const message =
+          error instanceof ApiError
+            ? extractCheckinErrorMessage(error.details as Record<string, unknown>)
+            : "Could not validate ticket. Please review your input and try again.";
+        setViewState({ kind: "error", message });
+        toast.error(`Falha no check-in: ${message}`);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
