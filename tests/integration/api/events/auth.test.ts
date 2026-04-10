@@ -148,7 +148,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('events auth integration', () =>
       .patch(`/api/events/${EVENT_SLUG}/status`)
       .set('x-test-user-id', TEST_USER_IDS.customerA)
       .set('x-test-role', 'customer')
-      .send({ eventId: EVENT_ID, targetStatus: 'cancelled' });
+      .send({ targetStatus: 'cancelled' });
     expect(res.status).toBe(403);
     expect(res.body.error.code).toBe('authorization');
     expect(mockUpdateStatus).not.toHaveBeenCalled();
@@ -160,7 +160,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('events auth integration', () =>
       .patch(`/api/events/${EVENT_SLUG}/status`)
       .set('x-test-user-id', TEST_USER_IDS.checker)
       .set('x-test-role', 'checker')
-      .send({ eventId: EVENT_ID, targetStatus: 'cancelled' });
+      .send({ targetStatus: 'cancelled' });
     expect(res.status).toBe(403);
     expect(res.body.error.code).toBe('authorization');
     expect(mockUpdateStatus).not.toHaveBeenCalled();
@@ -172,7 +172,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('events auth integration', () =>
       .patch(`/api/events/${EVENT_SLUG}/status`)
       .set('x-test-user-id', ORGANIZER_B)
       .set('x-test-role', 'organizer')
-      .send({ eventId: EVENT_ID, targetStatus: 'cancelled' });
+      .send({ targetStatus: 'cancelled' });
     expect(res.status).toBe(403);
     expect(mockUpdateStatus).not.toHaveBeenCalled();
   });
@@ -183,7 +183,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('events auth integration', () =>
       .patch(`/api/events/${EVENT_SLUG}/status`)
       .set('x-test-user-id', ORGANIZER_A)
       .set('x-test-role', 'organizer')
-      .send({ eventId: EVENT_ID, targetStatus: 'cancelled' });
+      .send({ targetStatus: 'cancelled' });
     expect(res.status).toBe(200);
     expect(mockUpdateStatus).toHaveBeenCalledWith({ eventId: EVENT_ID, targetStatus: 'cancelled' });
   });
@@ -194,7 +194,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('events auth integration', () =>
       .patch(`/api/events/${EVENT_SLUG}/status`)
       .set('x-test-user-id', TEST_USER_IDS.admin)
       .set('x-test-role', 'admin')
-      .send({ eventId: EVENT_ID, targetStatus: 'cancelled' });
+      .send({ targetStatus: 'cancelled' });
     expect(res.status).toBe(200);
     expect(mockUpdateStatus).toHaveBeenCalledWith({ eventId: EVENT_ID, targetStatus: 'cancelled' });
   });

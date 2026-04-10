@@ -133,6 +133,7 @@ const testSessionGuard = {
 export async function createTestingApp(overrides?: Array<{ token: string | symbol; value: unknown }>): Promise<TestApp> {
   (process.env as Record<string, string>).DATABASE_URL = process.env.TEST_DATABASE_URL ?? 'postgres://localhost/test';
   (process.env as Record<string, string>).NODE_ENV = 'test';
+  (process.env as Record<string, string>).ALLOW_TEST_AUTH = 'true';
   (process.env as Record<string, string>).RESEND_API_KEY = process.env.RESEND_API_KEY ?? 'test-key';
   (process.env as Record<string, string>).EMAIL_FROM = process.env.EMAIL_FROM ?? 'test@test.com';
   (process.env as Record<string, string>).STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY ?? 'sk_test_xxx';

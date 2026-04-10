@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   Inject,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -26,6 +27,8 @@ import { OwnershipGuard } from '../../auth/ownership.guard';
 import { Roles } from '../../auth/roles.decorator';
 import { RolesGuard } from '../../auth/roles.guard';
 import { SessionGuard } from '../../auth/session.guard';
+import { EVENT_REPOSITORY } from '../../infrastructure/database/database.module';
+import type { EventRepository } from '../../repositories';
 
 // ── Zod schemas (mirrored from src/server/api/schemas/) ──────────────────────
 
@@ -51,7 +54,6 @@ const publishEventSchema = z.object({ eventId: z.string().uuid() }).strict();
 
 const updateEventSchema = z
   .object({
-    eventId: z.string().uuid(),
     targetStatus: z.enum(['draft', 'published', 'cancelled']),
   })
   .strict();
@@ -84,6 +86,7 @@ export class EventsController {
     @Inject(UPDATE_EVENT_STATUS_USE_CASE) private readonly updateEventStatus: any,
     @Inject(LIST_EVENT_ORDERS_USE_CASE) private readonly listEventOrders: any,
     @Inject(GET_EVENT_ANALYTICS_USE_CASE) private readonly getEventAnalytics: any,
+    @Inject(EVENT_REPOSITORY) private readonly eventRepository: EventRepository,
   ) {}
 
   @Get()
@@ -119,9 +122,12 @@ export class EventsController {
   @Patch(':slug/status')
   @UseGuards(SessionGuard, RolesGuard, OwnershipGuard)
   @Roles('organizer')
-  async updateStatus(@Body() body: unknown) {
-    const input = updateEventSchema.parse(body);
-    return this.updateEventStatus(input);
+  async updateStatus(@Param() params: unknown, @Body() body: unknown) {
+    const { slug } = slugParamsSchema.parse(params);
+    const { targetStatus } = updateEventSchema.parse(body);
+    const event = await this.eventRepository.findBySlug(slug);
+    if (!event) throw new NotFoundException('Evento não encontrado');
+    return this.updateEventStatus({ eventId: event.id, targetStatus });
   }
 
   @Get(':slug/orders')

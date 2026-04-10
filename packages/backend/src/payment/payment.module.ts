@@ -13,7 +13,7 @@ export const PAYMENT_PROVIDER = 'PAYMENT_PROVIDER';
         createStripePaymentProvider({
           secretKey: config.getOrThrow<string>('STRIPE_SECRET_KEY'),
           webhookSecret: config.getOrThrow<string>('STRIPE_WEBHOOK_SECRET'),
-          appBaseUrl: config.get<string>('NEXT_PUBLIC_APP_URL'),
+          appBaseUrl: config.get<string>('APP_BASE_URL'),
         }),
     },
   ],

@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Inject,
+  NotFoundException,
   Param,
   Post,
   UseGuards,
@@ -23,6 +25,8 @@ import { SessionGuard } from '../../auth/session.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
 import { CurrentUser } from '../../auth/current-user.decorator';
+import { ORDER_REPOSITORY } from '../../infrastructure/database/database.module';
+import type { OrderRepository } from '../../repositories';
 
 const createOrderSchema = z
   .object({
@@ -51,6 +55,7 @@ export class OrdersController {
     private readonly simulatePayment: SimulatePaymentUseCase,
     @Inject(CREATE_STRIPE_CHECKOUT_SESSION_USE_CASE)
     private readonly createStripeCheckoutSession: CreateStripeCheckoutSessionUseCase,
+    @Inject(ORDER_REPOSITORY) private readonly orderRepository: OrderRepository,
   ) {}
 
   @Post()
@@ -74,7 +79,10 @@ export class OrdersController {
   @Post(':id/simulate-payment')
   @UseGuards(SessionGuard, RolesGuard)
   @Roles('customer')
-  async simulatePaymentRoute(@Param('id') orderId: string) {
+  async simulatePaymentRoute(@Param('id') orderId: string, @CurrentUser() user: { id: string }) {
+    const order = await this.orderRepository.findById(orderId);
+    if (!order) throw new NotFoundException('Pedido não encontrado');
+    if (order.order.customerId !== user.id) throw new ForbiddenException('Acesso negado');
     return this.simulatePayment({ orderId });
   }
 

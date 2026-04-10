@@ -13,7 +13,7 @@ export const EMAIL_PROVIDER = 'EMAIL_PROVIDER';
         createResendEmailProvider({
           apiKey: config.getOrThrow<string>('RESEND_API_KEY'),
           fromEmail: config.getOrThrow<string>('EMAIL_FROM'),
-          appBaseUrl: config.get<string>('NEXT_PUBLIC_APP_URL'),
+          appBaseUrl: config.get<string>('APP_BASE_URL'),
         }),
     },
   ],

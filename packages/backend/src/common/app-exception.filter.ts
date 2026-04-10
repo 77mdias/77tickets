@@ -43,8 +43,16 @@ export class AppExceptionFilter implements ExceptionFilter {
 
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
-      const body = exception.getResponse();
-      response.status(status).json(body);
+      const raw = exception.getResponse();
+      const message = typeof raw === 'string' ? raw : (raw as any)?.message ?? exception.message;
+      const code: AppErrorCode =
+        status === 401 ? 'unauthenticated' :
+        status === 403 ? 'authorization' :
+        status === 404 ? 'not-found' :
+        status === 409 ? 'conflict' :
+        status === 429 ? 'rate_limited' :
+        status < 500 ? 'validation' : 'internal';
+      response.status(status).json({ error: { code, message } });
       return;
     }
 

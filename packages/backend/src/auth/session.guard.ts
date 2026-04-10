@@ -18,7 +18,7 @@ export class SessionGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
 
     // Test mode: accept x-test-user-id + x-test-role headers
-    if (process.env.NODE_ENV === 'test') {
+    if (process.env.NODE_ENV === 'test' && process.env.ALLOW_TEST_AUTH === 'true') {
       const testUserId = request.headers['x-test-user-id'];
       if (testUserId) {
         request.user = {

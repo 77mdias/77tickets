@@ -31,5 +31,7 @@ services:
         sync: false
       - key: PAYMENT_MODE
         value: stripe
+      - key: APP_BASE_URL
+        sync: false
       - key: CRON_SECRET
         sync: false
