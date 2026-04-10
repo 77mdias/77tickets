@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ApplicationModule } from '../../application/application.module';
-import { AuthModule } from '../../auth/auth.module';
-import { DatabaseModule } from '../../infrastructure/database/database.module';
+import { GuardsModule } from '../../auth/guards.module';
 import { EventsController } from './events.controller';
 
 @Module({
-  imports: [ApplicationModule, AuthModule, DatabaseModule],
+  imports: [ApplicationModule, GuardsModule],
   controllers: [EventsController],
 })
 export class EventsModule {}
