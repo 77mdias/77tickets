@@ -2,7 +2,7 @@
  * Smoke script: checkin-flow
  *
  * Prerequisites:
- *   - Server running at SMOKE_BASE_URL (default: http://localhost:3000)
+ *   - NestJS running at SMOKE_BASE_URL (default: http://localhost:3001)
  *   - SMOKE_TICKET_ID: valid active ticket ID to check in
  *   - SMOKE_EVENT_ID: event ID for the ticket
  *   - SMOKE_CHECKER_COOKIE: session cookie for a user with checker/admin role

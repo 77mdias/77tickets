@@ -1,4 +1,7 @@
-export const BASE_URL = process.env.SMOKE_BASE_URL ?? "http://localhost:3000";
+// Smoke tests target NestJS directly since they call /api/* endpoints.
+// Default is the NestJS dev server on port 3001.
+// Override with SMOKE_BASE_URL if needed (e.g., http://localhost:3000 for Vinext-only mode).
+export const BASE_URL = process.env.SMOKE_BASE_URL ?? "http://localhost:3001";
 
 interface ApiCallOptions {
   method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
@@ -52,11 +55,11 @@ export function fail(message: string): never {
 
 export async function checkServer(): Promise<void> {
   try {
-    const response = await fetch(`${BASE_URL}/api/events?limit=1`);
+    const response = await fetch(`${BASE_URL}/api/health`);
     if (!response.ok && response.status !== 404) {
       fail(`Server at ${BASE_URL} returned ${response.status}. Is it running?`);
     }
   } catch {
-    fail(`Cannot reach server at ${BASE_URL}. Start it with 'bun run dev' first.`);
+    fail(`Cannot reach server at ${BASE_URL}. Start NestJS with 'bun run start:dev' (packages/backend) first.`);
   }
 }

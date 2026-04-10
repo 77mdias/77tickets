@@ -108,6 +108,7 @@ import { Test, type TestingModule } from '@nestjs/testing';
 import { type INestApplication, ValidationPipe, UnauthorizedException } from '@nestjs/common';
 import type { ExecutionContext } from '@nestjs/common';
 import { AppModule } from '../../../packages/backend/src/app.module';
+import { configureCors } from '../../../packages/backend/src/common/cors.config';
 import { AppExceptionFilter } from '../../../packages/backend/src/common/app-exception.filter';
 import { SessionGuard } from '../../../packages/backend/src/auth/session.guard';
 
@@ -153,6 +154,7 @@ export async function createTestingApp(overrides?: Array<{ token: string | symbo
   const app = moduleRef.createNestApplication({ rawBody: true });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalFilters(new AppExceptionFilter());
+  configureCors(app);
   await app.init();
 
   return { app, close: () => app.close() };

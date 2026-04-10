@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { apiFetch, ApiError } from "@/lib/api-client";
 
 import { extractCheckoutErrorMessage } from "@/features/checkout/checkout-client";
 
@@ -31,24 +32,15 @@ export default function CheckoutSimulatePage() {
     setState({ kind: "submitting" });
 
     try {
-      const response = await fetch(`/api/orders/${encodeURIComponent(orderId)}/simulate-payment`, {
+      await apiFetch<unknown>(`/api/orders/${encodeURIComponent(orderId)}/simulate-payment`, {
         method: "POST",
       });
-      const payload = (await response.json()) as unknown;
-
-      if (!response.ok) {
-        setState({
-          kind: "error",
-          message: extractCheckoutErrorMessage(payload),
-        });
-        return;
-      }
 
       router.replace("/checkout/success");
-    } catch {
+    } catch (error) {
       setState({
         kind: "error",
-        message: "Could not simulate payment. Please try again.",
+        message: error instanceof ApiError ? extractCheckoutErrorMessage(error.details) : "Could not simulate payment. Please try again.",
       });
     }
   };

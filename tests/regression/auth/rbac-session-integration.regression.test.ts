@@ -11,15 +11,8 @@
 
 import { describe, expect, test, vi } from "vitest";
 
-import { createCreateOrderHandler } from "../../../src/server/api/create-order.handler";
 import { createCreateOrderRouteAdapter } from "../../../src/server/api/orders/create-order.route-adapter";
 import type { SessionContext } from "../../../src/server/api/auth";
-import { createCreateOrderUseCase } from "../../../src/server/application/use-cases/create-order.use-case";
-import {
-  DrizzleCouponRepository,
-  DrizzleLotRepository,
-  DrizzleOrderRepository,
-} from "../../../src/server/repositories/drizzle";
 import { createUnauthenticatedError } from "../../../src/server/application/errors";
 
 const CUSTOMER_ID = "57d1cfdb-a4dd-4af8-90be-6ce315f8f6f5";
@@ -35,7 +28,7 @@ const buildRequest = (body: unknown) =>
 
 const buildGetSession =
   (session: SessionContext) =>
-  async (_request: Request): Promise<SessionContext> =>
+  async (): Promise<SessionContext> =>
     session;
 
 describe("RBAC + session integration regression", () => {

@@ -50,7 +50,7 @@ describe("Auth regression: session expiry and missing session scenarios", () => 
 
   test("returns 401 when getSession throws an unauthenticated error directly", async () => {
     // getSession itself throws — simulates a provider that detects an invalid/expired token
-    const getSession = vi.fn(async (_req: Request): Promise<SessionContext> => {
+    const getSession = vi.fn(async (): Promise<SessionContext> => {
       throw createUnauthenticatedError("Token expirado");
     });
 

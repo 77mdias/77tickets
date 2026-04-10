@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import {
   buildCreateEventPayload,
@@ -13,6 +13,9 @@ import {
   extractManagementErrorMessage,
   postManagementOperation,
 } from "../../../../src/features/admin/management-client";
+import * as apiClient from "../../../../src/lib/api-client";
+
+vi.mock("../../../../src/lib/api-client");
 
 const toExpectedIso = (value: string): string => new Date(value).toISOString();
 
@@ -211,20 +214,16 @@ describe("extractManagementErrorMessage", () => {
 });
 
 describe("postManagementOperation", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+
   afterEach(() => {
-    vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
   test("sends PUT requests with a JSON body", async () => {
-    const fetchMock = vi.fn(async () => {
-      return new Response(JSON.stringify({ data: { lotId: "lot-1" } }), {
-        status: 200,
-        headers: { "content-type": "application/json" },
-      });
-    });
-
-    vi.stubGlobal("fetch", fetchMock);
+    vi.spyOn(apiClient, "apiFetch").mockResolvedValue({ lotId: "lot-1" });
 
     const result = await postManagementOperation({
       endpoint: "/api/lots/lot-1",
@@ -236,7 +235,7 @@ describe("postManagementOperation", () => {
       payload: { lotId: "lot-1" },
     });
 
-    expect(fetchMock).toHaveBeenCalledWith("/api/lots/lot-1", {
+    expect(apiClient.apiFetch).toHaveBeenCalledWith("/api/lots/lot-1", {
       method: "PUT",
       headers: {
         "content-type": "application/json",
@@ -250,18 +249,7 @@ describe("postManagementOperation", () => {
   });
 
   test("sends GET requests with query parameters and no body", async () => {
-    const fetchMock = vi.fn(async (url: string) => {
-      expect(url).toBe(
-        "/api/events/2f180791-a8f5-4cf8-b703-0f220a44f7c8/orders?status=paid",
-      );
-
-      return new Response(JSON.stringify({ data: { orders: [] } }), {
-        status: 200,
-        headers: { "content-type": "application/json" },
-      });
-    });
-
-    vi.stubGlobal("fetch", fetchMock);
+    vi.spyOn(apiClient, "apiFetch").mockResolvedValue({ orders: [] });
 
     const result = await postManagementOperation({
       endpoint: "/api/events/2f180791-a8f5-4cf8-b703-0f220a44f7c8/orders",
@@ -275,7 +263,11 @@ describe("postManagementOperation", () => {
       }),
     });
 
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(apiClient.apiFetch).toHaveBeenCalledTimes(1);
+    expect(apiClient.apiFetch).toHaveBeenCalledWith(
+      "/api/events/2f180791-a8f5-4cf8-b703-0f220a44f7c8/orders?status=paid",
+      expect.objectContaining({ method: "GET" }),
+    );
     expect(result.ok).toBe(true);
     expect(result.data).toEqual({ orders: [] });
   });

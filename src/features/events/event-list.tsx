@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
+import { apiFetch, ApiError } from "@/lib/api-client";
 import type { DiscoveryFilters } from "./event-filters";
 
 interface DiscoveryEvent {
@@ -96,13 +97,10 @@ const dedupeEvents = (previous: DiscoveryEvent[], next: DiscoveryEvent[]): Disco
 const loadDiscoveryEvents = async (input: {
   cursor?: string | null;
   filters: DiscoveryFilters;
-}): Promise<{ response: Response; payload: DiscoveryEventsPayload }> => {
-  const response = await fetch(`/api/events?${buildDiscoveryQuery(input.filters, input.cursor)}`, {
-    cache: "no-store",
-  });
-  const payload = extractDiscoveryPayload((await response.json()) as unknown);
-
-  return { response, payload };
+}): Promise<DiscoveryEventsPayload> => {
+  const result = await apiFetch<DiscoveryEventsPayload>(`/api/events?${buildDiscoveryQuery(input.filters, input.cursor)}`);
+  // NestJS may return data wrapped in { data: ... } or directly
+  return extractDiscoveryPayload(result);
 };
 
 export function EventList({ filters }: EventListProps) {
@@ -132,26 +130,25 @@ export function EventList({ filters }: EventListProps) {
 
     void (async () => {
       try {
-        const { response, payload } = await loadDiscoveryEvents({ filters });
+        const payload = await loadDiscoveryEvents({ filters });
 
         if (requestId !== requestIdRef.current) {
-          return;
-        }
-
-        if (!response.ok) {
-          setErrorMessage(DISCOVERY_ERROR_MESSAGE);
           return;
         }
 
         setEvents(Array.isArray(payload.events) ? payload.events : []);
         setNextCursor(typeof payload.nextCursor === "string" ? payload.nextCursor : null);
         setErrorMessage(null);
-      } catch {
+      } catch (error) {
         if (requestId !== requestIdRef.current) {
           return;
         }
 
-        setErrorMessage(DISCOVERY_ERROR_MESSAGE);
+        setErrorMessage(
+          error instanceof ApiError && error.code === "network-error"
+            ? "Não foi possível conectar ao servidor. Tente novamente."
+            : DISCOVERY_ERROR_MESSAGE,
+        );
       } finally {
         if (requestId !== requestIdRef.current) {
           return;
@@ -177,14 +174,9 @@ export function EventList({ filters }: EventListProps) {
     setIsLoadingMore(true);
 
     try {
-      const { response, payload } = await loadDiscoveryEvents({ filters, cursor: nextCursor });
+      const payload = await loadDiscoveryEvents({ filters, cursor: nextCursor });
 
       if (requestId !== requestIdRef.current) {
-        return;
-      }
-
-      if (!response.ok) {
-        setErrorMessage(DISCOVERY_ERROR_MESSAGE);
         return;
       }
 

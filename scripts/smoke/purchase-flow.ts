@@ -2,7 +2,7 @@
  * Smoke script: purchase-flow
  *
  * Prerequisites:
- *   - Server running at SMOKE_BASE_URL (default: http://localhost:3000)
+ *   - NestJS running at SMOKE_BASE_URL (default: http://localhost:3001)
  *   - Seed data: at least one published event with an available lot
  *   - Customer session cookie in SMOKE_CUSTOMER_COOKIE env var
  *

@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent, useMemo, useState } from "react";
+import { apiFetch } from "@/lib/api-client";
 
 type AnalyticsLot = {
   lotId: string;
@@ -66,18 +67,6 @@ export const extractAnalyticsErrorMessage = (payload: unknown): string => {
   return typeof message === "string" && message.trim() ? message : FALLBACK_ERROR_MESSAGE;
 };
 
-const extractAnalyticsData = (payload: unknown): EventAnalyticsResponse | null => {
-  if (!isRecord(payload)) {
-    return null;
-  }
-
-  if (isRecord(payload.data)) {
-    return payload.data as EventAnalyticsResponse;
-  }
-
-  return payload as EventAnalyticsResponse;
-};
-
 export function AnalyticsPanel() {
   const [slug, setSlug] = useState("");
   const [viewState, setViewState] = useState<ViewState>({ kind: "idle" });
@@ -121,37 +110,19 @@ export function AnalyticsPanel() {
     setViewState({ kind: "loading" });
 
     try {
-      const response = await fetch(`/api/events/${encodeURIComponent(trimmedSlug)}/analytics`, {
-        cache: "no-store",
-      });
-      const payload = (await response.json()) as unknown;
-
-      if (!response.ok) {
-        setAnalytics(null);
-        setViewState({
-          kind: "error",
-          message: extractAnalyticsErrorMessage(payload),
-        });
-        return;
-      }
-
-      const data = extractAnalyticsData(payload);
-      if (!data) {
-        setAnalytics(null);
-        setViewState({
-          kind: "error",
-          message: FALLBACK_ERROR_MESSAGE,
-        });
-        return;
-      }
+      const data = await apiFetch<EventAnalyticsResponse>(
+        `/api/events/${encodeURIComponent(trimmedSlug)}/analytics`,
+      );
 
       setAnalytics(data);
       setViewState({ kind: "success" });
-    } catch {
+    } catch (error) {
       setAnalytics(null);
+      const message =
+        error instanceof Error && error.message ? error.message : FALLBACK_ERROR_MESSAGE;
       setViewState({
         kind: "error",
-        message: FALLBACK_ERROR_MESSAGE,
+        message,
       });
     }
   };
