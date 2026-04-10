@@ -264,12 +264,12 @@ wrangler deploy --env staging
 ### Log resumido dos checkpoints
 | Checkpoint | Responsável | Resultado | Observações |
 |-----------|-------------|-----------|-------------|
-| 1 — Discovery | @jeandias | ⏳ Pendente | |
-| 2 — Estratégia de testes | @jeandias | ⏳ Pendente | |
-| 3 — RED tests | @jeandias | ⏳ Pendente | |
-| 4 — GREEN | @jeandias | ⏳ Pendente | |
-| 5 — Refatoração | @jeandias | ⏳ Pendente | |
-| 6 — Validação final | @jeandias | ⏳ Pendente | |
+| 1 — Discovery | @jeandias | ✅ Completo | |
+| 2 — Estratégia de testes | @jeandias | ✅ Completo | |
+| 3 — RED tests | @jeandias | ✅ Completo | apiFetch tests failing before implementation |
+| 4 — GREEN | @jeandias | ✅ Completo | CORS, api-client, sessão cross-origin funcionando |
+| 5 — Refatoração | @jeandias | ✅ Completo | handlers internos removidos, apiFetch como único ponto |
+| 6 — Validação final | @jeandias | ✅ Completo | 141 integration tests, smoke tests configurados |
 
 ---
 
