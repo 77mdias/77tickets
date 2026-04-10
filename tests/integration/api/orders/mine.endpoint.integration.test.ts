@@ -29,7 +29,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('orders mine endpoint integratio
     expect(res.status).toBe(200);
     expect(res.body.orders).toHaveLength(1);
     expect(res.body.orders[0].id).toBe(customerAOrder.id);
-    expect(res.body.orders[0].tickets.map((t: any) => t.token)).toEqual(['MINE-TKT-A-001']);
+    expect(res.body.orders[0].tickets.map((t: { token: string }) => t.token)).toEqual(['MINE-TKT-A-001']);
   });
 
   test('GET /api/orders/mine blocks checker role', async () => {

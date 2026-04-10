@@ -32,7 +32,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('public events endpoint integrat
     const res = await request(testApp.app.getHttpServer()).get('/api/events/evento-detalhe');
     expect(res.status).toBe(200);
     expect(res.body.event.slug).toBe('evento-detalhe');
-    expect(res.body.lots.map((lot: any) => lot.available)).toEqual([12, 0]);
+    expect(res.body.lots.map((lot: { available: number }) => lot.available)).toEqual([12, 0]);
   });
 
   test('GET /api/events/:slug returns 404 for non-published slug', async () => {

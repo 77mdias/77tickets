@@ -58,28 +58,28 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('GET /api/events discovery upgra
     await seedDiscoveryEvents();
     const res = await request(testApp.app.getHttpServer()).get('/api/events?q=festival');
     expect(res.status).toBe(200);
-    expect(res.body.events.map((e: any) => e.slug)).toEqual(['festival-rock', 'festival-tech']);
+    expect(res.body.events.map((e: { slug: string }) => e.slug)).toEqual(['festival-rock', 'festival-tech']);
   });
 
   test('filters by location on the public discovery feed', async () => {
     await seedDiscoveryEvents();
     const res = await request(testApp.app.getHttpServer()).get('/api/events?location=Recife');
     expect(res.status).toBe(200);
-    expect(res.body.events.map((e: any) => e.slug)).toEqual(['festival-tech']);
+    expect(res.body.events.map((e: { slug: string }) => e.slug)).toEqual(['festival-tech']);
   });
 
   test('filters by category on the public discovery feed', async () => {
     await seedDiscoveryEvents();
     const res = await request(testApp.app.getHttpServer()).get('/api/events?category=shows');
     expect(res.status).toBe(200);
-    expect(res.body.events.map((e: any) => e.slug)).toEqual(['festival-tech']);
+    expect(res.body.events.map((e: { slug: string }) => e.slug)).toEqual(['festival-tech']);
   });
 
   test('filters by date on the public discovery feed', async () => {
     await seedDiscoveryEvents();
     const res = await request(testApp.app.getHttpServer()).get('/api/events?date=2099-07-01');
     expect(res.status).toBe(200);
-    expect(res.body.events.map((e: any) => e.slug)).toEqual(['corrida']);
+    expect(res.body.events.map((e: { slug: string }) => e.slug)).toEqual(['corrida']);
   });
 
   test('combines q, category, and date filters in one request', async () => {
@@ -87,20 +87,20 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('GET /api/events discovery upgra
     const res = await request(testApp.app.getHttpServer())
       .get('/api/events?q=festival&category=shows&date=2099-06-01');
     expect(res.status).toBe(200);
-    expect(res.body.events.map((e: any) => e.slug)).toEqual(['festival-tech']);
+    expect(res.body.events.map((e: { slug: string }) => e.slug)).toEqual(['festival-tech']);
   });
 
   test('returns a nextCursor on the first cursor page', async () => {
     const { festivalTech, corrida } = await seedDiscoveryEvents();
     const res = await request(testApp.app.getHttpServer()).get('/api/events?limit=2');
     expect(res.status).toBe(200);
-    expect(res.body.events.map((e: any) => e.slug)).toEqual(['festival-rock', 'festival-tech']);
+    expect(res.body.events.map((e: { slug: string }) => e.slug)).toEqual(['festival-rock', 'festival-tech']);
     expect(res.body.nextCursor).toEqual(expect.any(String));
     expect(decodeCursor(res.body.nextCursor)).toEqual({
       startsAt: festivalTech.startsAt.toISOString(),
       id: festivalTech.id,
     });
-    expect(res.body.events.find((e: any) => e.slug === corrida.slug)).toBeUndefined();
+    expect(res.body.events.find((e: { slug: string }) => e.slug === corrida.slug)).toBeUndefined();
   });
 
   test('returns null nextCursor on the last cursor page', async () => {
@@ -110,7 +110,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('GET /api/events discovery upgra
     const res = await request(testApp.app.getHttpServer())
       .get(`/api/events?limit=2&cursor=${first.body.nextCursor}`);
     expect(res.status).toBe(200);
-    expect(res.body.events.map((e: any) => e.slug)).toEqual([corrida.slug]);
+    expect(res.body.events.map((e: { slug: string }) => e.slug)).toEqual([corrida.slug]);
     expect(res.body.nextCursor).toBeNull();
   });
 
@@ -130,7 +130,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('GET /api/events discovery upgra
     expect(res.status).toBe(200);
     expect(res.body.page).toBe(2);
     expect(res.body.limit).toBe(1);
-    expect(res.body.events.map((e: any) => e.slug)).toEqual(['festival-tech']);
+    expect(res.body.events.map((e: { slug: string }) => e.slug)).toEqual(['festival-tech']);
     expect(res.body.nextCursor).toEqual(expect.any(String));
   });
 });

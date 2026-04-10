@@ -32,12 +32,12 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('customer public flow integratio
     // Step 1: List events
     const listRes = await request(testApp.app.getHttpServer()).get('/api/events?page=1&limit=10');
     expect(listRes.status).toBe(200);
-    expect(listRes.body.events.map((e: any) => e.slug)).toContain('flow-event-007');
+    expect(listRes.body.events.map((e: { slug: string }) => e.slug)).toContain('flow-event-007');
 
     // Step 2: Get event detail
     const detailRes = await request(testApp.app.getHttpServer()).get('/api/events/flow-event-007');
     expect(detailRes.status).toBe(200);
-    expect(detailRes.body.lots.map((l: any) => l.id)).toContain(lot.id);
+    expect(detailRes.body.lots.map((l: { id: string }) => l.id)).toContain(lot.id);
 
     // Step 3: Create order
     const orderRes = await request(testApp.app.getHttpServer())
