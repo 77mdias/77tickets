@@ -4,10 +4,9 @@ import { betterAuth } from 'better-auth';
 import { SessionGuard } from './session.guard';
 import { RolesGuard } from './roles.guard';
 import { OwnershipGuard } from './ownership.guard';
-import { DatabaseModule } from '../infrastructure/database/database.module';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [],
   providers: [
     {
       provide: SessionGuard,
@@ -38,6 +37,6 @@ import { DatabaseModule } from '../infrastructure/database/database.module';
     RolesGuard,
     OwnershipGuard,
   ],
-  exports: [SessionGuard, RolesGuard, OwnershipGuard, DatabaseModule],
+  exports: [SessionGuard, RolesGuard, OwnershipGuard],
 })
 export class AuthModule {}
