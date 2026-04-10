@@ -46,6 +46,13 @@ vi.mock("@/server/infrastructure/db/client", () => ({
   createHttpDb: () => ({}) as Record<string, never>,
 }));
 
+vi.mock("@/server/infrastructure/db", () => ({
+  createDb: () => ({}) as Record<string, never>,
+  createHttpDb: () => ({}) as Record<string, never>,
+  getDb: () => ({}) as Record<string, never>,
+  getHttpDb: () => ({}) as Record<string, never>,
+}));
+
 vi.mock("@/server/infrastructure/observability", () => ({
   createConsoleCheckoutObservability: () => ({
     trackCheckoutAttempt: async () => undefined,
