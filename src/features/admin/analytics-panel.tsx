@@ -67,18 +67,6 @@ export const extractAnalyticsErrorMessage = (payload: unknown): string => {
   return typeof message === "string" && message.trim() ? message : FALLBACK_ERROR_MESSAGE;
 };
 
-const extractAnalyticsData = (payload: unknown): EventAnalyticsResponse | null => {
-  if (!isRecord(payload)) {
-    return null;
-  }
-
-  if (isRecord(payload.data)) {
-    return payload.data as EventAnalyticsResponse;
-  }
-
-  return payload as EventAnalyticsResponse;
-};
-
 export function AnalyticsPanel() {
   const [slug, setSlug] = useState("");
   const [viewState, setViewState] = useState<ViewState>({ kind: "idle" });

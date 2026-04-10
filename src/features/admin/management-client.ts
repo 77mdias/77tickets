@@ -264,14 +264,6 @@ const formatSuccessMessage = (payload: unknown): string => {
   return "Administrative operation completed successfully.";
 };
 
-const readJsonSafely = async (response: Response): Promise<unknown> => {
-  try {
-    return await response.json();
-  } catch {
-    return null;
-  }
-};
-
 const appendQuery = (
   endpoint: string,
   query?: Record<string, string | number | boolean | null | undefined>,
