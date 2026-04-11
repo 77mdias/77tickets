@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createDb } from '../db/client';
 import type { Db } from '../db/client';
@@ -17,6 +17,7 @@ export const TICKET_REPOSITORY = 'TICKET_REPOSITORY';
 export const COUPON_REPOSITORY = 'COUPON_REPOSITORY';
 export const USER_REPOSITORY = 'USER_REPOSITORY';
 
+@Global()
 @Module({
   providers: [
     {
