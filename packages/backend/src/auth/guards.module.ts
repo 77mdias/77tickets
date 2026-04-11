@@ -1,23 +1,15 @@
 import { Module, Global } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { betterAuth } from 'better-auth';
-import { SessionGuard } from './session.guard';
+import { SessionGuard, SESSION_RESOLVER } from './session.guard';
 import { RolesGuard } from './roles.guard';
 import { OwnershipGuard } from './ownership.guard';
-import { DatabaseModule } from '../infrastructure/database/database.module';
 
-/**
- * GuardsModule — registers all auth guards with BetterAuth.
- *
- * Imports DatabaseModule (which is NOT global) to resolve OwnershipGuard's
- * EVENT_REPOSITORY dependency. GuardsModule is imported by AppModule only.
- * Feature modules find guards via AppModule's exports or via @Global().
- */
+@Global()
 @Module({
-  imports: [DatabaseModule],
   providers: [
     {
-      provide: SessionGuard,
+      provide: SESSION_RESOLVER,
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const betterAuthInstance = betterAuth({
@@ -35,14 +27,14 @@ import { DatabaseModule } from '../infrastructure/database/database.module';
             },
           },
         } as any);
-        const resolveSession = (headers: Record<string, string>) =>
+        return (headers: Record<string, string>) =>
           betterAuthInstance.api.getSession({ headers: new Headers(headers) }) as any;
-        return new SessionGuard(resolveSession);
       },
     },
+    SessionGuard,
     RolesGuard,
     OwnershipGuard,
   ],
-  exports: [SessionGuard, RolesGuard, OwnershipGuard, DatabaseModule],
+  exports: [SessionGuard, RolesGuard, OwnershipGuard, SESSION_RESOLVER],
 })
 export class GuardsModule {}

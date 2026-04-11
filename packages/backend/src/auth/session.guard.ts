@@ -1,8 +1,10 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 
 export type SessionResolver = (headers: Record<string, string>) => Promise<{
   user: { id: string; role?: unknown; email?: string };
 } | null>;
+
+export const SESSION_RESOLVER = 'SESSION_RESOLVER';
 
 const ALLOWED_ROLES = ['customer', 'organizer', 'admin', 'checker'] as const;
 type UserRole = typeof ALLOWED_ROLES[number];
@@ -12,7 +14,7 @@ const isUserRole = (role: unknown): role is UserRole =>
 
 @Injectable()
 export class SessionGuard implements CanActivate {
-  constructor(private readonly resolveSession: SessionResolver) {}
+  constructor(@Inject(SESSION_RESOLVER) private readonly resolveSession: SessionResolver) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
