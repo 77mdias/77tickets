@@ -1,9 +1,12 @@
 import { Module, Global } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { betterAuth } from 'better-auth';
+import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { SessionGuard, SESSION_RESOLVER } from './session.guard';
 import { RolesGuard } from './roles.guard';
 import { OwnershipGuard } from './ownership.guard';
+import { createHttpDb } from '../infrastructure/db/client';
+import * as schema from '../infrastructure/db/schema';
 
 @Global()
 @Module({
@@ -12,10 +15,11 @@ import { OwnershipGuard } from './ownership.guard';
       provide: SESSION_RESOLVER,
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
+        const db = createHttpDb(config.getOrThrow('DATABASE_URL'));
         const betterAuthInstance = betterAuth({
           baseURL: config.getOrThrow('BETTER_AUTH_BASE_URL'),
           secret: config.getOrThrow('BETTER_AUTH_SECRET'),
-          database: { provider: 'pg', url: config.getOrThrow('DATABASE_URL') },
+          database: drizzleAdapter(db, { provider: 'pg', schema }),
           advanced: {
             cookies: {
               session_token: {
