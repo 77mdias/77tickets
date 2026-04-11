@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { GuardsModule } from './auth/guards.module';
 import { EventsModule } from './api/events/events.module';
 import { LotsModule } from './api/lots/lots.module';
@@ -11,6 +12,7 @@ import { HealthModule } from './api/health/health.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     GuardsModule,
     EventsModule,
     LotsModule,

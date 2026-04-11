@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Module, Global } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { betterAuth } from 'better-auth';
 import { SessionGuard } from './session.guard';
 import { RolesGuard } from './roles.guard';
@@ -7,13 +7,14 @@ import { OwnershipGuard } from './ownership.guard';
 import { DatabaseModule } from '../infrastructure/database/database.module';
 
 /**
- * GuardsModule — registers all auth guards with BetterAuth at the root level.
+ * GuardsModule — registers all auth guards with BetterAuth.
  *
- * Placed in its own file (not app.module.ts) to avoid circular imports when
- * feature modules need to re-export these guards.
+ * Imports DatabaseModule (which is NOT global) to resolve OwnershipGuard's
+ * EVENT_REPOSITORY dependency. GuardsModule is imported by AppModule only.
+ * Feature modules find guards via AppModule's exports or via @Global().
  */
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), DatabaseModule],
+  imports: [DatabaseModule],
   providers: [
     {
       provide: SessionGuard,
@@ -42,6 +43,6 @@ import { DatabaseModule } from '../infrastructure/database/database.module';
     RolesGuard,
     OwnershipGuard,
   ],
-  exports: [SessionGuard, RolesGuard, OwnershipGuard, ConfigModule, DatabaseModule],
+  exports: [SessionGuard, RolesGuard, OwnershipGuard, DatabaseModule],
 })
 export class GuardsModule {}
